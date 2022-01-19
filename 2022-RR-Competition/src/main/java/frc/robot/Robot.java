@@ -5,11 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-<<<<<<< HEAD
-=======
-// import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
->>>>>>> ad41bfe751a796837d702c08bc31804d7c209807
 
 /**
  * The VM is configured to automatically run this class, and to call the
