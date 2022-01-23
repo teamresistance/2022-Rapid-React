@@ -56,7 +56,7 @@ public class Timer {
         return hasExpired();
     }
 
-    /**Current time is LTEQ timer */
+    /**Current time is <= timer */
     public boolean hasExpired(){
         return System.currentTimeMillis() > timer;
     }

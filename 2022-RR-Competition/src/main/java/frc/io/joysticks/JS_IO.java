@@ -56,20 +56,12 @@ public class JS_IO {
     public static Button btnHold180 = new Button();
 
     // Shooter
-    public static Button btnRampShooter = new Button();
-    public static Button btnFireShooter = new Button();
-
-    // Revolver
-    public static Button btnIndex = new Button();
+    public static Button btn_high_fire = new Button();
+    public static Button btn_low_fire = new Button() ;
 
     // Snorfler
     public static Button btnTglSnorArmDn = new Button();
     public static Button btnReverseSnorfler = new Button();
-
-    // Turret
-    public static Axis axTurretRot = new Axis(); // Rotate turret
-    public static Button btnLimeAim = new Button();
-    public static Button btnLimeSearch = new Button();
 
     // Climb
     public static Axis axClimb = new Axis();
@@ -180,7 +172,6 @@ public class JS_IO {
         // All stick axisesssss
         axLeftDrive.setAxis(leftJoystick, 1);
         axRightDrive.setAxis(rightJoystick, 1);
-        axTurretRot.setAxis(coJoystick, 0);
         // axClimb.setAxis(coJoystick, 1);
 
         axLeftX.setAxis(leftJoystick, 0);       //Added to test drive3
@@ -200,20 +191,11 @@ public class JS_IO {
         btnReverseSnorfler.setButton(coJoystick, 5);
         btnTglSnorArmDn.setButton(coJoystick, 3);
 
-        // turret buttons
-        btnLimeSearch.setButton(coJoystick, 12);
-        btnLimeAim.setButton(coJoystick, 10);
-
+        
         // shooting buttons
-        btnRampShooter.setButton(coJoystick, 4);
-        btnFireShooter.setButton(coJoystick, 1);
-        btnIndex.setButton(coJoystick, 6);
+        btn_high_fire.setButton(coJoystick, 1);
+        btn_low_fire.setButton(coJoystick, 10);
 
-        btnStop.setButton(coJoystick, 11);
-
-        // Limelight Buttons - AS
-        limeLightOnOff.setButton(rightJoystick, 2);
-        btnRstGyro.setButton(leftJoystick, 3);
 
         // drive2Off.setButton(leftJoystick, 10);
         // drive2Tank.setButton(leftJoystick, 9);
@@ -233,8 +215,7 @@ public class JS_IO {
         // All stick axisesssss
         axLeftDrive.setAxis(gamePad, 1); // left stick Y
         axRightDrive.setAxis(gamePad, 5); // right stick Y
-        axTurretRot.setAxis(gamePad, 4); // Neg = CW, Pos = CCW (left stick X?)
-
+      
         axLeftX.setAxis( gamePad, 0);       //Added to test drive3
         axLeftY.setAxis( gamePad, 1);
         axRightX.setAxis(gamePad, 4);
@@ -256,11 +237,8 @@ public class JS_IO {
         // btnLimeAim.setButton(gamePad, 4); // Y
 
         // shooting buttons
-        btnRampShooter.setButton(gamePad, 3); // X
-        btnFireShooter.setButton(gamePad, 2); // B
-        btnIndex.setButton(gamePad, 7); // Back
-
-        btnStop.setButton(gamePad, 8); // start
+        btn_high_fire.setButton(gamePad, 5);
+        btn_low_fire.setButton(gamePad, 4);
 
         // btnRstGyro.setButton(leftJoystick, 3);
 
@@ -281,7 +259,7 @@ public class JS_IO {
         // All stick axisesssss
         axLeftDrive.setAxis(leftJoystick, 1);
         axRightDrive.setAxis(rightJoystick, 1);
-        axTurretRot.setAxis(coJoystick, 0);
+
 
         axLeftX.setAxis(leftJoystick, 0);       //Added to test drive3
         axLeftY.setAxis(leftJoystick, 1);
@@ -298,20 +276,10 @@ public class JS_IO {
         btnReverseSnorfler.setButton(rightJoystick, 5);
         btnTglSnorArmDn.setButton(rightJoystick, 3);
 
-        // turret buttons
-        btnLimeSearch.setButton(rightJoystick, 12);
-        btnLimeAim.setButton(rightJoystick, 10);
-
         // shooting buttons
-        btnRampShooter.setButton(rightJoystick, 4);
-        btnFireShooter.setButton(rightJoystick, 1);
-        btnIndex.setButton(rightJoystick, 6);
+        btn_high_fire.setButton(leftJoystick, 1);
+        btn_low_fire.setButton(rightJoystick, 10);
 
-        btnStop.setButton(rightJoystick, 11);
-
-        // Limelight Buttons - AS
-        limeLightOnOff.setButton(leftJoystick, 2);
-        btnRstGyro.setButton(rightJoystick, 7);
 
     }
 
@@ -320,7 +288,6 @@ public class JS_IO {
         // All stick axisesssss
         axLeftDrive.setAxis(null, 0);
         axRightDrive.setAxis(null, 0);
-        axTurretRot.setAxis(null, 0);
 
         axLeftX.setAxis(null, 0);       //Added to test drive3
         axLeftY.setAxis(null, 1);
@@ -334,13 +301,10 @@ public class JS_IO {
                                               // backwards for robot and same for backwards)
         btnHoldZero.setButton(null, 0);
         btnHold180.setButton(null, 0);
-        btnRampShooter.setButton(null, 0);
-        btnFireShooter.setButton(null, 0);
-        btnIndex.setButton(null, 0);
+        btn_high_fire.setButton(null, 0);
+        btn_low_fire.setButton(null, 0);
         btnTglSnorArmDn.setButton(null, 0);
         btnReverseSnorfler.setButton(null, 0);
-        btnLimeAim.setButton(null, 0);
-        btnLimeSearch.setButton(null, 0);
         btnClimb.setButton(null, 0);
         btnClimbOFF.setButton(null, 0);
         limeLightOnOff.setButton(null, 0);

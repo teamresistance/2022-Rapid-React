@@ -43,28 +43,10 @@ public class IO {
     public static void drvFeetRst() { drvEnc_L.reset(); drvEnc_R.reset(); }
     public static double drvFeet() { return (drvEnc_L.feet() + drvEnc_R.feet()) / 2.0; }
 
-    public static WPI_TalonSRX shooterTSRX = new WPI_TalonSRX(9);
-    public static Encoder shooter_Encoder = new Encoder(shooterTSRX, 0);
-    public static ISolenoid shooterHoodUp = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 4, false);
-
-    // Turret-- LL defines itself
-    public static Victor turretRot = new Victor(4); // Turret rotation motor
-    public static AnalogPotentiometer turretPosition = new AnalogPotentiometer(0, -370, 190);
-    public static InvertibleDigitalInput turCCWLimitSw = new InvertibleDigitalInput(4, true); // Critical, DO NOT
-    public static InvertibleDigitalInput turCWLimitSw = new InvertibleDigitalInput(5, true);// EXCEED limit swithes
-    // public static Counter turCCWCntr = new Counter(4);  //Hdw cntr to trap lmt sw.  Must be cleared
-    // public static Counter turCWCntr = new Counter(5);   //Interupt driven.
-
-    // Injector, injects balls in to the shooter.
-    public static VictorSPX injector4Whl = new VictorSPX(10);
-    public static Victor injectorPickup = new Victor(8);
-    public static InvertibleSolenoid injectorFlipper = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 5, false);
-
-    // Revolver, stores up to 5 balls
-    public static Victor revolverRot = new Victor(5);
-    public static InvertibleDigitalInput revolerIndexer = new InvertibleDigitalInput(0, true);
-    public static InvertibleDigitalInput revRcvSlotOpen = new InvertibleDigitalInput(1, false);
-    // public static Timer revTimer;
+    // Shooter
+    public static ISolenoid select_low_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 1);//tbd) // Defaults to high pressure; switches to low pressure. 
+    public static ISolenoid left_catapult_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 2);//tbd) // Left catapult trigger. 
+    public static ISolenoid right_catpult_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 3);//tbd) // Right catapult trigger.
 
     // Snorfler
     public static Victor snorfFeedMain = new Victor(9);
@@ -76,11 +58,6 @@ public class IO {
     public static Victor climberHoist = new Victor(3); // Extends climber
     public static ISolenoid climberExt = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7, false);
 
-    // ---------- WoF, Color Sensor -----------------
-    /**
-     * Change the I2C port below to match the connection of your color sensor
-     */
-    private static final I2C.Port i2cPort = I2C.Port.kOnboard;
 
     /**
      * A Rev Color Sensor V3 object is constructed with an I2C port as a parameter.
@@ -127,17 +104,6 @@ public class IO {
 
     // Shooter, Inject & Pikup Initialize
     public static void motorsInit() {
-        shooterTSRX.configFactoryDefault();
-        shooterTSRX.setInverted(false);
-        shooterTSRX.setNeutralMode(NeutralMode.Brake);
-
-        injector4Whl.configFactoryDefault();
-        injector4Whl.setInverted(true);
-        injector4Whl.setNeutralMode(NeutralMode.Coast);
-
-        injectorPickup.setInverted(false);
-        turretRot.setInverted(true);
-        revolverRot.setInverted(true);
         snorfFeedMain.setInverted(true);
         snorfFeedScdy.setInverted(true);
         climberHoist.setInverted(false);
