@@ -46,7 +46,7 @@ public class IO {
     // Shooter
     public static ISolenoid select_low_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 1);//tbd) // Defaults to high pressure; switches to low pressure. 
     public static ISolenoid left_catapult_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 2);//tbd) // Left catapult trigger. 
-    public static ISolenoid right_catpult_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 3);//tbd) // Right catapult trigger.
+    public static ISolenoid right_catapult_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 3);//tbd) // Right catapult trigger.
 
     // Snorfler
     public static Victor snorfFeedMain = new Victor(9);
@@ -55,8 +55,12 @@ public class IO {
     public static InvertibleDigitalInput snorfHasBall = new InvertibleDigitalInput(2, false);
 
     // Climb
-    public static Victor climberHoist = new Victor(3); // Extends climber
-    public static ISolenoid climberExt = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7, false);
+    public static ISolenoid lockPinA = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7);
+    public static ISolenoid lockPinB = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 8);
+    public static ISolenoid slider   = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 9);
+    
+    // public static Victor climberHoist = new Victor(3); // Extends climber
+    // public static ISolenoid climberExt = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7, false);
 
 
     /**
@@ -106,7 +110,7 @@ public class IO {
     public static void motorsInit() {
         snorfFeedMain.setInverted(true);
         snorfFeedScdy.setInverted(true);
-        climberHoist.setInverted(false);
+        // climberHoist.setInverted(false);
 
         SmartDashboard.putNumber("Robot/Feet Pwr2", drvAutoPwr);
     }

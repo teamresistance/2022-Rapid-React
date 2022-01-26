@@ -28,7 +28,7 @@ public class test_io{
     private static void determ(){
         if(JS_IO.gamePad.getRawButton(1)) state = 0;   //'A' - No testing
         if(JS_IO.gamePad.getRawButton(2)) state = 10;  //'B' - Drive testing
-        if(JS_IO.gamePad.getRawButton(3)) state = 20;  //'X' - Shooter, injector, turret, revolver testing
+        //if(JS_IO.gamePad.getRawButton(3)) state = 20;  //'X' - Shooter, injector, turret, revolver testing
         if(JS_IO.gamePad.getRawButton(4)) state = 30;  //'Y' - Snorfler Testing
         if(JS_IO.gamePad.getRawButton(7)) state = 40;  //'Back' - Climber Testing
 
@@ -46,37 +46,37 @@ public class test_io{
         case 0: // All Off.  Turn everything off.  'A'
             tank_L = 0.0;  tank_R = 0.0;
            // IO.shooterTSRX.set(ControlMode.PercentOutput, 0.0);
-            IO.injector4Whl.set(ControlMode.PercentOutput, 0.0);
-            IO.injectorPickup.set(0.0);
-            IO.injectorFlipper.set(false);
-            IO.turretRot.set(0.0);
-            IO.revolverRot.set(0.0);
+            // IO.injector4Whl.set(ControlMode.PercentOutput, 0.0);
+            // IO.injectorPickup.set(0.0);
+            // IO.injectorFlipper.set(false);
+            // IO.turretRot.set(0.0);
+            // IO.revolverRot.set(0.0);
             IO.snorflerExt.set(false);
             IO.snorfFeedMain.set(0.0);
             IO.snorfFeedScdy.set(0.0);
-            IO.climberExt.set(false);
-            IO.climberHoist.set(0.0);
+            // IO.climberExt.set(false);
+            // IO.climberHoist.set(0.0);
         break;
         case 10:    //Drive Testing.  'B'
             tank_L = -JS_IO.gamePad.getRawAxis(1);
             tank_R = -JS_IO.gamePad.getRawAxis(5);
         break;
-        case 20:    //Shooter Testing.  'X'
-            //IO.shooterTSRX.set(ControlMode.PercentOutput, Math.abs(JS_IO.gamePad.getRawAxis(1)));
-            IO.shooterHoodUp.set(JS_IO.gamePad.getRawButton(5));    //'LB' - Raise hood
-            if(JS_IO.gamePad.getRawButton(6)){                      //'RB' - Run Injector
-                IO.injector4Whl.set(ControlMode.PercentOutput, 50.0);
-                IO.injectorPickup.set(50.0);
-                IO.injectorFlipper.set(true);
-            }else{
-                IO.injector4Whl.set(ControlMode.PercentOutput, 0.0);
-                IO.injectorPickup.set(0.0);
-                IO.injectorFlipper.set(false);
-            }
-            IO.turretRot.set(JS_IO.gamePad.getRawAxis(4) / 3);     //'R JS X' - Rotate turret: NO SAFETIES!
-            IO.revolverRot.set(JS_IO.gamePad.getRawAxis(2) / 3);   //'LTrgr' - Rotate revolver
-            tank_L = 0.0;  tank_R = 0.0;
-        break;
+        // case 20:    //Shooter Testing.  'X'
+        //     //IO.shooterTSRX.set(ControlMode.PercentOutput, Math.abs(JS_IO.gamePad.getRawAxis(1)));
+        //     IO.shooterHoodUp.set(JS_IO.gamePad.getRawButton(5));    //'LB' - Raise hood
+        //     if(JS_IO.gamePad.getRawButton(6)){                      //'RB' - Run Injector
+        //         IO.injector4Whl.set(ControlMode.PercentOutput, 50.0);
+        //         IO.injectorPickup.set(50.0);
+        //         IO.injectorFlipper.set(true);
+        //     }else{
+        //         IO.injector4Whl.set(ControlMode.PercentOutput, 0.0);
+        //         IO.injectorPickup.set(0.0);
+        //         IO.injectorFlipper.set(false);
+        //     }
+        //     IO.turretRot.set(JS_IO.gamePad.getRawAxis(4) / 3);     //'R JS X' - Rotate turret: NO SAFETIES!
+        //     IO.revolverRot.set(JS_IO.gamePad.getRawAxis(2) / 3);   //'LTrgr' - Rotate revolver
+        //     tank_L = 0.0;  tank_R = 0.0;
+        // break;
         case 30:    // Snorfler testing.  'Y'
             if(JS_IO.gamePad.getRawButton(5)){
                 IO.snorflerExt.set(true);
@@ -90,9 +90,9 @@ public class test_io{
             tank_L = 0.0;  tank_R = 0.0;
         break;
         case 40:    //Test Climber.  'Back'
-            IO.climberExt.set(JS_IO.gamePad.getRawButton(5));   //'LB'
-            IO.climberHoist.set(JS_IO.gamePad.getRawAxis(1));   //'L-X'
-            tank_L = 0.0;  tank_R = 0.0;
+        //     IO.climberExt.set(JS_IO.gamePad.getRawButton(5));   //'LB'
+        //     IO.climberHoist.set(JS_IO.gamePad.getRawAxis(1));   //'L-X'
+        //     tank_L = 0.0;  tank_R = 0.0;
         break;
         case 50:
         break;
@@ -144,18 +144,18 @@ public class test_io{
         // SmartDashboard.putNumber("Shtr Enc", IO.shooterTSRX.getSelectedSensorPosition());
         // SmartDashboard.putNumber("Shtr RPM", IO.shooterTSRX.getSelectedSensorPosition() / 1024.0);
 
-        SmartDashboard.putNumber("Tur %", IO.turretRot.get());
-        SmartDashboard.putNumber("Tur Pos", IO.turretPosition.get());
-        // SmartDashboard.putNumber("Tur CW LS", IO.turCWLimitSw.get());
-        // SmartDashboard.putNumber("Tur CCW LS", IO.turCCWLimitSw.get());
+        // SmartDashboard.putNumber("Tur %", IO.turretRot.get());
+        // SmartDashboard.putNumber("Tur Pos", IO.turretPosition.get());
+        // // SmartDashboard.putNumber("Tur CW LS", IO.turCWLimitSw.get());
+        // // SmartDashboard.putNumber("Tur CCW LS", IO.turCCWLimitSw.get());
 
-        SmartDashboard.putNumber("Inj 4W %", IO.injector4Whl.getMotorOutputPercent());
-        SmartDashboard.putNumber("Inj PU %", IO.injectorPickup.get());
-        SmartDashboard.putBoolean("Inj Flip", IO.injectorFlipper.get());
+        // SmartDashboard.putNumber("Inj 4W %", IO.injector4Whl.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Inj PU %", IO.injectorPickup.get());
+        // SmartDashboard.putBoolean("Inj Flip", IO.injectorFlipper.get());
 
-        SmartDashboard.putNumber("Rev %", IO.revolverRot.get());
-        SmartDashboard.putBoolean("Rev Idx", IO.revolerIndexer.get());
-        SmartDashboard.putBoolean("Rev Nxt Opn", IO.revRcvSlotOpen.get());
+        // SmartDashboard.putNumber("Rev %", IO.revolverRot.get());
+        // SmartDashboard.putBoolean("Rev Idx", IO.revolerIndexer.get());
+        // SmartDashboard.putBoolean("Rev Nxt Opn", IO.revRcvSlotOpen.get());
 
         SmartDashboard.putBoolean("Snf Ext", IO.snorflerExt.get());
         SmartDashboard.putNumber("Snf Main %", IO.snorfFeedMain.get());

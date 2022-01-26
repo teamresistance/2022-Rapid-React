@@ -33,12 +33,12 @@ public class Timer {
      * @return  Timer has expired
      */
     public boolean hasExpired(double delay, int covTrgr){
-        if(this.covTrgr != covTrgr){
+        if(this.covTrgr != covTrgr){ // new state found
             this.time = delay * 1000;
-            timer = System.currentTimeMillis() + this.time;
+            timer = System.currentTimeMillis() + this.time; // new time to wait for
         }
-        this.covTrgr = covTrgr;
-        return hasExpired();
+        this.covTrgr = covTrgr; // set new state
+        return hasExpired();    // tell if wanted time has been reached
     }
 
     /**
@@ -58,7 +58,7 @@ public class Timer {
 
     /**Current time is <= timer */
     public boolean hasExpired(){
-        return System.currentTimeMillis() > timer;
+        return System.currentTimeMillis() > timer; // Are we at wanted time yet?
     }
 
     /**

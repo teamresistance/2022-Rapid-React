@@ -67,6 +67,8 @@ public class JS_IO {
     public static Axis axClimb = new Axis();
     public static Button btnClimb = new Button();
     public static Button btnClimbOFF = new Button();
+    public static Button btnClimb1 = new Button();
+    public static Button btnClimb2 = new Button();
 
     // LimeLight - AS
     public static Button limeLightOnOff = new Button();
@@ -196,6 +198,10 @@ public class JS_IO {
         btn_high_fire.setButton(coJoystick, 1);
         btn_low_fire.setButton(coJoystick, 10);
 
+        // climbing buttons
+        btnClimb1.setButton(coJoystick, 6);
+        btnClimb2.setButton(coJoystick, 7);
+
 
         // drive2Off.setButton(leftJoystick, 10);
         // drive2Tank.setButton(leftJoystick, 9);
@@ -279,6 +285,10 @@ public class JS_IO {
         // shooting buttons
         btn_high_fire.setButton(leftJoystick, 1);
         btn_low_fire.setButton(rightJoystick, 10);
+
+        //Climbing Buttons
+        btnClimb1.setButton(rightJoystick, 6);
+        btnClimb2.setButton(rightJoystick, 7);
 
 
     }
