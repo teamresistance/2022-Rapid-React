@@ -50,6 +50,11 @@ public class Pov{
 		existDflt = povID < 0 ? -1 : inpovID - (inpovID % 45);		// null js, use pov default
 	}
 
+	// Clear assignment.  Joystick = null & POVID = 0.
+	public void setPov(){
+		setPov(null, 0);
+	}
+
 	// get POV value
 	public int get() {
 		return exists ? joystick.getPOV() : existDflt;

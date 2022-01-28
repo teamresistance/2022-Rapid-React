@@ -49,6 +49,11 @@ public class Button{
 		existDflt = buttonID != -1 ? false : true;	// default to false, if -1 default to true
 	}
 
+	// Clear assignment.  Joystick = null & buttonID = 0.
+	public void setButton(){
+		setButton(null, 0);
+	}
+
 	// get current value
 	public boolean isDown() {
 		return exists ? joystick.getRawButton(buttonID) : existDflt;

@@ -51,6 +51,11 @@ public class Axis{
 		exDefault = 0;
 	}
 
+	/**Clear assignment.  Joystick = null & axisID = 0. */
+	public void setAxis(){
+		setAxis(null, 0);
+	}
+
 	// get the axis value
 	public double get() {
 		return exists ? joystick.getRawAxis(axisID) : exDefault;
