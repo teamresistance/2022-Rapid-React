@@ -17,7 +17,7 @@ public class Shooter {
     private static Button btn_high_fire = JS_IO.btn_high_fire;
     private static Button btn_low_fire = JS_IO.btn_low_fire;
     // variables:
-    private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
+    private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
     private static boolean low_select = false; // Used to command the pressure SV. Default is hi press, switch.
 
