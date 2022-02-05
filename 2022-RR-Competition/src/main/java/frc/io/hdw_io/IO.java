@@ -55,9 +55,17 @@ public class IO {
     public static InvertibleDigitalInput snorfHasBall = new InvertibleDigitalInput(2, false);
 
     // Climb
+    public static WPI_TalonSRX climbMotor = new WPI_TalonSRX(1);
     public static ISolenoid lockPinA = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7);
     public static ISolenoid lockPinB = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 8);
     public static ISolenoid slider   = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 9);
+    public static InvertibleDigitalInput lockPinAExt_FB = new InvertibleDigitalInput(5,false);
+    public static InvertibleDigitalInput lockPinARet_FB = new InvertibleDigitalInput(5,false);
+    public static InvertibleDigitalInput lockPinBExt_FB = new InvertibleDigitalInput(5,false);
+    public static InvertibleDigitalInput lockPinBRet_FB = new InvertibleDigitalInput(5,false);
+    public static InvertibleDigitalInput sliderExt_FB = new InvertibleDigitalInput(5,false);
+    public static InvertibleDigitalInput sliderRet_FB = new InvertibleDigitalInput(5,false);
+    
     
     // public static Victor climberHoist = new Victor(3); // Extends climber
     // public static ISolenoid climberExt = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7, false);
