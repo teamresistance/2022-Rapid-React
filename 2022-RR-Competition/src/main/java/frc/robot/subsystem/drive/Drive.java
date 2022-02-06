@@ -167,7 +167,7 @@ public class Drive {
      * @param hdg to hold (else null)
      */
     public static void setHdgHold(Double hdg){ hdgHold = hdg; }
-    public static void setHddgHold(){ relHdgHold(); }
+    public static void setHdgHold(){ relHdgHold(); }
 
     /**Release angle hold */
     public static void relHdgHold(){ hdgHold = null; }
