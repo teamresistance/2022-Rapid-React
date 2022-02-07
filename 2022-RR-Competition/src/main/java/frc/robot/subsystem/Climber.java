@@ -17,6 +17,7 @@ public class Climber {
     // Hardware Definitions
     private static WPI_TalonSRX climberMotor = IO.climbMotor;   //Motor to rotate arm
 
+
     private static ISolenoid lockPinAExt = IO.lockPinAExt_SV;   //Extend locking pin A
     private static ISolenoid lockPinARet = IO.lockPinARet_SV;   //Retract locking pin A
     private static ISolenoid lockPinBExt = IO.lockPinBExt_SV;   //Extend locking pin B
