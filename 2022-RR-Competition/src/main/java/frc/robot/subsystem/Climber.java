@@ -3,7 +3,6 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.io.hdw_io.Encoder;
 import frc.io.hdw_io.IO;
 import frc.io.hdw_io.ISolenoid;
 import frc.io.hdw_io.InvertibleDigitalInput;
@@ -16,18 +15,15 @@ public class Climber {
   
 
     // Hardware Definitions
-    private static eMtrRotDir mtrRot = eMtrRotDir.OFF; 
-    
-    private static double rotationalSpeed = 0.0;
-    private static double mtrSpd = 0;
-    private static WPI_TalonSRX climberMotor = IO.climbMotor;
+    private static WPI_TalonSRX climberMotor = IO.climbMotor;   //Motor to rotate arm
 
-    private static ISolenoid slider = IO.slider;
-    private static ISolenoid lockPinAExt = IO.lockPinAExt_SV;
-    private static ISolenoid lockPinARet = IO.lockPinARet_SV;
-    private static ISolenoid lockPinB = IO.lockPinB;
-    private static ISolenoid brakeRel;
 
+    private static ISolenoid lockPinAExt = IO.lockPinAExt_SV;   //Extend locking pin A
+    private static ISolenoid lockPinARet = IO.lockPinARet_SV;   //Retract locking pin A
+    private static ISolenoid lockPinBExt = IO.lockPinBExt_SV;   //Extend locking pin B
+    private static ISolenoid sliderExt = IO.sliderExt_SV;       //Extend Arm end A slider
+    private static ISolenoid brakeRel;                          //Release the brake
+    // Positive Feedback, FB, for locking pins & slider
     private static InvertibleDigitalInput lockPinAExt_FB = IO.lockPinAExt_FB;
     private static InvertibleDigitalInput lockPinARet_FB = IO.lockPinARet_FB; 
     private static InvertibleDigitalInput lockPinBExt_FB = IO.lockPinBExt_FB;
@@ -37,46 +33,72 @@ public class Climber {
     
 
     // Joystick Buttons
-    private static Button buttonClimb1 = JS_IO.btnClimb1;
-    private static Button buttonClimb2 = JS_IO.btnClimb2;
+    private static Button buttonClimb1 = JS_IO.btnClimb1;   //Both MUST be pressed tp
+    private static Button buttonClimb2 = JS_IO.btnClimb2;   //start and continue climb
+    private static Button btnClimbReset;    //Reset climb, state 0
 
     // Climber variables
     private enum eMtrRotDir {
         OFF, // Rotational Motor speed is 0.0
-        FWD, // Rotational Motor speed is +
-        REV  // Rotatioanl Motor speed is -
+        FWD, // Rotational Motor speed is +ROT_SPD
+        REV  // Rotatioanl Motor speed is -ROT_SPD
     }
+    private static eMtrRotDir mtrRot = eMtrRotDir.OFF; 
+    private static final double ROT_SPD = 70.0; //Arm motor fixed speed.
+
     private static boolean lockPinASaved; // Used in case 90, emerg.-stop
     private static boolean lockPinBSaved; // Used in case 90, emerg.-stop
-    private static boolean sliderSaved;  // Used in case 90, emerg.-stop
-    private static int state; // Climber state machine. 0=Off by pct, 1=On by velocity, RPM
-    private static Timer stateTmr = new Timer(.05); // Timer for state machine
-
-    // Statemachine
-    private static int SavedState;
+    private static boolean sliderSaved;   // Used in case 90, emerg.-stop
 
     private static boolean climbEnabled = false; //Both Joysick buttons pressed
+    private static int state = 0;       // Climber state machine. 0=Off
+    private static int prvState = 0;    // Used to return from state 90, eStop.
+    private static Timer stateTmr = new Timer(.05); // Timer for state machine
 
+
+    /**
+     * Initialize Climber stuff. Called from telopInit (maybe robotInit(?)) in
+     * Robot.java
+     */
     public static void init() {
         sdbInit();
-        rotationalSpeed = 70.0;
         cmdUpdate(0.0, eMtrRotDir.OFF, false, false, false);
         state = 0;
     }
 
     /**
-     * State Machine for climber
+     * Update Climber. Called from teleopPeriodic in robot.java.
+     * <p>
+     * Determine any state that needs to interupt the present state, usually by way
+     * of a JS button but can be caused by other events.
      */
-    public static void smUpdate() { // State Machine Update
+    private static void update() {
+        climbEnabled = (buttonClimb1.isDown() && buttonClimb2.isDown()) ? true : false;
+        if(climbEnabled && state == 0) state = 1;           //Start climb
+        if(climbEnabled && state == 90) state = prvState;   //Driver interrupted climb
+        if(!climbEnabled && state != 0) state = 90;         //Driver continue climb
+
+        if(btnClimbReset.isDown()) state = 0;   //bc? Start angle bad or fall?
+
+        smUpdate();
+        sdbUpdate();
+    }
+
+    /**
+     * State Machine update for climber
+     */
+    public static void smUpdate() {
         
         switch (state) {
             case 0: // Turns everything off
                 cmdUpdate(0.0, eMtrRotDir.OFF, false, false, false );
                 stateTmr.hasExpired(0, state);
                 break;
-            case 1:
-                cmdUpdate(0.0, eMtrRotDir.REV, false, false, true ); 
-                IO.drvFeetRst();
+            //----- Prep arm and move to low arm -----
+            case 1: //Postion arm vertical, 'A' up for climb, low bar
+                cmdUpdate(0.0, eMtrRotDir.REV, false, false, true );
+                Drive.setHdgHold(180.0);    // Set drive steering to hold 180 heading
+                stateTmr.hasExpired(0.3, state);
                 break;
             case 2: // Move backwards 6' to start climb position
                 cmdUpdate(-0.7, eMtrRotDir.OFF, false,false,true);
@@ -86,6 +108,7 @@ public class Climber {
                 cmdUpdate(-0.4, eMtrRotDir.OFF, false, false, true); 
                 // TODO: Robot pitch >15, state++
                 break;
+            //------ In contact with low arm, lock on and start climb. -----
             case 4: // Stop the rotation of the motor and grab bar with LockPinA
                 cmdUpdate(0.0, eMtrRotDir.OFF, true, false, true);
                 if (lockPinAExt_FB.get() == true) state++;
@@ -104,6 +127,8 @@ public class Climber {
                 // TODO: Robot pitch stuff
                 state++;
                 break;
+            //----- Contact Medium bar. Grab it. Release low arm and clear it.
+            //----- Climb to transversal bar -----
             case 8: // Latch onto second bar with Pin B. Stop rotation.
                 cmdUpdate(0.0, eMtrRotDir.OFF, true, true, true);
                 if (lockPinBExt_FB.get() == true) state++;
@@ -112,7 +137,7 @@ public class Climber {
                 cmdUpdate(0.0, eMtrRotDir.OFF, false, true, true);
                 if (lockPinARet_FB.get() == true) state++;
                 break;
-            case 10: // Rotating upward/REV
+            case 10: // Rotating upward/REV to clear slider.
                 cmdUpdate(0.0, eMtrRotDir.REV, false, true, true);
                 if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
@@ -128,7 +153,7 @@ public class Climber {
                 cmdUpdate(0.0, eMtrRotDir.FWD, false, true, false);
                 if (stateTmr.hasExpired(0.5, state)) state++;
                 break;
-            case 14: // Keep going forward, extend the slider
+            case 14: // Slider cleared low bar, extend the slider.  Keep going forward.
                 cmdUpdate(0.0, eMtrRotDir.FWD, false, true, true);
                 state++;
                 break;
@@ -137,7 +162,9 @@ public class Climber {
                 // TODO: keep going until robot hits pitch x
                 state++;
                 break;
-            case 16: // latch the transversal stop rotating.
+            //----- Contact Traversal bar. Grab it. Release Medium bar.
+            //----- Lift off Medium bar then hold.  Done. -----
+            case 16: // latch the transversal.
                 cmdUpdate(0.0, eMtrRotDir.FWD, true, true, true);
                 if (lockPinAExt_FB.get() == true) state++;
                 break;
@@ -156,24 +183,62 @@ public class Climber {
             case 20: // Turn arm motor off
                 cmdUpdate(0.0, eMtrRotDir.OFF, true, false, true);
                 break;
+            //----- Driver released buttoms during climb.  Stop & hold postion!
             case 90: // Emergency stop. Re-issue last commands
                 cmdUpdate(0.0, eMtrRotDir.OFF, lockPinASaved, lockPinBSaved, sliderSaved);
             default:// Default state
                 break;
         }
-
     }
 
+    // COMMAND UPDATE
+    /**
+     * @param drvSpd    - Speed of drive motors
+     * @param mtrRotDir - Motor rotation Off | Forward| Reverse
+     * @param pinA_Ext  - True = LockPinAExtend | False = LockPinARetract
+     * @param pinB_Ext  - True = LockPinBExtend | False = LockPinBRetract
+     * @param slider_Ext - True = SliderExtend | False = SliderRetract
+
+     */
+    private static void cmdUpdate(double drvSpd, eMtrRotDir mtrRotDir,
+                                  boolean pinA_Ext, boolean pinB_Ext, boolean slider_Ext) {
+        // Save device cmds for state 90, eStop.
+        lockPinASaved = pinA_Ext;
+        lockPinBSaved = pinB_Ext;
+        sliderSaved = slider_Ext;
+        if(state != 90) prvState = state;
+
+        // Stop arm motor if pins & slider FB's don't agree with cmds.
+        if (checkLockPinsOK() == false) mtrRotDir = eMtrRotDir.OFF;
+
+        Drive.cmdUpdate(drvSpd, 0.0, false, 2); //Send cmd to drive system as arcade
+        
+        switch (mtrRot) {
+            case OFF: 
+                climberMotor.set(0.0);
+                brakeRel.set(false);
+                break;
+            case FWD: 
+                climberMotor.set(ROT_SPD);
+                brakeRel.set(true);
+                break;
+            case REV:
+                climberMotor.set(-ROT_SPD);
+                brakeRel.set(true);
+                break;
+        }
+
+        //Pin A is a dual action SV and requires a signal to extend and another to retract
+        lockPinAExt.set(pinA_Ext);
+        lockPinARet.set(!pinA_Ext);
+        //Pin B & slider (& brake) are single action SV's one signal to activate else deactivate.
+        lockPinBExt.set(pinB_Ext);
+        sliderExt.set(slider_Ext);
+        
+    }
+ 
     public static void sdbInit() {
 
-    }
-
-    private static void update() {
-        climbEnabled = (buttonClimb1.isDown() && buttonClimb2.isDown()) ? true : false;
-        if (climbEnabled) state = 1;
-
-        smUpdate();
-        sdbUpdate();
     }
 
     public static void sdbUpdate() {
@@ -181,8 +246,8 @@ public class Climber {
         SmartDashboard.putBoolean("Climber/SV/brake", brakeRel.get());
         SmartDashboard.putBoolean("Climber/SV/lockPinAExt", lockPinAExt.get());
         SmartDashboard.putBoolean("Climber/SV/lockPinARet", lockPinARet.get());
-        SmartDashboard.putBoolean("Climber/SV/lockPinB", lockPinB.get());
-        SmartDashboard.putBoolean("Climber/SV/slider", slider.get());
+        SmartDashboard.putBoolean("Climber/SV/lockPinB", lockPinBExt.get());
+        SmartDashboard.putBoolean("Climber/SV/slider", sliderExt.get());
         SmartDashboard.putBoolean("Climber/buttonClimb1", buttonClimb1.isDown());
         SmartDashboard.putBoolean("Climber/buttonClimb2", buttonClimb2.isDown());
         SmartDashboard.putBoolean("Climber/climbEnabled", climbEnabled);
@@ -194,56 +259,18 @@ public class Climber {
         SmartDashboard.putBoolean("Climber/FB/sliderRet", sliderRet_FB.get());
     }
 
-    // COMMAND UPDATE
+    // ----------------- Shooter statuses and misc. ---------------
+
+    private static Timer safePinTmr = new Timer(0.2);   // Debounce Timer for checkLockPinsOK
     /**
-     * @param drvSpd      - Speed of drive motors
-     * @param mtrRotDir    - Motor rotation Off | Forward| Reverse
-     * @param pinA_Ext  - True = LockPinAExtend | False = LockPinARetract
-     * @param pinB_Ext  - True = LockPinBExtend | False = LockPinBRetract
-     * @param slider_Ext    - True = SliderExtend | False = SliderRetract
-
-     */
-    private static void cmdUpdate(double drvSpd, eMtrRotDir mtrRotDir, boolean pinA_Ext,
-            boolean pinB_Ext, boolean slider_Ext) {
-        lockPinASaved = pinA_Ext;
-        lockPinBSaved = pinB_Ext;
-        sliderSaved = slider_Ext;
-        if (checkLockPinsOK() == false) mtrRotDir = eMtrRotDir.OFF;
-        // ----------------- Shooter statuses and misc.
-
-        Drive.cmdUpdate(0.0, 0.0, false, 2);
-        
-        switch (mtrRot) {
-            case OFF: 
-                climberMotor.set(0.0);
-                brakeRel.set(false);
-                break;
-            case FWD: 
-                climberMotor.set(rotationalSpeed);
-                brakeRel.set(true);
-                break;
-            case REV:
-                climberMotor.set(-rotationalSpeed);
-                brakeRel.set(true);
-                break;
-        }
-
-        lockPinAExt.set(pinA_Ext);
-        lockPinARet.set(!pinA_Ext);
-        lockPinB.set(pinB_Ext);
-        slider.set(slider_Ext);
-        
-    }
- 
-    private static Timer safePinTmr = new Timer(0.2);
-    /**
-     * @return true if lockingPins and slider are all matching
+     * @return true if lockingPins and slider are all matching for minimum time
+     * <p> false if not matching for minimum time.
      */
     private static boolean checkLockPinsOK(){
       return  safePinTmr.hasExpired(0.2, (!(lockPinAExt.get() ^ lockPinAExt_FB.get() ||
                  lockPinARet.get() ^ lockPinARet_FB.get() ||
-                 lockPinB.get() ^ (lockPinBExt_FB.get() && !lockPinBRet_FB.get()) ||
-                 slider.get() ^ (sliderExt_FB.get() && !sliderRet_FB.get()))));
+                 lockPinBExt.get() ^ (lockPinBExt_FB.get() && !lockPinBRet_FB.get()) ||
+                 sliderExt.get() ^ (sliderExt_FB.get() && !sliderRet_FB.get()))));
     }
     /**
      * Probably shouldn't use this bc the states can change. Use statuses.
