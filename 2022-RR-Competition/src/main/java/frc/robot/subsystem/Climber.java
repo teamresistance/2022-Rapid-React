@@ -27,6 +27,7 @@ public class Climber {
     private static ISolenoid lockPinARet = IO.lockPinARet_SV;
     private static ISolenoid lockPinB = IO.lockPinB;
     private static ISolenoid brakeRel;
+
     private static InvertibleDigitalInput lockPinAExt_FB = IO.lockPinAExt_FB;
     private static InvertibleDigitalInput lockPinARet_FB = IO.lockPinARet_FB; 
     private static InvertibleDigitalInput lockPinBExt_FB = IO.lockPinBExt_FB;
