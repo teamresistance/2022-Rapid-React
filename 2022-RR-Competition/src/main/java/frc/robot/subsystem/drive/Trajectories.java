@@ -9,10 +9,7 @@ public class Trajectories {
     private static double dfltPwr = 0.9;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty", "getSlalom", "getBarrel", "getBounce", "getSquare_TNM", "getSquare_MOH",
-        "getFigure8R", "getFigure8L", "getFigure8WPT",
-        "getPathRedA", "getPathBluA", "getPathRedB", "getPathBluB", "getPAthBlue", "getPathGalaxtic",
-        "getCurveTry"
+        "getEmpty", "getCargo1", "getCargo2"
     };
 
     /**Initialize Traj chooser */
@@ -39,54 +36,10 @@ public class Trajectories {
         switch(chsr.getSelected()){
             case "getEmpty":
             return getEmpty(pwr);
-            case "getSlalom":
-            return getSlalom(pwr);
-            case "getBarrel":
-            return getBarrel(pwr);
-            case "getBounce":
-            return getBounce(pwr);
-            case "getSquare_TNM":
-            return getSquare_TNM(pwr);
-            case "getSquare_MOH":
-            return getSquare_MOH(pwr);
-            case "getFigure8R":
-            return getFigure8R(pwr);
-            case "getFigure8L":
-            return getFigure8L(pwr);
-            case "getFigure8WPT":
-            return getFigure8WPT(pwr);
-            case "getPathRedA":
-            return getPathRedA(pwr);
-            case "getPathBluA":
-            return getPathBluA(pwr);
-            case "getPathRedB":
-            return getPathRedB(pwr);
-            case "getPathBluB":
-            return getPathBluB(pwr);
-            case "getPathBlue":
-            return getPathBlue(pwr);
-            case "getPathGalaxtic":
-            return getPathGalaxtic(pwr);
-            case "getCurveTry":
-            return getCurveTry(pwr);
-            case "getCurve1_1":
-            return getCurve1_1(pwr);
-            case "getCurve1_7":
-            return getCurve1_7(pwr);
-            case "getCurve1_5":
-            return getCurve1_5(pwr);
-            case "getCurve7_1":
-            return getCurve7_1(pwr);
-            case "getCurve7_7":
-            return getCurve7_7(pwr);
-            case "getCurve7_5":
-            return getCurve7_5(pwr);
-            case "getCurve5_1":
-            return getCurve5_1(pwr);
-            case "getCurve5_7":
-            return getCurve5_7(pwr);
-            case "getCurve5_5":
-            return getCurve5_5(pwr);
+            case "getCargo1":
+            return getCargo1(pwr);
+            case "getCargo2":
+            return getCargo2(pwr);
             default:
             System.out.println("Traj/Bad Traj Desc - " + chsr.getSelected());
             return getEmpty(0);
@@ -113,11 +66,11 @@ public class Trajectories {
     // name each method by the path its doing
 
     public static ATrajFunction[] getEmpty(double pwr) {
-        ATrajFunction[] traj = { new TurnNMove(0.0, 0.0, pwr) };
+        ATrajFunction[] traj = { new TurnNMove(0.0, 0.0, 0.0) };
         return traj;
     }
 
-    public static ATrajFunction[] getSlalom(double pwr) {
+    public static ATrajFunction[] getCargo1(double pwr) {
         ATrajFunction traj[] = {
             new TurnNMove(0,    2.5, pwr), 
             new TurnNMove(-55, 5.17, pwr), 
@@ -132,7 +85,7 @@ public class Trajectories {
         return traj;
     }
 
-    public static ATrajFunction[] getBarrel(double pwr) {
+    public static ATrajFunction[] getCargo2(double pwr) {
         ATrajFunction[] traj = {
             new TurnNMove(0.0, 5.7, 1.0),
             new TankTurnHdg(-10.0, 0.75, 0.1),    //Turn to the right
