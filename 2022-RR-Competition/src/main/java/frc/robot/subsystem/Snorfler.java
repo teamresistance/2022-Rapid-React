@@ -28,7 +28,7 @@ public class Snorfler {
      */
     public static void init() {
         sdbInit();
-        cmdUpdate(0.0); // select goal, left trigger, right trigger
+        cmdUpdate(0.0, false); // select goal, left trigger, right trigger
         state = 0; // Start at state 0
     }
 
