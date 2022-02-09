@@ -56,7 +56,7 @@ public class IO {
 
     // Climb
     public static WPI_TalonSRX climbMotor = new WPI_TalonSRX(1);
-    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7);
+    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7, false);
     public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7);
     public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 8);
     public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 9);

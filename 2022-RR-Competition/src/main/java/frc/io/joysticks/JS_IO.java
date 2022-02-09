@@ -62,6 +62,7 @@ public class JS_IO {
     // Snorfler
     public static Button btnTglSnorArmDn = new Button();
     public static Button btnReverseSnorfler = new Button();
+    public static Button btnSnorfle = new Button();
 
     // Climb
     public static Axis axClimb = new Axis();
