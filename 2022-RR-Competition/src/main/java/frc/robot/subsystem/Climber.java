@@ -94,11 +94,12 @@ public class Climber {
                 cmdUpdate(0.0, eMtrRotDir.OFF, false, false, false );
                 stateTmr.hasExpired(0, state);
                 break;
-            //----- Prep arm and move to low arm -----
+            //----- Prep arm and move to low bar -----
             case 1: //Postion arm vertical, 'A' up for climb, low bar
                 cmdUpdate(0.0, eMtrRotDir.REV, false, false, true );
                 Drive.setHdgHold(180.0);    // Set drive steering to hold 180 heading
-                stateTmr.hasExpired(0.3, state);
+                if (stateTmr.hasExpired(0.3, state)) state++;
+                IO.drvFeetRst();
                 break;
             case 2: // Move backwards 6' to start climb position
                 cmdUpdate(-0.7, eMtrRotDir.OFF, false,false,true);
@@ -109,7 +110,7 @@ public class Climber {
                 // TODO: Robot pitch >15, state++
                 break;
             //------ In contact with low arm, lock on and start climb. -----
-            case 4: // Stop the rotation of the motor and grab bar with LockPinA
+            case 4: // Stop the driving and grab bar with LockPinA
                 cmdUpdate(0.0, eMtrRotDir.OFF, true, false, true);
                 if (lockPinAExt_FB.get() == true) state++;
                 IO.drvFeetRst();
@@ -155,7 +156,7 @@ public class Climber {
                 break;
             case 14: // Slider cleared low bar, extend the slider.  Keep going forward.
                 cmdUpdate(0.0, eMtrRotDir.FWD, false, true, true);
-                state++;
+                if (sliderExt_FB.get() == true)state++;
                 break;
             case 15: // Keep going till we pitch x
                 cmdUpdate(0.0, eMtrRotDir.FWD, false, true, true);
@@ -266,11 +267,17 @@ public class Climber {
      * @return true if lockingPins and slider are all matching for minimum time
      * <p> false if not matching for minimum time.
      */
+    private static boolean pin_state = true;
+    private static boolean prv_pin_state = true;
+    
     private static boolean checkLockPinsOK(){
-      return  safePinTmr.hasExpired(0.2, (!(lockPinAExt.get() ^ lockPinAExt_FB.get() ||
+      // TODO: Fix logic 
+        pin_state = (!(lockPinAExt.get() ^ lockPinAExt_FB.get() ||
                  lockPinARet.get() ^ lockPinARet_FB.get() ||
                  lockPinBExt.get() ^ (lockPinBExt_FB.get() && !lockPinBRet_FB.get()) ||
-                 sliderExt.get() ^ (sliderExt_FB.get() && !sliderRet_FB.get()))));
+                 sliderExt.get() ^ (sliderExt_FB.get() && !sliderRet_FB.get())));
+        if (safePinTmr.hasExpired(0.2,pin_state) == true) prv_pin_state = pin_state;
+        return prv_pin_state;
     }
     /**
      * Probably shouldn't use this bc the states can change. Use statuses.
