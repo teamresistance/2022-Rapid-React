@@ -1,7 +1,7 @@
 package frc.robot.subsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.io.hdw_io.Encoder;
+import frc.io.hdw_io.util.*;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
 import frc.io.joysticks.Button;

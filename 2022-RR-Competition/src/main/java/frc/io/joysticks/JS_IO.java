@@ -56,13 +56,15 @@ public class JS_IO {
     public static Button btnHold180 = new Button();
 
     // Shooter
-    public static Button btn_high_fire = new Button();
-    public static Button btn_low_fire = new Button() ;
+    public static Button btnHighFire = new Button();
+    public static Button btnLowFire = new Button() ;
 
     // Snorfler
     public static Button btnTglSnorArmDn = new Button();
     public static Button btnReverseSnorfler = new Button();
     public static Button btnSnorfle = new Button();
+    // public static Button btnRejectLeft = new Button();
+    // public static Button btnRejectRight = new Button();
 
     // Climb
     public static Axis axClimb = new Axis();
@@ -193,11 +195,10 @@ public class JS_IO {
         // snorfler buttons
         btnReverseSnorfler.setButton(coJoystick, 5);
         btnTglSnorArmDn.setButton(coJoystick, 3);
-
         
         // shooting buttons
-        btn_high_fire.setButton(coJoystick, 1);
-        btn_low_fire.setButton(coJoystick, 10);
+        btnHighFire.setButton(coJoystick, 1);
+        btnLowFire.setButton(coJoystick, 10);
 
         // climbing buttons
         btnClimb1.setButton(coJoystick, 6);
@@ -244,8 +245,10 @@ public class JS_IO {
         // btnLimeAim.setButton(gamePad, 4); // Y
 
         // shooting buttons
-        btn_high_fire.setButton(gamePad, 5);
-        btn_low_fire.setButton(gamePad, 4);
+        btnHighFire.setButton(gamePad, 5);
+        btnLowFire.setButton(gamePad, 4);
+        //btn_toggle_pressure.setButton(gamePad, 3);
+        
 
         // btnRstGyro.setButton(leftJoystick, 3);
 
@@ -284,8 +287,8 @@ public class JS_IO {
         btnTglSnorArmDn.setButton(rightJoystick, 3);
 
         // shooting buttons
-        btn_high_fire.setButton(leftJoystick, 1);
-        btn_low_fire.setButton(rightJoystick, 10);
+        btnHighFire.setButton(leftJoystick, 1);
+        btnLowFire.setButton(rightJoystick, 10);
 
         //Climbing Buttons
         btnClimb1.setButton(rightJoystick, 6);
@@ -312,8 +315,8 @@ public class JS_IO {
                                               // backwards for robot and same for backwards)
         btnHoldZero.setButton(null, 0);
         btnHold180.setButton(null, 0);
-        btn_high_fire.setButton(null, 0);
-        btn_low_fire.setButton(null, 0);
+        btnHighFire.setButton(null, 0);
+        btnLowFire.setButton(null, 0);
         btnTglSnorArmDn.setButton(null, 0);
         btnReverseSnorfler.setButton(null, 0);
         btnClimb.setButton(null, 0);

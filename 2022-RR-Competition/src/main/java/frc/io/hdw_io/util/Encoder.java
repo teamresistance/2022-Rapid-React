@@ -1,4 +1,4 @@
-package frc.io.hdw_io;
+package frc.io.hdw_io.util;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;

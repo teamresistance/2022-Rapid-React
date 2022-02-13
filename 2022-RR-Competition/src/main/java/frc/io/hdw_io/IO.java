@@ -1,5 +1,6 @@
 package frc.io.hdw_io;
 
+
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -10,22 +11,29 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.io.hdw_io.util.*;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
 // import com.revrobotics.ColorSensorV3;
 
 /* temp to fill with latest faults */
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
+import com.playingwithfusion.CANVenom;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 
 public class IO {
     // navX
     public static NavX navX = new NavX();
 
     // PDP
-    public static PowerDistribution pdp = new PowerDistribution(21,ModuleType.kCTRE);
+    public static PowerDistribution pdp = new PowerDistribution(0,ModuleType.kCTRE);
 
     // Air
-    public static Compressor compressor = new Compressor(0,PneumaticsModuleType.CTREPCM);
+    public static Compressor compressor = new Compressor(21,PneumaticsModuleType.CTREPCM);
     public static Relay compressorRelay = new Relay(0);
 
     //-__
@@ -52,20 +60,20 @@ public class IO {
     public static Victor snorfFeedMain = new Victor(9);
     public static Victor snorfFeedScdy = new Victor(6);
     public static ISolenoid snorflerExt = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 6, false); // Extends both feeders
-    public static InvertibleDigitalInput snorfHasBall = new InvertibleDigitalInput(2, false);
 
     // Climb
-    public static WPI_TalonSRX climbMotor = new WPI_TalonSRX(1);
-    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7, false);
-    public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7);
-    public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 8);
-    public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 9);
-    public static InvertibleDigitalInput lockPinAExt_FB = new InvertibleDigitalInput(5,false);
-    public static InvertibleDigitalInput lockPinARet_FB = new InvertibleDigitalInput(5,false);
-    public static InvertibleDigitalInput lockPinBExt_FB = new InvertibleDigitalInput(5,false);
-    public static InvertibleDigitalInput lockPinBRet_FB = new InvertibleDigitalInput(5,false);
-    public static InvertibleDigitalInput sliderExt_FB = new InvertibleDigitalInput(5,false);
-    public static InvertibleDigitalInput sliderRet_FB = new InvertibleDigitalInput(5,false);
+    public static CANSparkMax climbMotor       = new CANSparkMax(10, MotorType.kBrushless);
+    public static CANSparkMax climbMotorFollow = new CANSparkMax(11, MotorType.kBrushless);
+    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(1,PneumaticsModuleType.CTREPCM, 1);
+    public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(1,PneumaticsModuleType.CTREPCM, 2);
+    public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(1,PneumaticsModuleType.CTREPCM, 3);
+    public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(1,PneumaticsModuleType.CTREPCM, 4);
+    public static InvertibleDigitalInput lockPinAExt_FB = new InvertibleDigitalInput(1,false);
+    public static InvertibleDigitalInput lockPinARet_FB = new InvertibleDigitalInput(2,false);
+    public static InvertibleDigitalInput lockPinBExt_FB = new InvertibleDigitalInput(3,false);
+    public static InvertibleDigitalInput lockPinBRet_FB = new InvertibleDigitalInput(4,false);
+    public static InvertibleDigitalInput sliderExt_FB   = new InvertibleDigitalInput(5,false);
+    public static InvertibleDigitalInput sliderRet_FB   = new InvertibleDigitalInput(6,false);
     
     
     // public static Victor climberHoist = new Victor(3); // Extends climber
@@ -106,7 +114,7 @@ public class IO {
         drvFollowerVSPX_L.setInverted(false);
         drvFollowerVSPX_L.setNeutralMode(NeutralMode.Brake); // change it back
         // drvFollowerVSPX_L.set(ControlMode.Follower, drvMasterTSRX_L.getDeviceID());  //Doesn't work pn Victor SPX
-        drvFollowerVSPX_R.configFactoryDefault();
+                drvFollowerVSPX_R.configFactoryDefault();
         drvFollowerVSPX_R.setInverted(true);
         drvFollowerVSPX_R.setNeutralMode(NeutralMode.Brake); // change it back
         // drvFollowerVSPX_R.set(ControlMode.Follower, drvMasterTSRX_R.getDeviceID());  //Doesn't work pn Victor SPX
@@ -120,6 +128,15 @@ public class IO {
         snorfFeedMain.setInverted(true);
         snorfFeedScdy.setInverted(true);
         // climberHoist.setInverted(false);
+
+        climbMotor.restoreFactoryDefaults();
+        climbMotor.setInverted(false);
+        climbMotor.setIdleMode(IdleMode.kBrake);
+
+        climbMotorFollow.restoreFactoryDefaults();
+        climbMotorFollow.setInverted(false);
+        climbMotorFollow.setIdleMode(IdleMode.kBrake);
+        climbMotorFollow.follow(climbMotor);
 
         SmartDashboard.putNumber("Robot/Feet Pwr2", drvAutoPwr);
     }

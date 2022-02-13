@@ -1,22 +1,23 @@
 package frc.robot.subsystem;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
-import frc.io.hdw_io.ISolenoid;
-import frc.io.hdw_io.InvertibleDigitalInput;
+import frc.io.hdw_io.util.ISolenoid;
+import frc.io.hdw_io.util.InvertibleDigitalInput;
 import frc.io.joysticks.JS_IO;
 import frc.io.joysticks.Button;
 import frc.util.Timer;
 import frc.robot.subsystem.drive.Drive;
+import com.playingwithfusion.CANVenom;
+import com.revrobotics.CANSparkMax;
 
 public class Climber {
   
 
     // Hardware Definitions
-    private static WPI_TalonSRX climberMotor = IO.climbMotor;   //Motor to rotate arm
-
+    private static CANSparkMax climberMotor = IO.climbMotor;   //Motor to rotate arm
 
     private static ISolenoid lockPinAExt = IO.lockPinAExt_SV;   //Extend locking pin A
     private static ISolenoid lockPinARet = IO.lockPinARet_SV;   //Retract locking pin A
@@ -44,7 +45,7 @@ public class Climber {
         REV  // Rotatioanl Motor speed is -ROT_SPD
     }
     private static eMtrRotDir mtrRot = eMtrRotDir.OFF; 
-    private static final double ROT_SPD = 70.0; //Arm motor fixed speed.
+    private static final double ROT_SPD = 0.70; //Arm motor fixed speed.
 
     private static boolean lockPinASaved; // Used in case 90, emerg.-stop
     private static boolean lockPinBSaved; // Used in case 90, emerg.-stop

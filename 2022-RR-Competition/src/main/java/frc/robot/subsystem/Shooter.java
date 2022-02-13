@@ -1,12 +1,12 @@
 package frc.robot.subsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.io.hdw_io.Encoder;
+import frc.io.hdw_io.util.*;
 import frc.io.hdw_io.IO;
-import frc.io.hdw_io.ISolenoid;
 import frc.io.joysticks.JS_IO;
 import frc.io.joysticks.Button;
 import frc.util.Timer;
+
 
 public class Shooter {
     // hdw defintions:
@@ -14,8 +14,12 @@ public class Shooter {
     private static ISolenoid left_catapult_SV = IO.left_catapult_SV; // Left catapult trigger.
     private static ISolenoid right_catapult_SV = IO.right_catapult_SV; // Right catapult trigger.
     // joystick buttons:
-    private static Button btn_high_fire = JS_IO.btn_high_fire;
-    private static Button btn_low_fire = JS_IO.btn_low_fire;
+    private static Button btn_high_fire = JS_IO.btnHighFire;
+    private static Button btn_low_fire = JS_IO.btnLowFire;
+    // private static Button btn_reject_left = JS_IO.btnRejectLeft;
+    // private static Button btn_reject_right = JS_IO.btnReject
+    
+
     // variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
@@ -46,6 +50,13 @@ public class Shooter {
         if (btn_low_fire.onButtonPressed() && state == 0) {
             state = 2;
         }
+
+        // if (btn_reject_left.onButtonPressed()){
+        //     state = 90;
+        // }
+        // if (btn_reject_right.onButtonPressed()){
+        //     state = 91;
+        // }
 
         smUpdate();
         sdbUpdate();
@@ -86,6 +97,16 @@ public class Shooter {
                 if (stateTmr.hasExpired(0.1, state)) state = 0;
                 cmdUpdate(low_select, false, true);
                 break;
+            //case 90: // reject right
+                //low_select = true;
+                //if (stateTmr.hasExpired(0.1, state)) state = 0;
+                //cmdUpdate(low_select, false, true);
+                //break;
+           //case 91: // reject left
+                //low_select = true;
+                //if (stateTmr.hasExpired(0.1, state)) state = 0;
+                //cmdUpdate(low_select, true, false);
+                //break;
             default: // all off
                 cmdUpdate(false, false, false);
                 break;
@@ -102,6 +123,12 @@ public class Shooter {
      * 
      */
     public static void cmdUpdate(boolean select_low, boolean left_trigger, boolean right_trigger) {
+        select_low_SV.set(select_low);
+        left_catapult_SV.set(left_trigger);
+        right_catapult_SV.set(right_trigger);
+    }
+    
+    public static void cmdUpdate(boolean select_low, boolean left_trigger, boolean right_trigger, boolean reject_select) {
         select_low_SV.set(select_low);
         left_catapult_SV.set(left_trigger);
         right_catapult_SV.set(right_trigger);
