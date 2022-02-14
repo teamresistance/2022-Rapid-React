@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.*;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
-import frc.io.joysticks.Axis;
-import frc.io.joysticks.Button;
+import frc.io.joysticks.util.Axis;
+import frc.io.joysticks.util.Button;
 import frc.util.Timer;
 
 public class Test_Hdw {
@@ -45,7 +45,7 @@ public class Test_Hdw {
         sdbUpdate();
     }
 
-    public static void smUpdate() { // State Machine Update
+    private static void smUpdate() { // State Machine Update
 
         switch (state) {
             case 0: // Everything is off
@@ -67,20 +67,20 @@ public class Test_Hdw {
      * 
      * @param select_low    - select the low goal, other wise the high goal
      */
-    public static void cmdUpdate(double dblSig) {
+    private static void cmdUpdate(double dblSig) {
         //Check any safeties, mod passed cmds if needed.
         //Send commands to hardware
     }
 
     /*-------------------------  SDB Stuff --------------------------------------
     /**Initialize sdb */
-    public static void sdbInit() {
+    private static void sdbInit() {
         //Put stuff here on the sdb to be retrieved from the sdb later
         // SmartDashboard.putBoolean("ZZ_Template/Sumpthin", sumpthin.get());
     }
 
     /**Update the Smartdashboard. */
-    public static void sdbUpdate() {
+    private static void sdbUpdate() {
         //Put stuff to retrieve from sdb here.  Must have been initialized in sdbInit().
         // sumpthin = SmartDashboard.getBoolean("ZZ_Template/Sumpthin", sumpthin.get());
 

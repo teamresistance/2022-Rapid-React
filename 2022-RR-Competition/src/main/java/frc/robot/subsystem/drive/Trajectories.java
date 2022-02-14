@@ -2,7 +2,7 @@ package frc.robot.subsystem.drive;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.io.hdw_io.vision.RPI;
+import frc.io.vision.RPI;
 import frc.robot.subsystem.drive.trajFunk.*;
 
 public class Trajectories {

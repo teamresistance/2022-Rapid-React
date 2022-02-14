@@ -1,12 +1,9 @@
 package frc.io.hdw_io;
 
-
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -14,12 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.util.*;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
-// import com.revrobotics.ColorSensorV3;
-
-/* temp to fill with latest faults */
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.*;
+// import com.ctre.phoenix.motorcontrol.*;
+// import com.ctre.phoenix.motorcontrol.can.*;
 import com.playingwithfusion.CANVenom;
+import com.playingwithfusion.CANVenom.BrakeCoastMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -27,47 +22,49 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class IO {
     // navX
-    public static NavX navX = new NavX();
+    public static NavX navX = new NavX(SPI.Port.kMXP);
 
     // PDP
     public static PowerDistribution pdp = new PowerDistribution(0,ModuleType.kCTRE);
 
     // Air
-    public static Compressor compressor = new Compressor(21,PneumaticsModuleType.CTREPCM);
+    public static Compressor compressor1 = new Compressor(1,PneumaticsModuleType.CTREPCM);
+    public static Compressor compressor2 = new Compressor(2,PneumaticsModuleType.CTREPCM);
     public static Relay compressorRelay = new Relay(0);
 
-    //-__
     // Drive
-    public static WPI_TalonSRX drvMasterTSRX_L = new WPI_TalonSRX(1); // Cmds left wheels. Includes encoders
-    public static WPI_TalonSRX drvMasterTSRX_R = new WPI_TalonSRX(5); // Cmds right wheels. Includes encoders
-    public static WPI_VictorSPX drvFollowerVSPX_L = new WPI_VictorSPX(2); // Resrvd 3 & 4 maybe
-    public static WPI_VictorSPX drvFollowerVSPX_R = new WPI_VictorSPX(6); // Resrvd 7 & 8 maybe
-    public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvMasterTSRX_L, IO.drvMasterTSRX_R);
+    public static CANVenom drvLead_L = new CANVenom(11); // Cmds left wheels. Includes encoders
+    public static CANVenom drvLead_R = new CANVenom(12); // Cmds right wheels. Includes encoders
+    public static CANVenom drvFollower_L = new CANVenom(15); // Resrvd 3 & 4 maybe
+    public static CANVenom drvFollower_R = new CANVenom(16); // Resrvd 7 & 8 maybe
+    public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
 
-    public static final double drvMasterTPF_L = 368.4;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
-    public static final double drvMasterTPF_R = -368.4; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
-    public static Encoder drvEnc_L = new Encoder(drvMasterTSRX_L, drvMasterTPF_L);  //Interface for feet, ticks, reset
-    public static Encoder drvEnc_R = new Encoder(drvMasterTSRX_R, drvMasterTPF_R);
-    public static void drvFeetRst() { drvEnc_L.reset(); drvEnc_R.reset(); }
-    public static double drvFeet() { return (drvEnc_L.feet() + drvEnc_R.feet()) / 2.0; }
+    public static final double drvLeadTPF_L = 368.4;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static final double drvLeadTPF_R = -368.4; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static Encoder_Pwf drvEnc_L = new Encoder_Pwf(drvLead_L, drvLeadTPF_L);  //Interface for feet, ticks, reset
+    public static Encoder_Pwf drvEnc_R = new Encoder_Pwf(drvLead_R, drvLeadTPF_R);
 
-    // Shooter
-    public static ISolenoid select_low_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 1);//tbd) // Defaults to high pressure; switches to low pressure. 
-    public static ISolenoid left_catapult_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 2);//tbd) // Left catapult trigger. 
-    public static ISolenoid right_catapult_SV = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 3);//tbd) // Right catapult trigger.
+    public static CoorSys coorXY = new CoorSys(navX, drvEnc_L, drvEnc_R);   //CoorXY & drvFeet
 
     // Snorfler
-    public static Victor snorfFeedMain = new Victor(9);
-    public static Victor snorfFeedScdy = new Victor(6);
-    public static ISolenoid snorflerExt = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 6, false); // Extends both feeders
+    public static Victor snorfFeed_Mtr = new Victor(6);     //Feed motor on snorfler
+    public static Victor snorfElvLo_Mtr = new Victor(7);    //Lower elevator motor
+    public static Victor snorfElvHi_Mtr = new Victor(8);    //High elevator motor
+    public static ISolenoid snorflerExt_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 0, false); // Extends both feeders
+
+    // Shooter
+    public static ISolenoid select_low_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 1);    // Defaults hi prs; true for lo prs
+    public static ISolenoid catapult_L_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 2); // Left catapult trigger. 
+    public static ISolenoid catapult_R_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 3);// Right catapult trigger.
 
     // Climb
-    public static CANSparkMax climbMotor       = new CANSparkMax(10, MotorType.kBrushless);
-    public static CANSparkMax climbMotorFollow = new CANSparkMax(11, MotorType.kBrushless);
-    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(1,PneumaticsModuleType.CTREPCM, 1);
-    public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(1,PneumaticsModuleType.CTREPCM, 2);
-    public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(1,PneumaticsModuleType.CTREPCM, 3);
-    public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(1,PneumaticsModuleType.CTREPCM, 4);
+    public static CANSparkMax climbMotor       = new CANSparkMax(6, MotorType.kBrushless);
+    public static CANSparkMax climbMotorFollow = new CANSparkMax(7, MotorType.kBrushless);
+    public static ISolenoid climbBrakeRel_SV   = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 0);
+    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 1);
+    public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 2);
+    public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 3, true);
+    public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 4, true);
     public static InvertibleDigitalInput lockPinAExt_FB = new InvertibleDigitalInput(1,false);
     public static InvertibleDigitalInput lockPinARet_FB = new InvertibleDigitalInput(2,false);
     public static InvertibleDigitalInput lockPinBExt_FB = new InvertibleDigitalInput(3,false);
@@ -75,59 +72,50 @@ public class IO {
     public static InvertibleDigitalInput sliderExt_FB   = new InvertibleDigitalInput(5,false);
     public static InvertibleDigitalInput sliderRet_FB   = new InvertibleDigitalInput(6,false);
     
-    
-    // public static Victor climberHoist = new Victor(3); // Extends climber
-    // public static ISolenoid climberExt = new InvertibleSolenoid(PneumaticsModuleType.CTREPCM, 7, false);
-
-
     /**
-     * A Rev Color Sensor V3 object is constructed with an I2C port as a parameter.
-     * The device will be automatically initialized with default parameters.
+     * Initialize any hardware
      */
-    // public static ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
-
-    // Initialize any hardware here
     public static void init() {
-        // revTimer = new Timer(0);
         drvsInit();
         motorsInit();
-        resetCoor();
-        // turCCWCntr.setUpSourceEdge(true, true);
-        // turCWCntr.setUpSourceEdge(true, true);
+        coorXY.reset();
+        coorXY.drvFeetRst();
     }
 
+    /**
+     * Initialize drive configuration setup.
+     */
+    private static void drvsInit() {
+        // -------- Configure Lead drive motors ---------
+        // drvLead_L.configFactoryDefault();    //No equivalent
+        drvLead_L.setInverted(true); // Inverts motor direction and encoder if attached
+        drvLead_L.setBrakeCoastMode(BrakeCoastMode.Brake);
+        // drvLead_L.setSensorPhase(false); // Adjust this to correct phasing with motor
 
-    public static void drvsInit() {
-        drvMasterTSRX_L.configFactoryDefault();
-        drvMasterTSRX_R.configFactoryDefault();
-        drvMasterTSRX_L.setInverted(true); // Inverts motor direction and encoder if attached
-        drvMasterTSRX_R.setInverted(false); // Inverts motor direction and encoder if attached
-        drvMasterTSRX_L.setSensorPhase(false); // Adjust this to correct phasing with motor
-        drvMasterTSRX_R.setSensorPhase(false); // Adjust this to correct phasing with motor
-        drvMasterTSRX_L.setNeutralMode(NeutralMode.Brake); // change it back
-        drvMasterTSRX_R.setNeutralMode(NeutralMode.Brake); // change it back
+        // drvLead_R.configFactoryDefault();
+        drvLead_R.setInverted(false); // Inverts motor direction and encoder if attached
+        drvLead_R.setBrakeCoastMode(BrakeCoastMode.Brake);
+        // drvLead_R.setSensorPhase(false); // Adjust this to correct phasing with motor
 
-        // Tells left and right victors to follow the master
-        //TODO: change the brake stuff to coast
+        // ----- Tells left and right second drive motors to follow the Lead -----
+        // drvFollower_L.configFactoryDefault();
+        drvFollower_L.setInverted(false);
+        drvFollower_L.setBrakeCoastMode(BrakeCoastMode.Brake);
+        // drvFollower_R.configFactoryDefault();
+        drvFollower_R.setInverted(true);
+        drvFollower_R.setBrakeCoastMode(BrakeCoastMode.Brake);
 
-        drvFollowerVSPX_L.configFactoryDefault();
-        drvFollowerVSPX_L.setInverted(false);
-        drvFollowerVSPX_L.setNeutralMode(NeutralMode.Brake); // change it back
-        // drvFollowerVSPX_L.set(ControlMode.Follower, drvMasterTSRX_L.getDeviceID());  //Doesn't work pn Victor SPX
-                drvFollowerVSPX_R.configFactoryDefault();
-        drvFollowerVSPX_R.setInverted(true);
-        drvFollowerVSPX_R.setNeutralMode(NeutralMode.Brake); // change it back
-        // drvFollowerVSPX_R.set(ControlMode.Follower, drvMasterTSRX_R.getDeviceID());  //Doesn't work pn Victor SPX
-
-        drvMasterTSRX_L.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-        drvMasterTSRX_R.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+        // drvLead_L.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+        // drvLead_R.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     }
 
-    // Shooter, Inject & Pikup Initialize
-    public static void motorsInit() {
-        snorfFeedMain.setInverted(true);
-        snorfFeedScdy.setInverted(true);
-        // climberHoist.setInverted(false);
+    /**
+     * Initialize other motors besides the drive motors.
+     */
+    private static void motorsInit() {
+        snorfFeed_Mtr.setInverted(false);
+        snorfElvLo_Mtr.setInverted(false);
+        snorfElvHi_Mtr.setInverted(false);
 
         climbMotor.restoreFactoryDefaults();
         climbMotor.setInverted(false);
@@ -137,103 +125,15 @@ public class IO {
         climbMotorFollow.setInverted(false);
         climbMotorFollow.setIdleMode(IdleMode.kBrake);
         climbMotorFollow.follow(climbMotor);
-
-        SmartDashboard.putNumber("Robot/Feet Pwr2", drvAutoPwr);
     }
-
-    public static int revolverCntr = 0; // Count revolver rotations
-    public static boolean prvRevIndex = true;
-
-    public static double drvFeetChk = 0.0;  //Testing Drv_Auto rdg.
-    public static double drvAutoPwr = 0.9;  //Testing
 
     public static void update() {
-        victorSPXfollower();
-        SmartDashboard.putNumber("Robot/Feet", drvFeet());
-        SmartDashboard.putNumber("Robot/Feet Chk", drvFeetChk);  //Testing
+        SmartDashboard.putNumber("Robot/Feet", coorXY.drvFeet());
         SmartDashboard.putNumber("Robot/EncTicks L", drvEnc_L.ticks());
         SmartDashboard.putNumber("Robot/EncTicks R", drvEnc_R.ticks());
-        SmartDashboard.putNumber("Robot/Mtr0 Cmd", drvMasterTSRX_R.get());
-        SmartDashboard.putNumber("Robot/Mtr1 Cmd", drvFollowerVSPX_R.get());
-        SmartDashboard.putNumber("Robot/Mtr12 Cmd", drvMasterTSRX_L.get());
-        SmartDashboard.putNumber("Robot/Mtr11 Cmd", drvFollowerVSPX_L.get());
-        drvAutoPwr = SmartDashboard.getNumber("Robot/Feet Pwr2", drvAutoPwr);  //Testing
-        coorUpdate();    //Update the XY location
-    }
-
-    public static void victorSPXfollower() {
-        drvFollowerVSPX_L.follow(drvMasterTSRX_L);
-        drvFollowerVSPX_R.follow(drvMasterTSRX_R);
-    }
-
-    //--------------------  XY Coordinates -----------------------------------
-    private static double prstDist;     //Present distance traveled since last reset.
-    private static double prvDist;      //previous distance traveled since last reset.
-    private static double deltaD;       //Distance traveled during this period.
-    private static double coorX = 0;    //Calculated X (Left/Right) coordinate on field
-    private static double coorY = 0;    //Calculated Y (Fwd/Bkwd) coordinate on field.
-    
-    /**Calculates the XY coordinates by taken the delta distance and applying the sinh/cosh 
-     * of the gyro heading.
-     * <p>Initialize by calling resetLoc.
-     * <p>Needs to be called periodically from IO.update called in robotPeriodic in Robot.
-     */
-    public static void coorUpdate(){
-        // prstDist = (drvEnc_L.feet() + drvEnc_R.feet())/2;   //Distance since last reset.
-        prstDist = drvFeet();   //Distance since last reset.
-        deltaD = prstDist - prvDist;                        //Distancce this pass
-        prvDist = prstDist;                                 //Save for next pass
-
-        //If encoders are reset by another method, may cause large deltaD.
-        //During testing deltaD never exceeded 0.15 on a 20mS update.
-        if (Math.abs(deltaD) > 0.2) deltaD = 0.0;       //Skip this update if too large.
-
-        if (Math.abs(deltaD) > 0.0){    //Deadband for encoders if needed (vibration?).  Presently set to 0.0
-            coorY += deltaD * Math.cos(Math.toRadians(IO.navX.getAngle())) * 1.0;
-            coorX += deltaD * Math.sin(Math.toRadians(IO.navX.getAngle())) * 1.1;
-        }
-    }
-
-    /**Reset the location on the field to 0.0, 0.0.
-     * If needed navX.Reset must be called separtely.
-     */
-    public static void resetCoor(){
-        // IO.navX.reset();
-        // encL.reset();
-        // encR.reset();
-        coorX = 0;
-        coorY = 0;
-        prstDist = (drvEnc_L.feet() + drvEnc_R.feet())/2;
-        prvDist = prstDist;
-        deltaD = 0;
-    }
-
-    /**
-     * @return an array of the calculated X and Y coordinate on the field since the last reset.
-     */
-    public static double[] getCoor(){
-        double[] coorXY = {coorX, coorY};
-        return coorXY;
-    }
-
-    /**
-     * @return the calculated X (left/right) coordinate on the field since the last reset.
-     */
-    public static double getCoorX(){
-        return coorX;
-    }
-
-    /**
-     * @return the calculated Y (fwd/bkwd) coordinate on the field since the last reset.
-     */
-    public static double getCoorY(){
-        return coorY;
-    }
-
-    /**
-     * @return the calculated Y (fwd/bkwd) coordinate on the field since the last reset.
-     */
-    public static double getDeltaD(){
-        return deltaD;
+        SmartDashboard.putNumber("Robot/Mtr0 Cmd", drvLead_R.get());
+        SmartDashboard.putNumber("Robot/Mtr1 Cmd", drvFollower_R.get());
+        SmartDashboard.putNumber("Robot/Mtr12 Cmd", drvLead_L.get());
+        SmartDashboard.putNumber("Robot/Mtr11 Cmd", drvFollower_L.get());
     }
 }

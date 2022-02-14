@@ -1,12 +1,9 @@
 package frc.robot.subsystem;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.util.*;
-import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
-import frc.io.joysticks.Button;
+import frc.io.joysticks.util.Button;
 import frc.util.Timer;
 import com.playingwithfusion.CANVenom;
 public class Snorfler {
@@ -15,8 +12,7 @@ public class Snorfler {
     private static ISolenoid snofleArm;
 
     // joystick buttons:
-    private static Button btnSnofle = JS_IO.btnSnorfle;
-    private static Button btnReverseSnorfler = JS_IO.btnReverseSnorfler;
+    private static Button btnSnorfleTgl = JS_IO.btnTglSnorfler;
 
     // variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
@@ -38,31 +34,29 @@ public class Snorfler {
      * Determine any state that needs to interupt the present state, usually by way
      * of a JS button but can be caused by other events.
      */
-    private static void update() {
+    public static void update() {
         //Add code here to start state machine or override the sm sequence
         smUpdate();
         sdbUpdate();
-        if (btnSnofle.isDown()) state = 1;
-        if (btnReverseSnorfler.isDown()) state = 2;
-        if (btnSnofle.isUp() && !btnReverseSnorfler.isUp()) state = 0;
+        if (btnSnorfleTgl.onButtonPressed()) state = state == 0 ? 1 : 0;
     }    
 
-    public static void smUpdate() { // State Machine Update
+    private static void smUpdate() { // State Machine Update
 
         switch (state) {
             case 0: // Everything is off
                 cmdUpdate(0.0, false);
                 stateTmr.hasExpired(0.05, state); // Initialize timer for covTrgr. Do nothing.
                 break;
-            case 1: // Do sumpthin and wait for action
-                cmdUpdate(0.7, true);
-                if (stateTmr.hasExpired(0.05, state)) state++;
+            case 1: // Put arm down, wait for action
+                cmdUpdate(0.0, true);
+                if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
-            case 2: // Shutdown and wait for action then go to 0
-                cmdUpdate(-0.7, true);
-                if (stateTmr.hasExpired(0.05, state)) state = 0;
+            case 2: // Start collector
+                cmdUpdate(0.7, true);
                 break;
             default: // all off
+                System.out.println("Bad Snorfler state: " + state);
                 cmdUpdate(0.0, false);
                 break;
 
@@ -77,8 +71,8 @@ public class Snorfler {
      * @param right_trigger - triggers the right catapult
      * 
      */
-    public static void cmdUpdate(double mtrcmd, boolean armcmd) {
-        //Check any safeties, mod passed cmds if needed.
+    private static void cmdUpdate(double mtrcmd, boolean armcmd) {
+        //Check any safeties, modify passed cmds if needed.
         //Send commands to hardware
         snoflerMotor.set(mtrcmd);
         snofleArm.set(armcmd);
@@ -86,18 +80,14 @@ public class Snorfler {
     }
     /*-------------------------  SDB Stuff --------------------------------------
     /**Initialize sdb */
-    public static void sdbInit() {
+    private static void sdbInit() {
         //Put stuff here on the sdb to be retrieved from the sdb later
         // SmartDashboard.putBoolean("ZZ_Template/Sumpthin", sumpthin.get());
     }
 
     /**Update the Smartdashboard. */
-    public static void sdbUpdate() {
-        //Put stuff to retrieve from sdb here.  Must have been initialized in sdbInit().
-        // sumpthin = SmartDashboard.getBoolean("ZZ_Template/Sumpthin", sumpthin.get());
-
-        //Put other stuff to be displayed here
-        SmartDashboard.putNumber("ZZ_Template/state", state);
+    private static void sdbUpdate() {
+        SmartDashboard.putNumber("Snofler/state", state);
     }
 
     // ----------------- Shooter statuses and misc.-----------------

@@ -1,16 +1,13 @@
 package frc.robot.subsystem;
 
-
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.io.hdw_io.util.ISolenoid;
 import frc.io.hdw_io.util.InvertibleDigitalInput;
 import frc.io.joysticks.JS_IO;
-import frc.io.joysticks.Button;
+import frc.io.joysticks.util.Button;
 import frc.util.Timer;
 import frc.robot.subsystem.drive.Drive;
-import com.playingwithfusion.CANVenom;
 import com.revrobotics.CANSparkMax;
 
 public class Climber {
@@ -31,7 +28,6 @@ public class Climber {
     private static InvertibleDigitalInput lockPinBRet_FB = IO.lockPinBRet_FB;
     private static InvertibleDigitalInput sliderExt_FB   = IO.sliderExt_FB; 
     private static InvertibleDigitalInput sliderRet_FB   = IO.sliderRet_FB;
-    
 
     // Joystick Buttons
     private static Button buttonClimb1 = JS_IO.btnClimb1;   //Both MUST be pressed tp
@@ -56,7 +52,6 @@ public class Climber {
     private static int prvState = 0;    // Used to return from state 90, eStop.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
 
-
     /**
      * Initialize Climber stuff. Called from telopInit (maybe robotInit(?)) in
      * Robot.java
@@ -73,7 +68,7 @@ public class Climber {
      * Determine any state that needs to interupt the present state, usually by way
      * of a JS button but can be caused by other events.
      */
-    private static void update() {
+    public static void update() {
         climbEnabled = (buttonClimb1.isDown() && buttonClimb2.isDown()) ? true : false;
         if(climbEnabled && state == 0) state = 1;           //Start climb
         if(climbEnabled && state == 90) state = prvState;   //Driver interrupted climb
@@ -88,7 +83,7 @@ public class Climber {
     /**
      * State Machine update for climber
      */
-    public static void smUpdate() {
+    private static void smUpdate() {
         
         switch (state) {
             case 0: // Turns everything off
@@ -100,11 +95,11 @@ public class Climber {
                 cmdUpdate(0.0, eMtrRotDir.REV, false, false, true );
                 Drive.setHdgHold(180.0);    // Set drive steering to hold 180 heading
                 if (stateTmr.hasExpired(0.3, state)) state++;
-                IO.drvFeetRst();
+                IO.coorXY.drvFeetRst();
                 break;
             case 2: // Move backwards 6' to start climb position
                 cmdUpdate(-0.7, eMtrRotDir.OFF, false,false,true);
-                if (IO.drvFeet() < -6.0) state++;
+                if (IO.coorXY.drvFeet() < -6.0) state++;
                 break;
             case 3: // Move backwards 3' until robot pitches 15 degrees fwd/down
                 cmdUpdate(-0.4, eMtrRotDir.OFF, false, false, true); 
@@ -114,11 +109,11 @@ public class Climber {
             case 4: // Stop the driving and grab bar with LockPinA
                 cmdUpdate(0.0, eMtrRotDir.OFF, true, false, true);
                 if (lockPinAExt_FB.get() == true) state++;
-                IO.drvFeetRst();
+                IO.coorXY.drvFeetRst();
                 break;
             case 5: // Robot moves forward 3 feet and arm starts rotating forward
                 cmdUpdate(0.2, eMtrRotDir.FWD, true, false, true); 
-                if (IO.drvFeet() > 3.0) state++;
+                if (IO.coorXY.drvFeet() > 3.0) state++;
                 break;
             case 6: // Stop forward wheel motion
                 cmdUpdate(0.0, eMtrRotDir.FWD, true, false, true);
@@ -239,11 +234,11 @@ public class Climber {
         
     }
  
-    public static void sdbInit() {
+    private static void sdbInit() {
 
     }
 
-    public static void sdbUpdate() {
+    private static void sdbUpdate() {
         SmartDashboard.putString("Climber/mtrRot", mtrRot.toString());
         SmartDashboard.putBoolean("Climber/SV/brake", brakeRel.get());
         SmartDashboard.putBoolean("Climber/SV/lockPinAExt", lockPinAExt.get());

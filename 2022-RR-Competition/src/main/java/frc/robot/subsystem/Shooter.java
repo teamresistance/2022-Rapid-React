@@ -4,23 +4,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.util.*;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
-import frc.io.joysticks.Button;
+import frc.io.joysticks.util.Axis;
+import frc.io.joysticks.util.Button;
 import frc.util.Timer;
 
 
 public class Shooter {
-    // hdw defintions:
+    // Hardware defintions:
     private static ISolenoid select_low_SV = IO.select_low_SV; // Defaults to high pressure; switches to low pressure.
-    private static ISolenoid left_catapult_SV = IO.left_catapult_SV; // Left catapult trigger.
-    private static ISolenoid right_catapult_SV = IO.right_catapult_SV; // Right catapult trigger.
-    // joystick buttons:
-    private static Button btn_high_fire = JS_IO.btnHighFire;
-    private static Button btn_low_fire = JS_IO.btnLowFire;
-    // private static Button btn_reject_left = JS_IO.btnRejectLeft;
-    // private static Button btn_reject_right = JS_IO.btnReject
-    
+    private static ISolenoid left_catapult_SV = IO.catapult_L_SV; // Left catapult trigger.
+    private static ISolenoid right_catapult_SV = IO.catapult_R_SV; // Right catapult trigger.
 
-    // variables:
+    // Joystick buttons:
+    private static Axis axSelLow = JS_IO.axGoalSel;
+    private static Button btnFire = JS_IO.btnFire;
+    private static Button btnReject_L = JS_IO.btnRejectLeft;
+    private static Button btnReject_R = JS_IO.btnRejectRight;
+
+    // Variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
     private static boolean low_select = false; // Used to command the pressure SV. Default is hi press, switch.
@@ -41,74 +42,66 @@ public class Shooter {
      * Determine any state that needs to interupt the present state, usually by way
      * of a JS button but can be caused by other events.
      */
-
-    private static void update() {
-        if (btn_high_fire.onButtonPressed() && state == 0) {
+    public static void update() {
+        low_select = axSelLow.get() < 0.10;
+        if (btnFire.onButtonPressed() && state == 0) {
             state = 1;
         }
 
-        if (btn_low_fire.onButtonPressed() && state == 0) {
-            state = 2;
+        if (btnReject_L.onButtonPressed() && state == 0) {
+            state = 11;
         }
 
-        // if (btn_reject_left.onButtonPressed()){
-        //     state = 90;
-        // }
-        // if (btn_reject_right.onButtonPressed()){
-        //     state = 91;
-        // }
+        if (btnReject_R.onButtonPressed() && state == 0) {
+            state = 13;
+        }
 
         smUpdate();
         sdbUpdate();
     }
 
-    public static void smUpdate() { // State Machine Update
+    private static void smUpdate() { // State Machine Update
 
         switch (state) {
             case 0: // Everything is off, no pressure, pressure default high, Ltrig and Rtrig off.
-                low_select = false;
                 cmdUpdate(low_select, false, false);
                 stateTmr.hasExpired(0.05, state); // Initialize timer for covTrgr. Do nothing.
                 break;
-            case 1: // btn_high_fire
-                low_select = false;
-                state = 3;
-                break;
-            case 2: // btn_low_fire
-                low_select = true;
-                state = 3;
-                break;
-            case 3: // time delay to allow pressure to settle
-                if (stateTmr.hasExpired(0.05, state)) state++;
+            case 1: // btn Fire, wit for prs settle
                 cmdUpdate(low_select, false, false);
-                break;
-            case 4: // trigger left
                 if (stateTmr.hasExpired(0.1, state)) state++;
+                break;
+            case 2: // Fire left, wait
                 cmdUpdate(low_select, true, false);
+                if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
-            case 5: // wait for recharge
-                if (stateTmr.hasExpired(0.25, state)) state++;
+            case 3: // Left closed, wait
                 cmdUpdate(low_select, false, false);
+                if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
-            case 6: // trigger right
+            case 4: // Fire left, left return to 0
                 cmdUpdate(low_select, false, true);
-                break;
-            case 7: // wait for right trigger
                 if (stateTmr.hasExpired(0.1, state)) state = 0;
-                cmdUpdate(low_select, false, true);
                 break;
-            //case 90: // reject right
-                //low_select = true;
-                //if (stateTmr.hasExpired(0.1, state)) state = 0;
-                //cmdUpdate(low_select, false, true);
-                //break;
-           //case 91: // reject left
-                //low_select = true;
-                //if (stateTmr.hasExpired(0.1, state)) state = 0;
-                //cmdUpdate(low_select, true, false);
-                //break;
+            case 11: // Reject left with low prs, wait for settle
+                cmdUpdate(true, false, false);
+                if (stateTmr.hasExpired(0.1, state)) state++;
+                break;
+            case 12: // trigger left, wait and return to 0
+                cmdUpdate(true, true, false);
+                if (stateTmr.hasExpired(0.1, state)) state = 0;
+                break;
+            case 13: // Reject right with low prs, wait for settle
+                if (stateTmr.hasExpired(0.1, state)) state++;
+                cmdUpdate(true, false, false);
+                break;
+            case 14: // trigger right, wait and return to 0
+                cmdUpdate(true, false, true);
+                if (stateTmr.hasExpired(0.1, state)) state = 0;
+                break;
             default: // all off
                 cmdUpdate(false, false, false);
+                System.out.println("Bad Shooter state: " + state);
                 break;
 
         }
@@ -122,25 +115,20 @@ public class Shooter {
      * @param right_trigger - triggers the right catapult
      * 
      */
-    public static void cmdUpdate(boolean select_low, boolean left_trigger, boolean right_trigger) {
+    private static void cmdUpdate(boolean select_low, boolean left_trigger, boolean right_trigger) {
         select_low_SV.set(select_low);
         left_catapult_SV.set(left_trigger);
         right_catapult_SV.set(right_trigger);
     }
     
-    public static void cmdUpdate(boolean select_low, boolean left_trigger, boolean right_trigger, boolean reject_select) {
-        select_low_SV.set(select_low);
-        left_catapult_SV.set(left_trigger);
-        right_catapult_SV.set(right_trigger);
-    }
-
     /*-------------------------  SDB Stuff --------------------------------------
     /**Initialize sdb */
-    public static void sdbInit() {
+    private static void sdbInit() {
 
     }
 
-    public static void sdbUpdate() {
+    /**Update sdb */
+    private static void sdbUpdate() {
         SmartDashboard.putNumber("Shooter/state", state);
         SmartDashboard.putBoolean("Shooter/select_low_SV", select_low_SV.get());
         SmartDashboard.putBoolean("Shooter/left_catapult_SV", left_catapult_SV.get());

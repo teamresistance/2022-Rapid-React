@@ -23,8 +23,8 @@ public abstract class ATrajFunction {
     private static boolean done = false;
     public static PIDXController pidHdg, pidDist;
 
-    public static double hdgFB() {return IO.navX.getNormalizeTo180();}  //Only need hdg to Hold Angle 0 or 180
-    public static double distFB() {return IO.drvFeet();}  //Only need hdg to Hold Angle 0 or 180
+    public static double hdgFB() {return IO.navX.getNormalizedTo180();}  //Only need hdg to Hold Angle 0 or 180
+    public static double distFB() {return IO.coorXY.drvFeet();}  //Only need hdg to Hold Angle 0 or 180
     public static double[] trajCmd = new double[2];
     public static boolean sqOrQT = false;
     public static int diffType = 0;
@@ -82,8 +82,8 @@ public abstract class ATrajFunction {
      * @return double[2] with the heading[0](JSX) & distance[1](JSY) from robot to waypoint.
      * */
     public static double[] wpCalcHdgDistSP(double _wpX, double _wpY){
-        double deltaX = _wpX - IO.getCoorX();    //Adjacent
-        double deltaY = _wpY - IO.getCoorY();    //Opposite
+        double deltaX = _wpX - IO.coorXY.getX();    //Adjacent
+        double deltaY = _wpY - IO.coorXY.getY();    //Opposite
         double[] tmp = new double[2];   //[0] is hdgSP, [1] is distSP
         
         tmp[1] = Math.hypot(deltaX, deltaY);
@@ -106,8 +106,8 @@ public abstract class ATrajFunction {
      * @return the heading from robot to waypoint.
      * */
     public static double wpCalcHdgSP(double _wpX, double _wpY){
-        double deltaX = _wpX - IO.getCoorX();    //Adjacent
-        double deltaY = _wpY - IO.getCoorY();    //Opposite
+        double deltaX = _wpX - IO.coorXY.getX();    //Adjacent
+        double deltaY = _wpY - IO.coorXY.getY();    //Opposite
         double _hdgSP;
         if( deltaY == 0){
             _hdgSP = deltaX < 0 ? -90 : 90;
@@ -127,8 +127,8 @@ public abstract class ATrajFunction {
      * @return the distance from robot to waypoint.
      * */
     public static double wpCalcDistSP(double _wpX, double _wpY){
-        return Math.hypot(_wpX - IO.getCoorX(),    //Adjacent
-        /*              */_wpY - IO.getCoorY());   //Opposite
+        return Math.hypot(_wpX - IO.coorXY.getX(),    //Adjacent
+        /*              */_wpY - IO.coorXY.getY());   //Opposite
     }
 
     /**
@@ -138,8 +138,8 @@ public abstract class ATrajFunction {
      * @return the distance from robot to center.
      */
     public static double radiusFB(double _ctrX, double _ctrY){
-        return Math.hypot(_ctrX - IO.getCoorX(),    //Adjacent
-        /*              */_ctrY - IO.getCoorY());   //Opposite
+        return Math.hypot(_ctrX - IO.coorXY.getX(),    //Adjacent
+        /*              */_ctrY - IO.coorXY.getY());   //Opposite
     }
 
     /**Trajectory SDB initialize */
@@ -169,18 +169,18 @@ public abstract class ATrajFunction {
         SmartDashboard.putNumber( "Drv/Auto/pidTst/B_DistAdj", pidDist.getAdj());
         SmartDashboard.putBoolean("Drv/Auto/pidTst/C_atSP", pidDist.atSetpoint());
 
-        SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorX", IO.getCoorX());
-        SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorY", IO.getCoorY());
+        SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorX", IO.coorXY.getX());
+        SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorY", IO.coorXY.getY());
     }
 
     /**Print common stuff for pidHdg, pidDist & coors XY.  Pid SP, FB & cmd
      * @param traj name (tag) to ID the print as "tag - state:"
      */
     public static void prtShtuff(String traj){
-        System.out.println(traj + " - " + state + ": Feet\t" + IO.drvFeet());
+        System.out.println(traj + " - " + state + ": Feet\t" + IO.coorXY.drvFeet());
         System.out.println("\t\tdist   SP: " + pidDist.getSetpoint() + "\tFB: " + pidDist.getInFB() + "\tcmd: " + pidDist.getAdj());
         System.out.println("\t\thdg\tSP: " + pidHdg.getSetpoint() + "\tFB: " + pidHdg.getInFB() + "\tcmd: " + pidHdg.getAdj());
-        System.out.println("\tCoor\tX: " + IO.getCoorX() + "\tY " + IO.getCoorY() + "\tHdg " + pidHdg.getInFB());
+        System.out.println("\tCoor\tX: " + IO.coorXY.getX() + "\tY " + IO.coorXY.getY() + "\tHdg " + pidHdg.getInFB());
     }
 
 }
