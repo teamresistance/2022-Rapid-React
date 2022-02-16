@@ -80,10 +80,15 @@ public class Climber {
         sdbUpdate();
     }
 
+    private static double pitch = 0.0;
+
+
     /**
      * State Machine update for climber
-     */
+     */    
     private static void smUpdate() {
+
+        pitch = IO.navX.getPitch();
         
         switch (state) {
             case 0: // Turns everything off
@@ -102,8 +107,9 @@ public class Climber {
                 if (IO.coorXY.drvFeet() < -6.0) state++;
                 break;
             case 3: // Move backwards 3' until robot pitches 15 degrees fwd/down
-                cmdUpdate(-0.4, eMtrRotDir.OFF, false, false, true); 
-                // TODO: Robot pitch >15, state++
+                cmdUpdate(-0.4, eMtrRotDir.OFF, false, false, true);
+                
+                if (stateTmr.hasExpired(0.5, (pitch > 15 && pitch < 19.31))) state++;
                 break;
             //------ In contact with low arm, lock on and start climb. -----
             case 4: // Stop the driving and grab bar with LockPinA
@@ -121,7 +127,7 @@ public class Climber {
                 break;
             case 7: // Continue arm rotation until pitch hits x degrees
                 cmdUpdate(0.0, eMtrRotDir.FWD, true, false, true);
-                // TODO: Robot pitch stuff
+                if (stateTmr.hasExpired(0.5, (pitch > 30 && pitch < 33.69420))) state++; 
                 state++;
                 break;
             //----- Contact Medium bar. Grab it. Release low arm and clear it.
@@ -157,6 +163,7 @@ public class Climber {
             case 15: // Keep going till we pitch x
                 cmdUpdate(0.0, eMtrRotDir.FWD, false, true, true);
                 // TODO: keep going until robot hits pitch x
+                if (stateTmr.hasExpired(0.5, (pitch > 15 && pitch < 19.31))) state++;
                 state++;
                 break;
             //----- Contact Traversal bar. Grab it. Release Medium bar.
@@ -187,16 +194,21 @@ public class Climber {
                 break;
         }
     }
-
+    private static Timer brakeTimer = new Timer(0.1);
+    
     // COMMAND UPDATE
     /**
-     * @param drvSpd    - Speed of drive motors
-     * @param mtrRotDir - Motor rotation Off | Forward| Reverse
-     * @param pinA_Ext  - True = LockPinAExtend | False = LockPinARetract
-     * @param pinB_Ext  - True = LockPinBExtend | False = LockPinBRetract
+     * 
+     * @param drvSpd     - Speed of drive motors
+     * @param mtrRotDir  - Motor rotation Off | Forward | Reverse
+     * @param pinA_Ext   - True = LockPinAExtend | False = LockPinARetract
+     * @param pinB_Ext   - True = LockPinBExtend | False = LockPinBRetract
      * @param slider_Ext - True = SliderExtend | False = SliderRetract
 
      */
+
+    private static eMtrRotDir previousMtrRotDir = eMtrRotDir.OFF;
+
     private static void cmdUpdate(double drvSpd, eMtrRotDir mtrRotDir,
                                   boolean pinA_Ext, boolean pinB_Ext, boolean slider_Ext) {
         // Save device cmds for state 90, eStop.
@@ -209,22 +221,25 @@ public class Climber {
         if (checkLockPinsOK() == false) mtrRotDir = eMtrRotDir.OFF;
 
         Drive.cmdUpdate(drvSpd, 0.0, false, 2); //Send cmd to drive system as arcade
-        
-        switch (mtrRot) {
-            case OFF: 
-                climberMotor.set(0.0);
-                brakeRel.set(false);
-                break;
-            case FWD: 
-                climberMotor.set(ROT_SPD);
-                brakeRel.set(true);
-                break;
-            case REV:
-                climberMotor.set(-ROT_SPD);
-                brakeRel.set(true);
-                break;
-        }
 
+        if (previousMtrRotDir != eMtrRotDir.REV && previousMtrRotDir != eMtrRotDir.FWD) {
+            switch (mtrRot) {
+                case OFF: 
+                    climberMotor.set(0.0);
+                    if (brakeTimer.hasExpired(0.1, false) || (state == 90)) brakeRel.set(false);
+                    break;
+                case FWD: 
+                    climberMotor.set(ROT_SPD);
+                    if (brakeTimer.hasExpired(0.1, true)) brakeRel.set(true);
+                    break;
+                case REV:
+                    climberMotor.set(-ROT_SPD);
+                    if (brakeTimer.hasExpired(0.1, true)) brakeRel.set(true);
+                    break;
+            }
+            previousMtrRotDir = mtrRot;
+        }
+    
         //Pin A is a dual action SV and requires a signal to extend and another to retract
         lockPinAExt.set(pinA_Ext);
         lockPinARet.set(!pinA_Ext);
