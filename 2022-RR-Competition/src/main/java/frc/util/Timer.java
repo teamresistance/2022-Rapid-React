@@ -5,6 +5,7 @@ History -
 1/1/20 - Anthony released
 3/12/20 - JCH added simple startTimer and renamed vars.
 3/15/21 - JCH added comments and chgd to timer v. delay.  Cascade to startTimer().
+2/17/22 - Po added clearTimer(); & chgd trgrs to objs, to init them. Overall clean up.
 */
 
 package frc.util;
@@ -12,8 +13,8 @@ package frc.util;
 public class Timer {
     private double time;            //Time in milli Seconds.  Passed as Seconds.
     private double timer;           //Current time + delay
-    private int covTrgr = -1;       //Integer cov trigger
-    private boolean trgr = false;   //Boolean trigger
+    private Integer covTrgr = null;       //Integer cov trigger
+    private Boolean trgr = null;   //Boolean trigger
 
     //Constructor
     /**
@@ -33,11 +34,12 @@ public class Timer {
      * @return  Timer has expired
      */
     public boolean hasExpired(double delay, int covTrgr){
-        if(this.covTrgr != covTrgr){ // new state found
+        if(this.covTrgr == null || this.covTrgr != covTrgr){ // new state found
             this.time = delay * 1000;
             timer = System.currentTimeMillis() + this.time; // new time to wait for
+            this.covTrgr = covTrgr; // save new state
         }
-        this.covTrgr = covTrgr; // set new state
+       
         return hasExpired();    // tell if wanted time has been reached
     }
 
@@ -48,11 +50,13 @@ public class Timer {
      * @return  Timer has expired
      */
     public boolean hasExpired(double delay, boolean trgr){
-        if(this.trgr != trgr){
+        
+        if(this.trgr == null || this.trgr != trgr){
             this.time = delay * 1000.0;
             startTimer();
+            this.trgr = trgr;
         }
-        this.trgr = trgr;
+        
         return hasExpired();
     }
 
@@ -70,9 +74,24 @@ public class Timer {
         startTimer();
     }
 
+    /**
+     * Reset & start the timer.  Uses & sets a new delay.
+     * @param sec delay in seconds
+     */
+    public void startTimer(int mSec){
+        time = mSec;
+        startTimer();
+    }
+
     /**Reset & start the timer using existing delay */
     public void startTimer(){
         timer = System.currentTimeMillis() + time;
+    }
+    
+    /**Set the triggers to null */
+    public void clearTimer(){
+        covTrgr = null;
+        trgr = null;
     }
 
 }
