@@ -1,4 +1,4 @@
-package frc.io.hdw_io.vision;
+package frc.io.vision;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

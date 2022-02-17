@@ -1,4 +1,4 @@
-package frc.io.hdw_io.vision;
+package frc.io.vision;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -76,7 +76,7 @@ public class LimeLight {
     }
 
     public static void determ() {
-        if (JS_IO.limeLightOnOff.onButtonPressed()) {
+        // if (JS_IO.limeLightOnOff.onButtonPressed()) {
             // if (limeLightToggle) {
             //     state = 1;
             //     limeLightToggle = !limeLightToggle;
@@ -85,9 +85,9 @@ public class LimeLight {
             //     limeLightToggle = !limeLightToggle;
             // }
 
-            state = limeLightToggle ? 1 : 0;
-            limeLightToggle = !limeLightToggle;
-        }
+        //     state = limeLightToggle ? 1 : 0;
+        //     limeLightToggle = !limeLightToggle;
+        // }
     }
 
     public static void update() {

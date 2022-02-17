@@ -62,10 +62,6 @@ public class Drv_Teleop extends Drive {
      * <p>Added sdb chooser to select.  Can chg from btn or chooser.
      */
     public static void determ() {
-        if(JS_IO.btnSelDrv.onButtonPressed()){          //On btn prsd Incr thru drive types with btn press
-            state = ((++state) % teleDrvType.length);
-        }
-
         if(teleDrvChoice != teleDrvChsr.getSelected()){ //If sdb chgs switch states to sdb choice
             state = teleDrvChsr.getSelected();
             teleDrvChoice = state;

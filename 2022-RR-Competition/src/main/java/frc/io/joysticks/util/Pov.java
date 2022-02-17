@@ -1,4 +1,4 @@
-package frc.io.joysticks;
+package frc.io.joysticks.util;
 /*
 Original Author: Sherya
 Rewite Author: Jim Hofmann

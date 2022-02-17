@@ -1,19 +1,23 @@
 package frc.robot.subsystem;
 
+import com.revrobotics.CANSparkMax;
+
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.io.hdw_io.util.*;
+import frc.io.hdw_io.*;
+import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
+import frc.io.joysticks.util.Axis;
 import frc.io.joysticks.util.Button;
 import frc.util.Timer;
-import com.playingwithfusion.CANVenom;
-public class Snorfler {
+
+public class Test_Hdw {
     // hdw defintions:
-    private static CANVenom snoflerMotor; 
-    private static ISolenoid snofleArm;
+    private static CANSparkMax climberMotor = IO.climbMotor;
 
     // joystick buttons:
-    private static Button btnSnorfleTgl = JS_IO.btnTglSnorfler;
 
+    private static Axis climbup = JS_IO.axLeftY;
     // variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
@@ -24,7 +28,7 @@ public class Snorfler {
      */
     public static void init() {
         sdbInit();
-        cmdUpdate(0.0, false); // select goal, left trigger, right trigger
+        cmdUpdate(0.0); // select goal
         state = 0; // Start at state 0
     }
 
@@ -36,28 +40,23 @@ public class Snorfler {
      */
     public static void update() {
         //Add code here to start state machine or override the sm sequence
+        state = 1;
         smUpdate();
         sdbUpdate();
-        if (btnSnorfleTgl.onButtonPressed()) state = state == 0 ? 1 : 0;
-    }    
+    }
 
     private static void smUpdate() { // State Machine Update
 
         switch (state) {
             case 0: // Everything is off
-                cmdUpdate(0.0, false);
+                cmdUpdate(0.0);
                 stateTmr.hasExpired(0.05, state); // Initialize timer for covTrgr. Do nothing.
                 break;
-            case 1: // Put arm down, wait for action
-                cmdUpdate(0.0, true);
-                if (stateTmr.hasExpired(0.1, state)) state++;
-                break;
-            case 2: // Start collector
-                cmdUpdate(0.7, true);
+            case 1: // Do sumpthin and wait for action
+                cmdUpdate(climbup.get());
                 break;
             default: // all off
-                System.out.println("Bad Snorfler state: " + state);
-                cmdUpdate(0.0, false);
+                cmdUpdate(0.0);
                 break;
 
         }
@@ -67,17 +66,12 @@ public class Snorfler {
      * Issue spd setting as rpmSP if isVelCmd true else as percent cmd.
      * 
      * @param select_low    - select the low goal, other wise the high goal
-     * @param left_trigger  - triggers the left catapult
-     * @param right_trigger - triggers the right catapult
-     * 
      */
-    private static void cmdUpdate(double mtrcmd, boolean armcmd) {
-        //Check any safeties, modify passed cmds if needed.
+    private static void cmdUpdate(double dblSig) {
+        //Check any safeties, mod passed cmds if needed.
         //Send commands to hardware
-        snoflerMotor.set(mtrcmd);
-        snofleArm.set(armcmd);
-
     }
+
     /*-------------------------  SDB Stuff --------------------------------------
     /**Initialize sdb */
     private static void sdbInit() {
@@ -87,7 +81,11 @@ public class Snorfler {
 
     /**Update the Smartdashboard. */
     private static void sdbUpdate() {
-        SmartDashboard.putNumber("Snofler/state", state);
+        //Put stuff to retrieve from sdb here.  Must have been initialized in sdbInit().
+        // sumpthin = SmartDashboard.getBoolean("ZZ_Template/Sumpthin", sumpthin.get());
+
+        //Put other stuff to be displayed here
+        SmartDashboard.putNumber("ZZ_Template/state", state);
     }
 
     // ----------------- Shooter statuses and misc.-----------------

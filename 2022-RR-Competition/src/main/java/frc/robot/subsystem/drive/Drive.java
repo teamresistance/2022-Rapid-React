@@ -36,7 +36,7 @@ public class Drive {
     public static PIDXController pidHdg, pidDist;
     public static double strCmd[] = new double[2]; //Storage for steer return
 
-    public static double hdgFB() {return IO.navX.getNormalizeTo180();}  //Only need hdg to Hold Angle 0 or 180
+    public static double hdgFB() {return IO.navX.getNormalizedTo180();}  //Only need hdg to Hold Angle 0 or 180
     public static void hdgRst() { IO.navX.reset(); }
     public static double distFB() { return (IO.drvEnc_L.feet() + IO.drvEnc_R.feet()) / 2; }
     public static void distRst() { IO.drvEnc_L.reset(); IO.drvEnc_R.reset(); }
@@ -98,8 +98,8 @@ public class Drive {
             System.out.println("Bad Diff Drive type - " + diffType);
         }
         // System.out.println("Drive-" + diffType + ":\tlSpd: " + lSpdY + "\trSpdRot: " + rSpdRot_XY);
-        SmartDashboard.putNumber("Drive/MtrL Out", IO.drvMasterTSRX_L.get());
-        SmartDashboard.putNumber("Drive/MtrR Out", IO.drvMasterTSRX_R.get());
+        SmartDashboard.putNumber("Drive/MtrL Out", IO.drvLead_L.get());
+        SmartDashboard.putNumber("Drive/MtrR Out", IO.drvLead_R.get());
     }
 
     /**

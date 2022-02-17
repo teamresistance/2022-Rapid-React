@@ -5,6 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.io.hdw_io.IO;
+import frc.io.joysticks.JS_IO;
+import frc.robot.subsystem.Climber;
+import frc.robot.subsystem.Shooter;
+import frc.robot.subsystem.Snorfler;
+import frc.robot.subsystem.Test_Hdw;
+import frc.robot.subsystem.drive.Drv_Teleop;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,7 +32,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-      
+      IO.init();
+      JS_IO.init();
     }
 
     /**
@@ -40,6 +49,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        IO.update();
+        JS_IO.update();
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -58,11 +69,21 @@ public class Robot extends TimedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
+        Test_Hdw.init();
+        Drv_Teleop.init();
+        Snorfler.init();
+        Shooter.init();
+        Climber.init();
     }
 
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
+        Test_Hdw.update();
+        Drv_Teleop.update();
+        Snorfler.update();
+        Shooter.update();
+        Climber.update();
     }
 
     /** This function is called once when the robot is disabled. */
