@@ -25,6 +25,8 @@ public class Shooter {
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
     private static boolean low_select = false; // Used to command the pressure SV. Default is hi press, switch.
+    /** request from Drv_Auto to Shooter, resets itself */
+    public static boolean reqShootDrvAuto = false; // request from Drv_Auto to shoot
 
     /**
      * Initialize Shooter stuff. Called from telopInit (maybe robotInit(?)) in
@@ -34,6 +36,7 @@ public class Shooter {
         sdbInit();
         cmdUpdate(false, false, false); // select goal, left trigger, right trigger
         state = 0; // Start at state 0
+        reqShootDrvAuto = false;
     }
 
     /**
@@ -43,8 +46,8 @@ public class Shooter {
      * of a JS button but can be caused by other events.
      */
     public static void update() {
-        low_select = axSelLow.get() < 0.10;
-        if (btnFire.onButtonPressed() && state == 0) {
+        low_select = axSelLow.get() < 0.10 || reqShootDrvAuto;
+        if ((btnFire.onButtonPressed() || reqShootDrvAuto) && state == 0) {
             state = 1;
         }
 
@@ -65,7 +68,7 @@ public class Shooter {
         switch (state) {
             case 0: // Everything is off, no pressure, pressure default high, Ltrig and Rtrig off.
                 cmdUpdate(low_select, false, false);
-                stateTmr.hasExpired(0.05, state); // Initialize timer for covTrgr. Do nothing.
+                stateTmr.clearTimer(); // Initialize timer for covTrgr. Do nothing.
                 break;
             case 1: // btn Fire, wit for prs settle
                 cmdUpdate(low_select, false, false);
@@ -79,24 +82,28 @@ public class Shooter {
                 cmdUpdate(low_select, false, false);
                 if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
-            case 4: // Fire left, left return to 0
+            case 4: // Fire right, return to 0, reset the reqShootDrvAuto 
                 cmdUpdate(low_select, false, true);
-                if (stateTmr.hasExpired(0.1, state)) state = 0;
+                if (stateTmr.hasExpired(0.1, state)){
+                    state = 0;
+                    reqShootDrvAuto = false;
+                }
                 break;
+            //-----------Reject Balls ---------------
             case 11: // Reject left with low prs, wait for settle
-                cmdUpdate(true, false, false);
+                cmdUpdate(false, false, false);
                 if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
             case 12: // trigger left, wait and return to 0
-                cmdUpdate(true, true, false);
+                cmdUpdate(false, true, false);
                 if (stateTmr.hasExpired(0.1, state)) state = 0;
                 break;
             case 13: // Reject right with low prs, wait for settle
+                cmdUpdate(false, false, false);
                 if (stateTmr.hasExpired(0.1, state)) state++;
-                cmdUpdate(true, false, false);
                 break;
             case 14: // trigger right, wait and return to 0
-                cmdUpdate(true, false, true);
+                cmdUpdate(false, false, true);
                 if (stateTmr.hasExpired(0.1, state)) state = 0;
                 break;
             default: // all off

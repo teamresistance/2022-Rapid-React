@@ -1,31 +1,37 @@
 package frc.robot.subsystem;
 
+
+import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.io.hdw_io.IO;
 import frc.io.hdw_io.util.*;
 import frc.io.joysticks.JS_IO;
 import frc.io.joysticks.util.Button;
-import frc.util.Timer;
-import com.playingwithfusion.CANVenom;
+
+
+
 public class Snorfler {
     // hdw defintions:
-    private static CANVenom snoflerMotor; 
-    private static ISolenoid snofleArm;
+    private static ISolenoid snorflerExt_SV = IO.snorflerExt_SV;
+    public static Victor snorfFeed_Mtr = IO.snorfFeed_Mtr; //Feed motor on snorfler
+    public static Victor snorfElvLo_Mtr = IO.snorfElvLo_Mtr; //Lower elevator motor
+    public static Victor snorfElvHi_Mtr = IO.snorfElvHi_Mtr; //High elevator motor
 
     // joystick buttons:
-    private static Button btnSnorfleTgl = JS_IO.btnTglSnorfler;
-
+    private static Button btnSnorfle = JS_IO.btnSnorfle;
     // variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
-    private static Timer stateTmr = new Timer(.05); // Timer for state machine
-
+    public static boolean reqsnorfDrvAuto;  //Request to enable the snorfler from Drv Auto system
+    
     /**
      * Initialize Shooter stuff. Called from telopInit (maybe robotInit(?)) in
      * Robot.java
      */
     public static void init() {
         sdbInit();
-        cmdUpdate(0.0, false); // select goal, left trigger, right trigger
+        cmdUpdate(false); // select goal, left trigger, right trigger
         state = 0; // Start at state 0
+        reqsnorfDrvAuto = false;
     }
 
     /**
@@ -35,47 +41,39 @@ public class Snorfler {
      * of a JS button but can be caused by other events.
      */
     public static void update() {
-        //Add code here to start state machine or override the sm sequence
+        state = btnSnorfle.isDown() || reqsnorfDrvAuto ? 1 : 0; // for snorfler 
         smUpdate();
         sdbUpdate();
-        if (btnSnorfleTgl.onButtonPressed()) state = state == 0 ? 1 : 0;
     }    
 
     private static void smUpdate() { // State Machine Update
 
         switch (state) {
             case 0: // Everything is off
-                cmdUpdate(0.0, false);
-                stateTmr.hasExpired(0.05, state); // Initialize timer for covTrgr. Do nothing.
+                cmdUpdate(false);
                 break;
-            case 1: // Put arm down, wait for action
-                cmdUpdate(0.0, true);
-                if (stateTmr.hasExpired(0.1, state)) state++;
-                break;
-            case 2: // Start collector
-                cmdUpdate(0.7, true);
+            case 1: // Do sumpthin and wait for action
+                cmdUpdate(true);
                 break;
             default: // all off
-                System.out.println("Bad Snorfler state: " + state);
-                cmdUpdate(0.0, false);
+                cmdUpdate(false);
+                System.out.println("bad snorfle state: " + state);
                 break;
 
         }
     }
 
     /**
-     * Issue spd setting as rpmSP if isVelCmd true else as percent cmd.
      * 
-     * @param select_low    - select the low goal, other wise the high goal
-     * @param left_trigger  - triggers the left catapult
-     * @param right_trigger - triggers the right catapult
+     * @param snorfEna    - drops the snorfler arm, turns on all motors
      * 
      */
-    private static void cmdUpdate(double mtrcmd, boolean armcmd) {
-        //Check any safeties, modify passed cmds if needed.
-        //Send commands to hardware
-        snoflerMotor.set(mtrcmd);
-        snofleArm.set(armcmd);
+    private static void cmdUpdate(boolean snorfEna) {
+        
+        snorflerExt_SV.set(snorfEna);
+        snorfFeed_Mtr.set(snorfEna ? 0.7 : 0.0); // if snorf is enabled then 0.7 speed, otherwise 0.0
+        snorfElvLo_Mtr.set(snorfEna ? 0.5 : 0.0);// if snorf is enabled then 0.5 speed, otherwise 0.0
+        snorfElvHi_Mtr.set(snorfEna ? 0.5 : 0.0);// if snorf is enabled then 0.5 speed, otherwise 0.0
 
     }
     /*-------------------------  SDB Stuff --------------------------------------
@@ -87,7 +85,11 @@ public class Snorfler {
 
     /**Update the Smartdashboard. */
     private static void sdbUpdate() {
-        SmartDashboard.putNumber("Snofler/state", state);
+        //Put stuff to retrieve from sdb here.  Must have been initialized in sdbInit().
+        // sumpthin = SmartDashboard.getBoolean("ZZ_Template/Sumpthin", sumpthin.get());
+
+        //Put other stuff to be displayed here
+        SmartDashboard.putNumber("Snorfler/state", state);
     }
 
     // ----------------- Shooter statuses and misc.-----------------

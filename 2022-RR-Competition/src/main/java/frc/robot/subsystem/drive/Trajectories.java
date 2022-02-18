@@ -92,7 +92,7 @@ public class Trajectories {
             new TurnNMove(0.0, 5.7, 1.0),
             new TankTurnHdg(-10.0, 0.75, 0.1),    //Turn to the right
             new TurnNMove(0.0, 1.0, 1.0),    //Test Traj
-
+            new ShootDrvAuto(), // test shooter
             // new TurnNMove(0.0, 5.0, 1.0),
             // new TankTurnHdg(40.0, 0.1, 0.85),
             // new TurnNMove(44.0, 4.4, 1.0),

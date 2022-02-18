@@ -51,7 +51,7 @@ public class JS_IO {
     public static Button btnHold180 = new Button();     //Rotate to 180 hdg and only apply fwd/rev
 
     // Snorfler
-    public static Button btnTglSnorfler = new Button();    //Toggle snorfling
+    public static Button btnSnorfle = new Button();    //Toggle snorfling
 
     // Shooter
     public static Axis axGoalSel = new Axis();          //Slider to select goal, dn is low, up is hi
@@ -155,7 +155,7 @@ public class JS_IO {
         btnHold180 = new Button(leftJoystick, 9);     //Rotate to 180 hdg and only apply fwd/rev
 
         // snorfler buttons
-        btnTglSnorfler.setButton(coJoystick, 3);
+        btnSnorfle.setButton(coJoystick, 3);
         
         // shooting buttons
         axGoalSel.setAxis(coJoystick, 3);
@@ -194,7 +194,7 @@ public class JS_IO {
         // btnInvOrientation.setButton(gamePad, 10); // r-stick push
 
         // snorfler buttons
-        btnTglSnorfler.setButton(gamePad, 1); // A
+        btnSnorfle.setButton(gamePad, 1); // A
 
 
         // shooting buttons
@@ -222,7 +222,7 @@ public class JS_IO {
         btnHold180.setButton(null, 0);
 
         // snorfler buttons
-        btnTglSnorfler.setButton(null, 0);
+        btnSnorfle.setButton(null, 0);
         
         // shooting buttons
         axGoalSel.setAxis(null, 0);
