@@ -1,6 +1,5 @@
 package frc.io.hdw_io.util;
 
-
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
