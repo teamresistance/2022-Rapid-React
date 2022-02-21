@@ -6,19 +6,20 @@ import frc.robot.subsystem.Shooter;
  * This TrajFunction controls the Shooter.
  */
 public class ShootDrvAuto extends ATrajFunction {
-
+    boolean low_select = true;
 
     /**
      * Constructor to control the Shooter
-     * @param _shootEna Shoot for high goal. Resets itself
+     * @param low_select false: shoots high, true: shoots low 
      */
-    public ShootDrvAuto() {
+    public ShootDrvAuto(boolean low_select) {
+        this.low_select = low_select;
     }
 
     public void execute() {
         switch (state) {
         case 0: // set shooter control
-            Shooter.reqShootDrvAuto = true; // shooter resets it
+            Shooter.reqShootLowDrvAuto = this.low_select; // shooter resets it
             state++;
             System.out.println("Shoot - 0: ---------- Init -----------");
         case 1:

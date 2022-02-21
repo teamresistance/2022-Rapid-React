@@ -26,7 +26,8 @@ public class Shooter {
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
     private static boolean low_select = false; // Used to command the pressure SV. Default is hi press, switch.
     /** request from Drv_Auto to Shooter, resets itself */
-    public static boolean reqShootDrvAuto = false; // request from Drv_Auto to shoot
+    public static Boolean reqShootLowDrvAuto = null; // request from Drv_Auto to shoot 
+    //null: not shooting, false: shooting high, true: shooting low
 
     /**
      * Initialize Shooter stuff. Called from telopInit (maybe robotInit(?)) in
@@ -36,7 +37,7 @@ public class Shooter {
         sdbInit();
         cmdUpdate(false, false, false); // select goal, left trigger, right trigger
         state = 0; // Start at state 0
-        reqShootDrvAuto = false;
+        reqShootLowDrvAuto = null;
     }
 
     /**
@@ -46,8 +47,13 @@ public class Shooter {
      * of a JS button but can be caused by other events.
      */
     public static void update() {
-        low_select = axSelLow.get() < 0.10 || reqShootDrvAuto;
-        if ((btnFire.onButtonPressed() || reqShootDrvAuto) && state == 0) {
+        if (reqShootLowDrvAuto == null) {
+            low_select = axSelLow.get() < 0.10;
+        } else {
+            state = 1;
+            low_select = reqShootLowDrvAuto;
+        }
+        if ((btnFire.onButtonPressed()) && state == 0) {
             state = 1;
         }
 
@@ -70,7 +76,7 @@ public class Shooter {
                 cmdUpdate(low_select, false, false);
                 stateTmr.clearTimer(); // Initialize timer for covTrgr. Do nothing.
                 break;
-            case 1: // btn Fire, wit for prs settle
+            case 1: // btn Fire, wait for prs settle
                 cmdUpdate(low_select, false, false);
                 if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
@@ -86,7 +92,7 @@ public class Shooter {
                 cmdUpdate(low_select, false, true);
                 if (stateTmr.hasExpired(0.1, state)){
                     state = 0;
-                    reqShootDrvAuto = false;
+                    reqShootLowDrvAuto = false;
                 }
                 break;
             //-----------Reject Balls ---------------
@@ -95,7 +101,7 @@ public class Shooter {
                 if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
             case 12: // trigger left, wait and return to 0
-                cmdUpdate(false, true, false);
+                cmdUpdate(false, true, false); //tbd
                 if (stateTmr.hasExpired(0.1, state)) state = 0;
                 break;
             case 13: // Reject right with low prs, wait for settle

@@ -74,30 +74,29 @@ public class Trajectories {
 
     public static ATrajFunction[] getCargo1(double pwr) {
         ATrajFunction traj[] = {
-            new TurnNMove(0,    2.5, pwr), 
-            new TurnNMove(-55, 5.17, pwr), 
-            new TurnNMove(0,    8.5, pwr),
-            new TurnNMove(57,   3.2, pwr),
-            new TankTurnHdg(135, 0.0,  0.80),
-            new TurnNMove(132,  5.0, pwr),
-            new TurnNMove(180,  8.5, pwr), 
-            new TurnNMove(-125,4.57, pwr),
-            new TurnNMove(180,  2.0, pwr)
+            new CoorOffset(-66.0, 2.0, -4.0),
+            new ShootDrvAuto(false),
+            new TurnNMove(-66.0, -7.4),
+            new SnorfDrvAuto(true),
+            new Waypt(7.28, -10.33), // B Ball
+            new Waypt(12.41, -2.14), // A Ball
+            new SnorfDrvAuto(false),
+            new Waypt(2, -4.5),
+            new TurnNMove(-66, 0.5),
+            new ShootDrvAuto(false),
         };
         return traj;
     }
 
     public static ATrajFunction[] getCargo2(double pwr) {
         ATrajFunction[] traj = {
-            new TurnNMove(0.0, 5.7, 1.0),
-            new TankTurnHdg(-10.0, 0.75, 0.1),    //Turn to the right
-            new TurnNMove(0.0, 1.0, 1.0),    //Test Traj
-            new ShootDrvAuto(), // test shooter
-            // new TurnNMove(0.0, 5.0, 1.0),
-            // new TankTurnHdg(40.0, 0.1, 0.85),
-            // new TurnNMove(44.0, 4.4, 1.0),
-            // new TankTurnHdg(-165.0, 0.1, 0.9),
-            // new TurnNMove(180, 18, 100)
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(false),
+            new TurnNMove(24.0, -7.0),
+            new SnorfDrvAuto(true),
+            new Waypt(8, 3),
+            new TurnNMove(24.0, 0.5),
+            new ShootDrvAuto(false),
         };
         return traj;
     }

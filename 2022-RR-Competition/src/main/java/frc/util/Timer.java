@@ -11,8 +11,8 @@ History -
 package frc.util;
 
 public class Timer {
-    private double time;            //Time in milli Seconds.  Passed as Seconds.
-    private double timer;           //Current time + delay
+    private long time;            //Time in milli Seconds.  Passed as Seconds.
+    private long timer;           //Current time + delay
     private Integer covTrgr = null;       //Integer cov trigger
     private Boolean trgr = null;   //Boolean trigger
 
@@ -23,7 +23,7 @@ public class Timer {
      * @param delay default time in seconds.
      */
     public Timer(double delay){
-        this.time = delay * 1000;
+        this.time = (long) delay * 1000;
         startTimer();               //?? Needed in constructor???
     }
 
@@ -35,7 +35,7 @@ public class Timer {
      */
     public boolean hasExpired(double delay, int covTrgr){
         if(this.covTrgr == null || this.covTrgr != covTrgr){ // new state found
-            this.time = delay * 1000;
+            this.time = (long) delay * 1000;
             timer = System.currentTimeMillis() + this.time; // new time to wait for
             this.covTrgr = covTrgr; // save new state
         }
@@ -52,7 +52,7 @@ public class Timer {
     public boolean hasExpired(double delay, boolean trgr){
         
         if(this.trgr == null || this.trgr != trgr){
-            this.time = delay * 1000.0;
+            this.time = (long) delay * 1000;
             startTimer();
             this.trgr = trgr;
         }
@@ -70,7 +70,7 @@ public class Timer {
      * @param sec delay in seconds
      */
     public void startTimer(double sec){
-        time = sec * 1000.0;
+        time = (long) sec * 1000;
         startTimer();
     }
 
