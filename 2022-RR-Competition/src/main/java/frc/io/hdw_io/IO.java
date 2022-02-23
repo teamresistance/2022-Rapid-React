@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import com.playingwithfusion.CANVenom;
 import com.playingwithfusion.CANVenom.BrakeCoastMode;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.I2C;
 
 
 public class IO {
@@ -51,6 +53,8 @@ public class IO {
     public static Victor snorfElvLo_Mtr = new Victor(7);    //Lower elevator motor
     public static Victor snorfElvHi_Mtr = new Victor(8);    //High elevator motor
     public static ISolenoid snorflerExt_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 0, false); // Extends both feeders
+
+    public static ColorSensorV3 ballColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
     // Shooter
     public static ISolenoid select_low_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 1);    // Defaults hi prs; true for lo prs

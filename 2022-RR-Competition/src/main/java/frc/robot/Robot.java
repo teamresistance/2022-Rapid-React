@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
 import frc.robot.subsystem.Climber;
@@ -30,8 +32,29 @@ public class Robot extends TimedRobot {
      * for any
      * initialization code.
      */
+    
+    public static SendableChooser<String> teamColorchsr = new SendableChooser<String>();
+    private static String[] chsrDesc = {
+        "Blue", "Red"
+    };
+
+    /**Initialize Traj chooser */
+    public static void teamColorchsrInit(){
+        for(int i = 0; i < chsrDesc.length; i++){
+            teamColorchsr.addOption(chsrDesc[i], chsrDesc[i]);
+        }
+        teamColorchsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
+        SmartDashboard.putData("Robot/TeamColor", teamColorchsr);
+    }
+
+    /**Show on sdb traj chooser info.  Called from robotPeriodic  */
+    public static void teamColorchsrUpdate(){
+        SmartDashboard.putString("Robot/TeamColorChoosen", teamColorchsr.getSelected());
+    }
+
     @Override
     public void robotInit() {
+      teamColorchsrInit();
       IO.init();
       JS_IO.init();
     }
@@ -49,6 +72,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        teamColorchsrUpdate();
         IO.update();
         JS_IO.update();
     }
