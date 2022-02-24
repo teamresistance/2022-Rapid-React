@@ -39,6 +39,7 @@ public class IO {
     public static CANVenom drvLead_R = new CANVenom(12); // Cmds right wheels. Includes encoders
     public static CANVenom drvFollower_L = new CANVenom(15); // Resrvd 3 & 4 maybe
     public static CANVenom drvFollower_R = new CANVenom(16); // Resrvd 7 & 8 maybe
+    //As of 2022 DifferentialDrive no longer inverts the right motor.  Do this in the motor controller.
     public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
 
     public static final double drvLeadTPF_L = 368.4;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
@@ -97,7 +98,7 @@ public class IO {
         // drvLead_L.setSensorPhase(false); // Adjust this to correct phasing with motor
 
         // drvLead_R.configFactoryDefault();
-        drvLead_R.setInverted(false); // Inverts motor direction and encoder if attached
+        drvLead_R.setInverted(true); // Inverts motor direction and encoder if attached
         drvLead_R.setBrakeCoastMode(BrakeCoastMode.Brake);
         // drvLead_R.setSensorPhase(false); // Adjust this to correct phasing with motor
 

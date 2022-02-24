@@ -128,5 +128,12 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
+        SmartDashboard.putNumber("JS Axis/LX 0", JS_IO.leftJoystick.getRawAxis(0)); //Arc Rot
+        SmartDashboard.putNumber("JS Axis/LY 1", JS_IO.leftJoystick.getRawAxis(1)); //Arc Spd, Tank Left
+        SmartDashboard.putNumber("JS Axis/RX 0", JS_IO.rightJoystick.getRawAxis(0));//na
+        SmartDashboard.putNumber("JS Axis/RY 1", JS_IO.rightJoystick.getRawAxis(1));//Tank Right
+        //Enable only 1 at a time!  Comment out the other
+        // IO.diffDrv_M.tankDrive(-JS_IO.leftJoystick.getRawAxis(1), -JS_IO.rightJoystick.getRawAxis(1));
+        IO.diffDrv_M.arcadeDrive(-JS_IO.leftJoystick.getRawAxis(1), JS_IO.leftJoystick.getRawAxis(0));
     }
 }
