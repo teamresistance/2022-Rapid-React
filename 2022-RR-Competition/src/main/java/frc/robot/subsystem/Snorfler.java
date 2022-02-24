@@ -21,6 +21,7 @@ public class Snorfler {
     public static Victor snorfElvLo_Mtr = IO.snorfElvLo_Mtr; // Lower elevator motor
     public static Victor snorfElvHi_Mtr = IO.snorfElvHi_Mtr; // High elevator motor
 
+    //Defines RevRobotics 3 color sensor and RGB colors to sensr ball colors, Red & Blue.
     public static ColorSensorV3 ballColorSensor = IO.ballColorSensor;
     public static final ColorMatch colorMatcher = new ColorMatch();
     private static final Color kBlueTarget = new Color(0.17, 0.41, 0.41); // blue: 17 41 41
@@ -34,20 +35,17 @@ public class Snorfler {
 
     // variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
-    public static boolean reqsnorfDrvAuto; // Request to enable the snorfler from Drv Auto system
-    public static String colorString;
-    public static Color detectedColor;
-    public static ColorMatchResult match;
     private static Timer snorfTimer = new Timer(0.1);
     private static Timer colorTimer = new Timer(0.1);
+    public static boolean reqsnorfDrvAuto; // Request to enable the snorfler from Drv Auto system
+
+    public static Color detectedColor;
+    public static String colorString;
+    public static ColorMatchResult match;
     private static String teamColor;
     private static String enemyColor;
 
-    public static enum dirSnorfler {
-        OFF,
-        FWD,
-        REJ,
-    }
+    public static enum dirSnorfler { OFF, FWD, REJ }
 
     /**
      * Initialize Shooter stuff. Called from telopInit (maybe robotInit(?)) in
@@ -73,22 +71,13 @@ public class Snorfler {
      * of a JS button but can be caused by other events.
      */
     public static void update() {
-        teamColor = Robot.teamColorchsr.getSelected();
-        enemyColor = teamColor == "Blue" ? "Red" : "Blue";
+        teamColor = Robot.teamColorchsr.getSelected();      //Driver choosen team color
+        enemyColor = teamColor == "Blue" ? "Red" : "Blue";  //The bad guy's color.
 
         if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && state == 0)  state = 1; // Starts the state machine
-        if ((btnSnorfle.isUp() || !reqsnorfDrvAuto) && state != 0) state = 0;
-        if (btnRejectSnorfle.isDown() && state < 3)  state = 3; 
+        if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) && state != 0) state = 0;
+        if (btnRejectSnorfle.isDown() && state == 2)  state = 3;
         if (btnRejectSnorfle.isUp() && state == 4) state = 0; // Goes back to off
-
-
-        state = btnSnorfle.isDown() || reqsnorfDrvAuto ? 1 : 0; // for snorfler
-        state = btnRejectSnorfle.isDown() ? 3 : 0; // for reject snorfle
-        smUpdate();
-        sdbUpdate();
-
-        detectedColor = ballColorSensor.getColor();
-        match = colorMatcher.matchClosestColor(detectedColor);
 
         if (match.color == kBlueTarget) {
             colorString = "Blue";
@@ -102,9 +91,15 @@ public class Snorfler {
             colorString = "Unknown";
         }
 
+        detectedColor = ballColorSensor.getColor();
+        match = colorMatcher.matchClosestColor(detectedColor);
+
+        smUpdate();
+        sdbUpdate();
 
     }
 
+    /**State Machine Update */
     private static void smUpdate() { // State Machine Update
 
         switch (state) {
@@ -164,10 +159,11 @@ public class Snorfler {
 
     }
     
-
+    /**Check if the color of the ball is OK to pass, our team color. */
     private static boolean checkColorOK() {
         return !(colorTimer.hasExpired(0.1, colorString.equals(enemyColor)));
     }
+
     /*-------------------------  SDB Stuff --------------------------------------
     /**Initialize sdb */
     private static void sdbInit() {
