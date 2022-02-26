@@ -228,11 +228,13 @@ public class JS_IO {
 
         // snorfler buttons
         btnSnorfle.setButton(null, 0);
+        btnRejectSnorfle.setButton(null, 0);
+        btnBadColor.setButton(null, 0);
         
         // shooting buttons
         axGoalSel.setAxis(null, 0);
         btnFire.setButton(null, 0);
-        btnRejectSnorfle.setButton(null, 0);
+        
 
 
         // climbing buttons
