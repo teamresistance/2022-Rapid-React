@@ -37,6 +37,7 @@ public class Snorfler {
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
     private static Timer snorfTimer = new Timer(0.1);
     private static Timer colorTimer = new Timer(0.1);
+    private static Timer holdoutTImer = new Timer(0.1);
     public static boolean reqsnorfDrvAuto; // Request to enable the snorfler from Drv Auto system
 
     public static Color detectedColor;
@@ -88,6 +89,7 @@ public class Snorfler {
 
         detectedColor = ballColorSensor.getColor();
         match = colorMatcher.matchClosestColor(detectedColor);
+        boolean ballRejHoldOut = false;
 
         // if button down and auto snorf, snorf ball            
         // if not button, stop snorfling                        
@@ -96,8 +98,10 @@ public class Snorfler {
 
         if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && state == 0)  state = 1; // Starts the state machine
         if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) && state != 0) state = 0;
-        if ((btnRejectSnorfle.isDown() || colorString.equals(enemyColor)))  state = 3;
-        if (btnRejectSnorfle.isUp() && state == 4) state = 0; // Goes back to off
+        if (btnRejectSnorfle.isDown())  state = 3;
+        if (colorString.equals(enemyColor)) ballRejHoldOut = true;
+        if (snorfTimer.hasExpired(1.0,ballRejHoldOut)) ballRejHoldOut = false;
+        if (btnRejectSnorfle.isUp() && state == 4 && !ballRejHoldOut) state = 0; // Goes back to off
 
         smUpdate();
         sdbUpdate();
