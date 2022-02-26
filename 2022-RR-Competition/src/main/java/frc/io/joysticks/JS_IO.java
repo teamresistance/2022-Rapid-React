@@ -52,7 +52,8 @@ public class JS_IO {
 
     // Snorfler
     public static Button btnSnorfle = new Button();    //Toggle snorfling
-    public static Button btnRejectSnorfle = new Button(); 
+    public static Button btnRejectSnorfle = new Button();
+    public static Button btnBadColor = new Button(); 
 
     // Shooter
     public static Axis axGoalSel = new Axis();          //Slider to select goal, dn is low, up is hi
@@ -157,6 +158,8 @@ public class JS_IO {
 
         // snorfler buttons
         btnSnorfle.setButton(coJoystick, 3);
+        btnRejectSnorfle.setButton(coJoystick, 3);
+        btnBadColor.setButton(coJoystick, 3);
         
         // shooting buttons
         axGoalSel.setAxis(coJoystick, 3);

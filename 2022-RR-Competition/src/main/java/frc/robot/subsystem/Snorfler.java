@@ -32,6 +32,7 @@ public class Snorfler {
     // joystick buttons:
     private static Button btnSnorfle = JS_IO.btnSnorfle;
     private static Button btnRejectSnorfle = JS_IO.btnRejectSnorfle;
+    private static Button btnBadColor = JS_IO.btnBadColor;
 
     // variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
@@ -90,6 +91,12 @@ public class Snorfler {
         detectedColor = ballColorSensor.getColor();
         match = colorMatcher.matchClosestColor(detectedColor);
         boolean ballRejHoldOut = false;
+
+        //Bad color Btn
+
+        if (btnBadColor.isDown()) {
+            colorString = enemyColor;
+        }
 
         // if button down and auto snorf, snorf ball            
         // if not button, stop snorfling                        
