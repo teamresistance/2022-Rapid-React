@@ -73,12 +73,7 @@ public class Snorfler {
     public static void update() {
         teamColor = Robot.teamColorchsr.getSelected();      //Driver choosen team color
         enemyColor = teamColor == "Blue" ? "Red" : "Blue";  //The bad guy's color.
-
-        if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && state == 0)  state = 1; // Starts the state machine
-        if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) && state != 0) state = 0;
-        if (btnRejectSnorfle.isDown() && state == 2)  state = 3;
-        if (btnRejectSnorfle.isUp() && state == 4) state = 0; // Goes back to off
-
+        
         if (match.color == kBlueTarget) {
             colorString = "Blue";
         } else if (match.color == kRedTarget) {
@@ -94,9 +89,19 @@ public class Snorfler {
         detectedColor = ballColorSensor.getColor();
         match = colorMatcher.matchClosestColor(detectedColor);
 
+        // if button down and auto snorf, snorf ball            
+        // if not button, stop snorfling                        
+        // if rejecting ball or see enemy color, reject ball    
+        // if not rejecting ball and done with rejecting, normal
+
+        if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && state == 0)  state = 1; // Starts the state machine
+        if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) && state != 0) state = 0;
+        if ((btnRejectSnorfle.isDown() || colorString.equals(enemyColor)))  state = 3;
+        if (btnRejectSnorfle.isUp() && state == 4) state = 0; // Goes back to off
+
         smUpdate();
         sdbUpdate();
-
+    
     }
 
     /**State Machine Update */
@@ -156,7 +161,6 @@ public class Snorfler {
                 snorfElvHi_Mtr.set(-0.5);
                 break;
         }
-
     }
     
     /**Check if the color of the ball is OK to pass, our team color. */
@@ -194,7 +198,7 @@ public class Snorfler {
     public static int getState() {
         return state;
     }
-
+ 
     /**
      * @return If the state machine is running, not idle.
      */
