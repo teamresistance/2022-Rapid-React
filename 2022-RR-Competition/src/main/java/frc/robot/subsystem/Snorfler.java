@@ -18,8 +18,7 @@ public class Snorfler {
     // hdw defintions:
     private static ISolenoid snorflerExt_SV = IO.snorflerExt_SV;
     public static Victor snorfFeed_Mtr = IO.snorfFeed_Mtr; // Feed motor on snorfler
-    public static Victor snorfElvLo_Mtr = IO.snorfElvLo_Mtr; // Lower elevator motor
-    public static Victor snorfElvHi_Mtr = IO.snorfElvHi_Mtr; // High elevator motor
+    public static Victor snorfElv_Mtrs = IO.snorfElv_Mtrs; // Upper & Lower elevator motor
 
     //Defines RevRobotics 3 color sensor and RGB colors to sensr ball colors, Red & Blue.
     public static ColorSensorV3 ballColorSensor = IO.ballColorSensor;
@@ -158,18 +157,15 @@ public class Snorfler {
         switch (direction) {
             case OFF:
                 snorfFeed_Mtr.set(0.0);     
-                snorfElvLo_Mtr.set(0.0);
-                snorfElvHi_Mtr.set(0.0);
+                snorfElv_Mtrs.set(0.0);
                 break;
             case FWD:
                 snorfFeed_Mtr.set(0.7); 
-                snorfElvLo_Mtr.set(0.5);
-                snorfElvHi_Mtr.set(0.5);
+                snorfElv_Mtrs.set(0.5);
                 break;
             case REJ:
                 snorfFeed_Mtr.set(-0.7); 
-                snorfElvLo_Mtr.set(-0.5);
-                snorfElvHi_Mtr.set(-0.5);
+                snorfElv_Mtrs.set(-0.5);
                 break;
         }
     }

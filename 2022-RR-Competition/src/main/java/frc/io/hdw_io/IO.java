@@ -51,8 +51,7 @@ public class IO {
 
     // Snorfler
     public static Victor snorfFeed_Mtr = new Victor(6);     //Feed motor on snorfler
-    public static Victor snorfElvLo_Mtr = new Victor(7);    //Lower elevator motor
-    public static Victor snorfElvHi_Mtr = new Victor(8);    //High elevator motor
+    public static Victor snorfElv_Mtrs = new Victor(7);    //Lower elevator motor
     public static ISolenoid snorflerExt_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 0, false); // Extends both feeders
 
     public static ColorSensorV3 ballColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
@@ -70,12 +69,12 @@ public class IO {
     public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 2);
     public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 3, true);
     public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 4, true);
-    public static InvertibleDigitalInput lockPinAExt_FB = new InvertibleDigitalInput(1,false);
-    public static InvertibleDigitalInput lockPinARet_FB = new InvertibleDigitalInput(2,false);
-    public static InvertibleDigitalInput lockPinBExt_FB = new InvertibleDigitalInput(3,false);
-    public static InvertibleDigitalInput lockPinBRet_FB = new InvertibleDigitalInput(4,false);
-    public static InvertibleDigitalInput sliderExt_FB   = new InvertibleDigitalInput(5,false);
-    public static InvertibleDigitalInput sliderRet_FB   = new InvertibleDigitalInput(6,false);
+    public static InvertibleDigitalInput lockPinAExt_L_FB = new InvertibleDigitalInput(1,true);
+    public static InvertibleDigitalInput lockPinAExt_R_FB = new InvertibleDigitalInput(2,true);
+    public static InvertibleDigitalInput lockPinBExt_L_FB = new InvertibleDigitalInput(3,true);
+    public static InvertibleDigitalInput lockPinBExt_R_FB = new InvertibleDigitalInput(4,true);
+    public static InvertibleDigitalInput sliderExt_L_FB   = new InvertibleDigitalInput(5,true);
+    public static InvertibleDigitalInput sliderExt_R_FB   = new InvertibleDigitalInput(6,true);
     
     /**
      * Initialize any hardware
@@ -119,8 +118,7 @@ public class IO {
      */
     private static void motorsInit() {
         snorfFeed_Mtr.setInverted(false);
-        snorfElvLo_Mtr.setInverted(false);
-        snorfElvHi_Mtr.setInverted(false);
+        snorfElv_Mtrs.setInverted(false);
 
         climbMotor.restoreFactoryDefaults();
         climbMotor.setInverted(false);
@@ -129,7 +127,7 @@ public class IO {
         climbMotorFollow.restoreFactoryDefaults();
         climbMotorFollow.setInverted(false);
         climbMotorFollow.setIdleMode(IdleMode.kBrake);
-        climbMotorFollow.follow(climbMotor);
+        // climbMotorFollow.follow(climbMotor);     //Disabled for teesting
     }
 
     public static void update() {
