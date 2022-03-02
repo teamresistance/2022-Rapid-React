@@ -151,7 +151,7 @@ public class Trajectories {
             new ShootDrvAuto(false),
             new TurnNMove(24.0, -7.4),
             new SnorfDrvAuto(true),
-            // new Wayxdpt(-7, -11), // C Ball
+            new Waypt(-7, -11), // C Ball
             new SnorfDrvAuto(false),
             new Waypt(-2, -5),
             new TurnNMove(24.0, 0.5),
