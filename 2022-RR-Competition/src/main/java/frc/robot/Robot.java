@@ -15,6 +15,8 @@ import frc.robot.subsystem.Shooter;
 import frc.robot.subsystem.Snorfler;
 import frc.robot.subsystem.Test_Hdw;
 import frc.robot.subsystem.drive.Drv_Teleop;
+import edu.wpi.first.wpilibj.Relay;
+
 import frc.robot.testing.ClimbTest;
 import frc.robot.testing.DriveTest;
 import frc.robot.testing.ShootTest;
@@ -31,6 +33,8 @@ import frc.robot.testing.SnorfTest;
  * project.
  */
 public class Robot extends TimedRobot {
+
+    private static boolean cmprEna = true;  //Don't need cmpr when testing drive.
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -60,8 +64,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
       teamColorchsrInit();
-    //   IO.init();
-    //   JS_IO.init();
+      IO.init();
+      JS_IO.init();
     }
 
     /**
@@ -77,9 +81,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        //Pneu. system has leak.  Dont need it when testing drive.
+        cmprEna = SmartDashboard.getBoolean("Robot/Cmpr Enabled", cmprEna);
+        IO.compressorRelay.set(IO.compressor1.enabled() && cmprEna ? Relay.Value.kForward : Relay.Value.kOff);
+
         teamColorchsrUpdate();
-        // IO.update();
-        // JS_IO.update();
+        IO.update();
+        JS_IO.update();
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -98,21 +106,21 @@ public class Robot extends TimedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        Test_Hdw.init();
-        Drv_Teleop.init();
-        Snorfler.init();
-        Shooter.init();
-        Climber.init();
+        // Test_Hdw.init();
+        //Drv_Teleop.init();
+        // Snorfler.init();
+        // Shooter.init();
+        // Climber.init();
     }
 
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        Test_Hdw.update();
-        Drv_Teleop.update();
-        Snorfler.update();
-        Shooter.update();
-        Climber.update();
+        // Test_Hdw.update();
+      //  Drv_Teleop.update();
+        // Snorfler.update();
+        // Shooter.update();
+        // Climber.update();
     }
 
     /** This function is called once when the robot is disabled. */
@@ -128,16 +136,18 @@ public class Robot extends TimedRobot {
     /** This function is called once when test mode is enabled. */
     @Override
     public void testInit() {
+        ClimbTest.init();
+       // SnorfTest.init();
     }
 
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
         //Test to checkout individual devices.  Run one at a tme.
-        SnorfTest.update();
-        ShootTest.update();
+        //SnorfTest.update();
+        //ShootTest.update();
         // DriveTest.update();
-        // ClimbTest.update();
+        ClimbTest.update();
 
     }
 

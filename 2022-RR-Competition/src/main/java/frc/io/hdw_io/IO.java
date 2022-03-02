@@ -35,10 +35,10 @@ public class IO {
     public static Relay compressorRelay = new Relay(0);
 
     // Drive
-    public static CANVenom drvLead_L = new CANVenom(11); // Cmds left wheels. Includes encoders
-    public static CANVenom drvLead_R = new CANVenom(12); // Cmds right wheels. Includes encoders
-    public static CANVenom drvFollower_L = new CANVenom(15); // Resrvd 3 & 4 maybe
-    public static CANVenom drvFollower_R = new CANVenom(16); // Resrvd 7 & 8 maybe
+    public static CANVenom drvLead_R = new CANVenom(11); // Cmds left wheels. Includes encoders
+    public static CANVenom drvFollower_R = new CANVenom(12); // Resrvd 7 & 8 maybe
+    public static CANVenom drvLead_L = new CANVenom(15); // Cmds right wheels. Includes encoders
+    public static CANVenom drvFollower_L = new CANVenom(16); // Resrvd 3 & 4 maybe
     //As of 2022 DifferentialDrive no longer inverts the right motor.  Do this in the motor controller.
     public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
 
@@ -50,31 +50,31 @@ public class IO {
     public static CoorSys coorXY = new CoorSys(navX, drvEnc_L, drvEnc_R);   //CoorXY & drvFeet
 
     // Snorfler
-    public static Victor snorfFeed_Mtr = new Victor(6);     //Feed motor on snorfler
-    public static Victor snorfElv_Mtrs = new Victor(7);    //Lower elevator motor
-    public static ISolenoid snorflerExt_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 0, false); // Extends both feeders
+    public static Victor snorfFeed_Mtr = new Victor(0);     //Feed motor on snorfler
+    public static Victor snorfElv_Mtrs = new Victor(1);    //Lower elevator motor
+    public static ISolenoid snorflerExt_SV = new InvertibleSolenoid(2, PneumaticsModuleType.CTREPCM, 1, false); // Extends both feeders
 
     public static ColorSensorV3 ballColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
     // Shooter
     public static ISolenoid select_low_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 1);    // Defaults hi prs; true for lo prs
-    public static ISolenoid catapult_L_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 2); // Left catapult trigger. 
-    public static ISolenoid catapult_R_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 3);// Right catapult trigger.
+    public static ISolenoid catapult_L_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 0); // Left catapult trigger. 
+    public static ISolenoid catapult_R_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 2);// Right catapult trigger.
 
     // Climb
     public static CANSparkMax climbMotor       = new CANSparkMax(6, MotorType.kBrushless);
     public static CANSparkMax climbMotorFollow = new CANSparkMax(7, MotorType.kBrushless);
     public static ISolenoid climbBrakeRel_SV   = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 0);
-    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 1);
-    public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 2);
-    public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 3, true);
-    public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 4, true);
+    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 4);
+    public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 5);
+    public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 2, false);
+    public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 3, true);
     public static InvertibleDigitalInput lockPinAExt_L_FB = new InvertibleDigitalInput(1,true);
     public static InvertibleDigitalInput lockPinAExt_R_FB = new InvertibleDigitalInput(2,true);
     public static InvertibleDigitalInput lockPinBExt_L_FB = new InvertibleDigitalInput(3,true);
     public static InvertibleDigitalInput lockPinBExt_R_FB = new InvertibleDigitalInput(4,true);
-    public static InvertibleDigitalInput sliderExt_L_FB   = new InvertibleDigitalInput(5,true);
-    public static InvertibleDigitalInput sliderExt_R_FB   = new InvertibleDigitalInput(6,true);
+    public static InvertibleDigitalInput sliderExt_L_FB   = new InvertibleDigitalInput(5,false);
+    public static InvertibleDigitalInput sliderExt_R_FB   = new InvertibleDigitalInput(6,false);
     
     /**
      * Initialize any hardware
@@ -105,9 +105,11 @@ public class IO {
         // drvFollower_L.configFactoryDefault();
         drvFollower_L.setInverted(false);
         drvFollower_L.setBrakeCoastMode(BrakeCoastMode.Brake);
+        // drvFollower_L.follow(drvLead_L);
         // drvFollower_R.configFactoryDefault();
         drvFollower_R.setInverted(true);
         drvFollower_R.setBrakeCoastMode(BrakeCoastMode.Brake);
+        // drvFollower_R.follow(drvLead_R);
 
         // drvLead_L.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
         // drvLead_R.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -117,16 +119,16 @@ public class IO {
      * Initialize other motors besides the drive motors.
      */
     private static void motorsInit() {
-        snorfFeed_Mtr.setInverted(false);
-        snorfElv_Mtrs.setInverted(false);
+        snorfFeed_Mtr.setInverted(true);
+        snorfElv_Mtrs.setInverted(true);
 
         climbMotor.restoreFactoryDefaults();
-        climbMotor.setInverted(false);
-        climbMotor.setIdleMode(IdleMode.kBrake);
+        // climbMotor.setInverted(false);
+        // climbMotor.setIdleMode(IdleMode.kCoast);
 
-        climbMotorFollow.restoreFactoryDefaults();
-        climbMotorFollow.setInverted(false);
-        climbMotorFollow.setIdleMode(IdleMode.kBrake);
+        // climbMotorFollow.restoreFactoryDefaults();
+        // climbMotorFollow.setInverted(false);
+        // climbMotorFollow.setIdleMode(IdleMode.kCoast);
         // climbMotorFollow.follow(climbMotor);     //Disabled for teesting
     }
 

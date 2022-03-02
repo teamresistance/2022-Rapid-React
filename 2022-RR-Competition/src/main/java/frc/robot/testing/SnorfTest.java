@@ -2,11 +2,12 @@ package frc.robot.testing;
 
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class SnorfTest {
     public static void init(){
-        IO.snorfFeed_Mtr.setInverted(false);
-        IO.snorfElv_Mtrs.setInverted(false);
+       
     }
 
     public static void update(){
@@ -15,5 +16,5 @@ public class SnorfTest {
 
         IO.snorflerExt_SV.set(JS_IO.btnSnorfle.isDown());   //CB 3
     }
-    
+
 }

@@ -47,7 +47,7 @@ public class Drv_Teleop extends Drive {
         Drive.init();
 
         sdbInit();
-        teleDrvChoice = teleDrvChsr.getSelected();
+        // teleDrvChoice = teleDrvChsr.getSelected();
         cmdUpdate(0, 0);
         IO.navX.reset();
 

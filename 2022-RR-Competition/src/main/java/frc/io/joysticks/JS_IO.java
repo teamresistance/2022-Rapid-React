@@ -43,6 +43,8 @@ public class JS_IO {
     public static Axis axLeftX = new Axis();        // Left JS X
     public static Axis axRightY = new Axis();       // Right JS Y
     public static Axis axRightX = new Axis();       // Right JS X
+    public static Axis axCoDrvY = new Axis();       // Co Drvr JS Y
+    public static Axis axCoDrvX = new Axis();       // Co Drvr JS X
 
     public static Button btnScaledDrive = new Button();     // scale the drive
     public static Button btnInvOrientation = new Button();  // invert the orientation of the robot (joystick: forwards
@@ -140,12 +142,13 @@ public class JS_IO {
         // All stick axisesssss
         axLeftDrive.setAxis(leftJoystick, 1);
         axRightDrive.setAxis(rightJoystick, 1);
-        // axClimb.setAxis(coJoystick, 1);
 
         axLeftX.setAxis(leftJoystick, 0);       //Added to test drive3
         axLeftY.setAxis(leftJoystick, 1);
         axRightX.setAxis(rightJoystick, 0);
         axRightY.setAxis(rightJoystick, 1);
+        axCoDrvX.setAxis(coJoystick, 0);
+        axCoDrvY.setAxis(coJoystick, 1);
 
         // Drive buttons
         btnScaledDrive.setButton(rightJoystick, 3);

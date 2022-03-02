@@ -32,9 +32,9 @@ public class DriveTest {
 
     public static void update(){
         //--------- !!! DISABLE FOLLOWER FOR FIRST TESTS !!! -----------
-        IO.drvLead_L.set(-JS_IO.axLeftY.get());
-        IO.drvLead_R.set(-JS_IO.axRightY.get());
-
+       // IO.drvLead_L.set(-JS_IO.axLeftY.get());
+        //IO.drvLead_R.set(-JS_IO.axRightY.get());
+        IO.diffDrv_M.tankDrive(-JS_IO.axLeftY.get(), -JS_IO.axRightY.get());
         // IO.drvFollower_L.set(-JS_IO.axLeftY.get());
         // IO.drvFollower_R.set(-JS_IO.axRightY.get());
     }
