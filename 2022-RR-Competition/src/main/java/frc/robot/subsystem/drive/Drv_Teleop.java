@@ -38,10 +38,14 @@ public class Drv_Teleop extends Drive {
         }
         teleDrvChsr.setDefaultOption(teleDrvType[0] + " (Dflt)", 0);
 
+        chsrUpdate();
+    }
+ 
+    public static void chsrUpdate(){
         SmartDashboard.putData("Drv/Tele/Choice", teleDrvChsr);   //Put Chsr on sdb
         SmartDashboard.putString("Drv/Tele/Choosen", teleDrvType[teleDrvChsr.getSelected()]);   //Put selected on sdb
     }
- 
+
     /**Initial items to teleop driving */
     public static void init() {
         Drive.init();
@@ -61,7 +65,7 @@ public class Drv_Teleop extends Drive {
      * can be caused by other events.
      * <p>Added sdb chooser to select.  Can chg from btn or chooser.
      */
-    public static void determ() {
+    public static void update() {
         if(teleDrvChoice != teleDrvChsr.getSelected()){ //If sdb chgs switch states to sdb choice
             state = teleDrvChsr.getSelected();
             teleDrvChoice = state;
@@ -76,15 +80,16 @@ public class Drv_Teleop extends Drive {
         }else{
             relHdgHold();           //else release
         }
+
+        smUpdate();
+        sdbUpdate();
     }
 
     /**
      * Called from Robot telopPerodic every 20mS to Update the drive sub system.
      */
-    public static void update() {
+    private static void smUpdate() {
         Drive.update();
-        determ();
-        sdbUpdate();
         switch (state) {
             case 0: // Stop Moving
             cmdUpdate(); // Stop moving
@@ -128,6 +133,10 @@ public class Drv_Teleop extends Drive {
         SmartDashboard.putNumber("Drv/Tele/HdgHoldOut", pidHdgHold.getAdj());
         SmartDashboard.putNumber("Drv/Tele/tankL", tnkLeft());
         SmartDashboard.putNumber("Drv/Tele/tankR", tnkRight());
+        SmartDashboard.putNumber("Drv/Tele/Motor Ld L", IO.drvLead_L.get());
+        SmartDashboard.putNumber("Drv/Tele/Motor Ld R", IO.drvLead_R.get());
+        SmartDashboard.putNumber("Drv/Tele/Motor Fl L", IO.drvFollower_L.get());
+        SmartDashboard.putNumber("Drv/Tele/Motor Fl R", IO.drvFollower_R.get());
     }
 
     /**

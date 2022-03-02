@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
       teamColorchsrInit();
       IO.init();
       JS_IO.init();
+      Drv_Teleop.chsrInit();      //Drv_Teleop init Drv type Chooser.
     }
 
     /**
@@ -88,6 +89,7 @@ public class Robot extends TimedRobot {
         teamColorchsrUpdate();
         IO.update();
         JS_IO.update();
+        Drv_Teleop.chsrUpdate();
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -106,8 +108,7 @@ public class Robot extends TimedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        // Test_Hdw.init();
-        //Drv_Teleop.init();
+        Drv_Teleop.init();
         // Snorfler.init();
         // Shooter.init();
         // Climber.init();
@@ -116,8 +117,7 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        // Test_Hdw.update();
-      //  Drv_Teleop.update();
+       Drv_Teleop.update();
         // Snorfler.update();
         // Shooter.update();
         // Climber.update();

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -92,24 +93,24 @@ public class IO {
     private static void drvsInit() {
         // -------- Configure Lead drive motors ---------
         // drvLead_L.configFactoryDefault();    //No equivalent
-        drvLead_L.setInverted(true); // Inverts motor direction and encoder if attached
+        drvLead_L.setInverted(false); // Inverts motor direction and encoder if attached
         drvLead_L.setBrakeCoastMode(BrakeCoastMode.Brake);
         // drvLead_L.setSensorPhase(false); // Adjust this to correct phasing with motor
 
         // drvLead_R.configFactoryDefault();
-        drvLead_R.setInverted(true); // Inverts motor direction and encoder if attached
+        drvLead_R.setInverted(false); // Inverts motor direction and encoder if attached
         drvLead_R.setBrakeCoastMode(BrakeCoastMode.Brake);
         // drvLead_R.setSensorPhase(false); // Adjust this to correct phasing with motor
 
         // ----- Tells left and right second drive motors to follow the Lead -----
         // drvFollower_L.configFactoryDefault();
-        drvFollower_L.setInverted(false);
+        drvFollower_L.setInverted(true);
         drvFollower_L.setBrakeCoastMode(BrakeCoastMode.Brake);
-        // drvFollower_L.follow(drvLead_L);
+        drvFollower_L.follow(drvLead_L);
         // drvFollower_R.configFactoryDefault();
-        drvFollower_R.setInverted(true);
+        drvFollower_R.setInverted(false);
         drvFollower_R.setBrakeCoastMode(BrakeCoastMode.Brake);
-        // drvFollower_R.follow(drvLead_R);
+        drvFollower_R.follow(drvLead_R);
 
         // drvLead_L.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
         // drvLead_R.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);

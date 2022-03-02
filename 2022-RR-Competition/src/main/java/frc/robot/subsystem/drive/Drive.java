@@ -55,15 +55,15 @@ public class Drive {
      * Determine any state that needs to interupt the present state, usually by way of a JS button but
      * can be caused by other events.
      */
-    private static void determ() {
+    public static void update() {
+        smUpdate();
+        sdbUpdate();
     }
 
     /**
      * Called from Robot telopPerodic every 20mS to Update the drive sub system.
      */
-    public static void update() {
-        determ();
-        sdbUpdate();
+    private static void smUpdate() {
     }
 
     private static void sdbUpdate() {
