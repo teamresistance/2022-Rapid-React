@@ -114,6 +114,8 @@ public class Drv_Teleop extends Drive {
     private static void sdbInit(){
         PIDXController.initSDBPid(pidHdgHold, "Tele/pidHdgHold");
         SmartDashboard.putNumber("Drv/Tele/Drive Scale", getScaledOut());   //push to NetworkTable, sdb
+        SmartDashboard.putNumber("Drv/Tele/Drv Enc TPF L", IO.drvLeadTPF_L);
+        SmartDashboard.putNumber("Drv/Tele/Drv Enc TPF R", IO.drvLeadTPF_R);
     }
 
     /**Update sdb stuff.  Called every 20mS from update. */
@@ -126,17 +128,21 @@ public class Drv_Teleop extends Drive {
         setScaledOut(SmartDashboard.getNumber("Drv/Tele/Drive Scale", getScaledOut()));
         SmartDashboard.putBoolean("Drv/Tele/scaled", isScaled());
         SmartDashboard.putBoolean("Drv/Tele/Front Swap", isSwappedFront());
-        SmartDashboard.putBoolean("Drv/Tele/Hold 0", holdZeroBtn());
-        SmartDashboard.putBoolean("Drv/Tele/Hold 180", hold180Btn());
+        SmartDashboard.putBoolean("Drv/Tele/Btn Hold 0", holdZeroBtn());
+        SmartDashboard.putBoolean("Drv/Tele/Btn Hold 180", hold180Btn());
         SmartDashboard.putNumber("Drv/Tele/HdgFB", hdgFB());
         SmartDashboard.putNumber("Drv/Tele/HdgHoldSP", pidHdgHold.getSetpoint());
         SmartDashboard.putNumber("Drv/Tele/HdgHoldOut", pidHdgHold.getAdj());
-        SmartDashboard.putNumber("Drv/Tele/tankL", tnkLeft());
-        SmartDashboard.putNumber("Drv/Tele/tankR", tnkRight());
+        SmartDashboard.putNumber("Drv/Tele/Ax TankL", tnkLeft());
+        SmartDashboard.putNumber("Drv/Tele/Ax TankR", tnkRight());
         SmartDashboard.putNumber("Drv/Tele/Motor Ld L", IO.drvLead_L.get());
         SmartDashboard.putNumber("Drv/Tele/Motor Ld R", IO.drvLead_R.get());
         SmartDashboard.putNumber("Drv/Tele/Motor Fl L", IO.drvFollower_L.get());
         SmartDashboard.putNumber("Drv/Tele/Motor Fl R", IO.drvFollower_R.get());
+        IO.drvLeadTPF_L = SmartDashboard.getNumber("Drv/Tele/Drv Enc TPF L", IO.drvLeadTPF_L);
+        IO.drvLeadTPF_R = SmartDashboard.getNumber("Drv/Tele/Drv Enc TPF R", IO.drvLeadTPF_R);
+        SmartDashboard.putNumber("Drv/Tele/Drv Enc Feet L", IO.drvEnc_L.feet());
+        SmartDashboard.putNumber("Drv/Tele/Drv Enc Feet R", IO.drvEnc_R.feet());
     }
 
     /**

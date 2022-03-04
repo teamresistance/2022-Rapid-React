@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
         Drv_Teleop.init();
         // Snorfler.init();
         // Shooter.init();
-        // Climber.init();
+        Climber.init();
     }
 
     /** This function is called periodically during operator control. */
@@ -101,7 +101,7 @@ public class Robot extends TimedRobot {
        Drv_Teleop.update();
         // Snorfler.update();
         // Shooter.update();
-        // Climber.update();
+        Climber.update();
     }
 
     /** This function is called once when the robot is disabled. */

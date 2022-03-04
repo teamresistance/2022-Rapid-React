@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 // import com.ctre.phoenix.motorcontrol.can.*;
 import com.playingwithfusion.CANVenom;
 import com.playingwithfusion.CANVenom.BrakeCoastMode;
+import com.playingwithfusion.CANVenom.ControlMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -43,8 +44,8 @@ public class IO {
     //As of 2022 DifferentialDrive no longer inverts the right motor.  Do this in the motor controller.
     public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
 
-    public static final double drvLeadTPF_L = 368.4;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
-    public static final double drvLeadTPF_R = -368.4; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static double drvLeadTPF_L = -3.684;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static double drvLeadTPF_R = 3.684; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
     public static Encoder_Pwf drvEnc_L = new Encoder_Pwf(drvLead_L, drvLeadTPF_L);  //Interface for feet, ticks, reset
     public static Encoder_Pwf drvEnc_R = new Encoder_Pwf(drvLead_R, drvLeadTPF_R);
 
@@ -65,11 +66,15 @@ public class IO {
     // Climb
     public static CANSparkMax climbMotor       = new CANSparkMax(6, MotorType.kBrushless);
     public static CANSparkMax climbMotorFollow = new CANSparkMax(7, MotorType.kBrushless);
-    public static ISolenoid climbBrakeRel_SV   = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 0);
-    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 4);
-    public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 5);
-    public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 2, false);
-    public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(2,PneumaticsModuleType.CTREPCM, 3, true);
+    //TODO: Change number
+    public static double climbLdMtr_TPD = 0.504; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static Encoder_Neo climbLdMtr_Enc = new Encoder_Neo(climbMotor, climbLdMtr_TPD);
+
+    public static ISolenoid climbBrakeRel_SV   = new InvertibleSolenoid(2, PneumaticsModuleType.CTREPCM, 0, false);
+    public static ISolenoid lockPinAExt_SV = new InvertibleSolenoid(2, PneumaticsModuleType.CTREPCM, 4);
+    public static ISolenoid lockPinARet_SV = new InvertibleSolenoid(2, PneumaticsModuleType.CTREPCM, 5);
+    public static ISolenoid lockPinBExt_SV = new InvertibleSolenoid(2, PneumaticsModuleType.CTREPCM, 3, true);
+    public static ISolenoid sliderExt_SV   = new InvertibleSolenoid(2, PneumaticsModuleType.CTREPCM, 2, false);
     public static InvertibleDigitalInput lockPinAExt_L_FB = new InvertibleDigitalInput(1,true);
     public static InvertibleDigitalInput lockPinAExt_R_FB = new InvertibleDigitalInput(2,true);
     public static InvertibleDigitalInput lockPinBExt_L_FB = new InvertibleDigitalInput(3,true);
@@ -124,13 +129,13 @@ public class IO {
         snorfElv_Mtrs.setInverted(true);
 
         climbMotor.restoreFactoryDefaults();
-        // climbMotor.setInverted(false);
-        // climbMotor.setIdleMode(IdleMode.kCoast);
+        climbMotor.setInverted(false);
+        climbMotor.setIdleMode(IdleMode.kBrake);
 
-        // climbMotorFollow.restoreFactoryDefaults();
-        // climbMotorFollow.setInverted(false);
-        // climbMotorFollow.setIdleMode(IdleMode.kCoast);
-        // climbMotorFollow.follow(climbMotor);     //Disabled for teesting
+        climbMotorFollow.restoreFactoryDefaults();
+        climbMotorFollow.setInverted(false);
+        climbMotorFollow.setIdleMode(IdleMode.kBrake);
+        climbMotorFollow.follow(climbMotor);     //Disabled for testing
     }
 
     public static void update() {
@@ -141,5 +146,6 @@ public class IO {
         SmartDashboard.putNumber("Robot/Mtr1 Cmd", drvFollower_R.get());
         SmartDashboard.putNumber("Robot/Mtr12 Cmd", drvLead_L.get());
         SmartDashboard.putNumber("Robot/Mtr11 Cmd", drvFollower_L.get());
+        SmartDashboard.putNumber("Climb/leadMtrEnc", climbLdMtr_Enc.ticks());
     }
 }

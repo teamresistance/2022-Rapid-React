@@ -14,6 +14,7 @@ public class Encoder_Neo {
     public Encoder_Neo(CANSparkMax escPort, double _tpf){
         tpf = _tpf;
         neoEnc = escPort.getEncoder();
+        // neoEnc.setPositionConversionFactor(tpf);
     }
 
     /**@return Encoder ticks. */
@@ -24,6 +25,11 @@ public class Encoder_Neo {
     /**@return calculated feet from ticks. */
     public double feet(){
         return tpf == 0.0 ? 0.0 : neoEnc.getPosition() / tpf;
+    }
+
+    /**@return calculated degrees from ticks. */
+    public double degrees(){
+        return feet();
     }
 
     /**@return calcuate meters from feet. */
@@ -38,5 +44,8 @@ public class Encoder_Neo {
     public double getTPF() { return tpf; }
 
     /**@param tpf - Set ticks per foot.  */
-    public void setTPF( double tpf) { this.tpf = tpf; }
+    public void setTPF( double tpf) {
+        this.tpf = tpf;
+        // neoEnc.setPositionConversionFactor(tpf);
+    }
 }

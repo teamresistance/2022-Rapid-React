@@ -66,6 +66,7 @@ public class JS_IO {
     // Climb
     public static Button btnClimb1 = new Button();  //1 of 2 buttons needed to enable climb
     public static Button btnClimb2 = new Button();  //The other
+    public static Button btnClimbSlideRst = new Button();   //Reset slider to state 0
 
     // Misc
     public static Button btnRstGyro = new Button();
@@ -170,6 +171,7 @@ public class JS_IO {
         // climbing buttons
         btnClimb1.setButton(coJoystick, 11);
         btnClimb2.setButton(coJoystick, 12);
+        btnClimbSlideRst.setButton(coJoystick, 7);
 
         // Misc
         btnRstGyro = new Button(rightJoystick, 6);
