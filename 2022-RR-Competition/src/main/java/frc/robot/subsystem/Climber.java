@@ -253,6 +253,7 @@ public class Climber {
         // Save device cmds for state 90, eStop.
         drvSpdSaved = drvSpd;       //sdb only
         // armDirSaved = armDir;    //sdb only
+        armSpdSaved = rotSpd;
         lockPinASaved = pinA_Ext;
         lockPinBSaved = pinB_Ext;
         sliderSaved = slider_Ext;
@@ -260,7 +261,7 @@ public class Climber {
 
         Drive.cmdUpdate(drvSpd, 0.0, false, 2); //Send cmd to drive system as arcade
 
-        if(IO.climbLdMtr_Enc.degrees() < -5.0) rotSpd = 0.0;    //SAFETY!  Stop rot motor if arm moved Rev too far.
+        if(armDegrees() < -5.0) rotSpd = 0.0;    //SAFETY!  Stop rot motor if arm moved Rev too far.
         climberMotor.set(rotSpd);
         //TODO: add brake control here.
 
