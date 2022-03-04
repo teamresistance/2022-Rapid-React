@@ -26,6 +26,11 @@ public class Encoder_Neo {
         return tpf == 0.0 ? 0.0 : neoEnc.getPosition() / tpf;
     }
 
+    /**@return calculated degrees from ticks. */
+    public double degrees(){
+        return feet();
+    }
+
     /**@return calcuate meters from feet. */
     public double meters() {
         return Units.feetToMeters(feet());
