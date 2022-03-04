@@ -91,11 +91,8 @@ public class Snorfler {
         match = colorMatcher.matchClosestColor(detectedColor);
         boolean ballRejHoldOut = false;
 
-        //Bad color Btn
-
-        if (btnBadColor.isDown()) {
-            colorString = enemyColor;
-        }
+        //Bad color Btn for testing the color sensor logic w/o a color sensor.
+        if (btnBadColor.isDown()) colorString = enemyColor;
 
         // if button down and auto snorf, snorf ball            
         // if not button, stop snorfling                        
@@ -104,7 +101,7 @@ public class Snorfler {
 
         if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && state == 0)  state = 1; // Starts the state machine
         if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) && state != 0) state = 0;
-        if (btnRejectSnorfle.isDown())  state = 3;
+        if (btnRejectSnorfle.isDown())  state = 3;  //Reject
         if (colorString.equals(enemyColor)) ballRejHoldOut = true;
         if (holdoutTimer.hasExpired(2.0,ballRejHoldOut)) ballRejHoldOut = false;
         if (btnRejectSnorfle.isUp() && state == 4 && !ballRejHoldOut) state = 0; // Goes back to off
@@ -134,7 +131,7 @@ public class Snorfler {
                 if (snorfTimer.hasExpired(0.1,state)) {
                     state++;
                 }
-                break;  
+                break;
             case 4: //Go back and reject
                 cmdUpdate(true, dirSnorfler.REJ);
                 break;           
@@ -157,16 +154,20 @@ public class Snorfler {
             case OFF:
                 snorfFeed_Mtr.set(0.0);     
                 snorfElv_Mtrs.set(0.0);
+                SmartDashboard.putString("Snorfler/Direction", "OFF");
                 break;
             case FWD:
                 snorfFeed_Mtr.set(0.7); 
                 snorfElv_Mtrs.set(0.5);
+                SmartDashboard.putString("Snorfler/Direction", "FWD");
                 break;
             case REJ:
                 snorfFeed_Mtr.set(-0.7); 
                 snorfElv_Mtrs.set(-0.5);
+                SmartDashboard.putString("Snorfler/Direction", "REJ");
                 break;
         }
+        SmartDashboard.putBoolean("Snorfler/Enable", snorfEna);
     }
     
     /**Check if the color of the ball is OK to pass, our team color. */
@@ -192,7 +193,16 @@ public class Snorfler {
         SmartDashboard.putNumber("Green", detectedColor.green);
         SmartDashboard.putNumber("Blue", detectedColor.blue);
         SmartDashboard.putString("Detected Color", colorString);
+        
+        //Joysticks
+        SmartDashboard.putBoolean("Snorfler/btnSnorfle", btnSnorfle.isDown());
+        SmartDashboard.putBoolean("Snorfle/btnRejectSnorfle", btnRejectSnorfle.isDown());
+        SmartDashboard.putBoolean("Snorfle/btnBadColor", btnBadColor.isDown());
 
+
+        //Motor
+        SmartDashboard.putNumber("Snorfler/SnorfMotor", IO.snorfFeed_Mtr.get());
+        SmartDashboard.putNumber("Snorfler/ElevatorMotor", IO.snorfElv_Mtrs.get());
     }
 
     // ----------------- Shooter statuses and misc.-----------------

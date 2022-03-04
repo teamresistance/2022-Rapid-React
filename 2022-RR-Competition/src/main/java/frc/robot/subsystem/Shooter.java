@@ -48,7 +48,7 @@ public class Shooter {
      */
     public static void update() {
         if (reqShootLowDrvAuto == null) {
-            low_select = axSelLow.get() < 0.10;
+            low_select = -axSelLow.get() < 0.10;
         } else {
             state = 1;
             low_select = reqShootLowDrvAuto;
@@ -147,6 +147,7 @@ public class Shooter {
         SmartDashboard.putBoolean("Shooter/left_catapult_SV", left_catapult_SV.get());
         SmartDashboard.putBoolean("Shooter/right_catapult_SV", right_catapult_SV.get());
         SmartDashboard.putBoolean("Shooter/low_select", low_select);
+        SmartDashboard.putNumber("Shooter/level_select_input", -axSelLow.get());
     }
 
     // ----------------- Shooter statuses and misc.-----------------

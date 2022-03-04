@@ -3,6 +3,7 @@ package frc.robot.testing;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
+import frc.robot.subsystem.drive.Drive;
 
 public class ClimbTest {
     public static void init(){
@@ -38,6 +39,7 @@ public class ClimbTest {
         SmartDashboard.putNumber("Test/Climb/Motor7_volt", IO.climbMotorFollow.getBusVoltage());
         SmartDashboard.putNumber("Test/Climb/Motor6_volt", IO.climbMotor.getBusVoltage());
 
+        SmartDashboard.putNumber("Test/Climb/JS/Feet",   Drive.distFB());
         SmartDashboard.putNumber("Test/Climb/JS/Lead Mtr",   JS_IO.axLeftY.get());
         SmartDashboard.putNumber("Test/Climb/JS/Follow Mtr", JS_IO.axRightY.get());
         SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ext", JS_IO.btnClimb1.isDown());
