@@ -41,29 +41,10 @@ public class Robot extends TimedRobot {
      * for any
      * initialization code.
      */
-    
-    public static SendableChooser<String> teamColorchsr = new SendableChooser<String>();
-    private static String[] chsrDesc = {
-        "Blue", "Red"
-    };
-
-    /**Initialize Traj chooser */
-    public static void teamColorchsrInit(){
-        for(int i = 0; i < chsrDesc.length; i++){
-            teamColorchsr.addOption(chsrDesc[i], chsrDesc[i]);
-        }
-        teamColorchsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
-        SmartDashboard.putData("Robot/TeamColor", teamColorchsr);
-    }
-
-    /**Show on sdb traj chooser info.  Called from robotPeriodic  */
-    public static void teamColorchsrUpdate(){
-        SmartDashboard.putString("Robot/TeamColorChoosen", teamColorchsr.getSelected());
-    }
 
     @Override
     public void robotInit() {
-      teamColorchsrInit();
+      Snorfler.teamColorchsrInit();
       IO.init();
       JS_IO.init();
       Drv_Teleop.chsrInit();      //Drv_Teleop init Drv type Chooser.
@@ -86,7 +67,7 @@ public class Robot extends TimedRobot {
         cmprEna = SmartDashboard.getBoolean("Robot/Cmpr Enabled", cmprEna);
         IO.compressorRelay.set(IO.compressor1.enabled() && cmprEna ? Relay.Value.kForward : Relay.Value.kOff);
 
-        teamColorchsrUpdate();
+        Snorfler.teamColorchsrUpdate();
         IO.update();
         JS_IO.update();
         Drv_Teleop.chsrUpdate();
