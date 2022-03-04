@@ -67,7 +67,7 @@ public class IO {
     public static CANSparkMax climbMotor       = new CANSparkMax(6, MotorType.kBrushless);
     public static CANSparkMax climbMotorFollow = new CANSparkMax(7, MotorType.kBrushless);
     //TODO: Change number
-    public static double climbLdMtr_TPD = 368.4; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static double climbLdMtr_TPD = 0.504; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
     public static Encoder_Neo climbLdMtr_Enc = new Encoder_Neo(climbMotor, climbLdMtr_TPD);
 
     public static ISolenoid climbBrakeRel_SV   = new InvertibleSolenoid(2, PneumaticsModuleType.CTREPCM, 0, false);
@@ -130,11 +130,11 @@ public class IO {
 
         climbMotor.restoreFactoryDefaults();
         climbMotor.setInverted(false);
-        climbMotor.setIdleMode(IdleMode.kCoast);
+        climbMotor.setIdleMode(IdleMode.kBrake);
 
         climbMotorFollow.restoreFactoryDefaults();
         climbMotorFollow.setInverted(false);
-        climbMotorFollow.setIdleMode(IdleMode.kCoast);
+        climbMotorFollow.setIdleMode(IdleMode.kBrake);
         climbMotorFollow.follow(climbMotor);     //Disabled for testing
     }
 
