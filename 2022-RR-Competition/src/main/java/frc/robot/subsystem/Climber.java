@@ -94,6 +94,7 @@ public class Climber {
         
         switch (state) {
             case 0: // Turns everything off
+                //        drv, arm, pinA,  pinB,  Slide
                 cmdUpdate(0.0, 0.0, false, false, false );
                 stateTmr.clearTimer();
                 break;
@@ -104,29 +105,28 @@ public class Climber {
                 IO.coorXY.drvFeetRst();
                 if(armDegrees() > 85.0){
                     state++;
-                    System.out.println("Degrees " + armDegrees());
                 }
                 // if (stateTmr.hasExpired(1.3, state)) state++;
                 break;
             case 2: // Move backwards (positive Y cmd) 6' to start climb position
-                cmdUpdate(0.0, 0.0, false,false,true);
-                // if (IO.coorXY.drvFeet() < -6.0) state++;
+                cmdUpdate(0.4, 0.0, false,false,true);
+                if (IO.coorXY.drvFeet() < -6.0) state++;
                 break;
             case 3: // Move backwards 3' until robot pitches 15 degrees fwd/down
-                cmdUpdate(0.4, 0.0, false, false, true);
-                // if(pitch < -2.0){        //USe 15 for comp, 5 for testing.
-                //     if(stateTmr.hasExpired(0.5, true)) state++;
-                // }else{
-                //     stateTmr.clearTimer();
-                // }
+                cmdUpdate(0.2, 0.0, false, false, true);
+                if(pitch < -2.0){        //USe 15 for comp, 5 for testing.
+                    if(stateTmr.hasExpired(0.5, true)) state++;
+                }else{
+                    stateTmr.clearTimer();
+                }
                 break;
             //------ In contact with low arm, lock on and start climb. -----
             case 4: // Stop the driving and grab bar with LockPinA
                 cmdUpdate(0.0, 0.0, true, false, true);
-                // if (lockPinAExt_FB() == true) state++;
+                if (lockPinAExt_FB() == true) state++;
                 IO.coorXY.drvFeetRst();
                 break;
-            case 5: // Robot moves forward (negitive Y cmd) 3 feet and arm starts rotating forward
+            case 5: // Robot moves forward (negative Y cmd) 3 feet and arm starts rotating forward
                 cmdUpdate(-0.2, ROT_SPD, true, false, true);
                 if (IO.coorXY.drvFeet() > 3.0) state++;
                 break;

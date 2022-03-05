@@ -45,6 +45,7 @@ public class Snorfler {
     public static ColorMatchResult match;
     private static String teamColor;
     private static String enemyColor;
+    private static boolean csBallReject = false;  // ??
 
     public static enum dirSnorfler { OFF, FWD, REJ }
 
@@ -54,7 +55,7 @@ public class Snorfler {
      */
     public static void init() {
         sdbInit();
-        cmdUpdate(false,dirSnorfler.OFF); // select goal, left trigger, right trigger
+        cmdUpdate(false, 0.0, 0.0); // select goal, left trigger, right trigger
         state = 0; // Start at state 0
         reqsnorfDrvAuto = false;
 
@@ -62,7 +63,6 @@ public class Snorfler {
         colorMatcher.addColorMatch(kGreenTarget);
         colorMatcher.addColorMatch(kRedTarget);
         colorMatcher.addColorMatch(kYellowTarget);
-
     }
 
     /**
@@ -72,40 +72,22 @@ public class Snorfler {
      * of a JS button but can be caused by other events.
      */
     public static void update() {
-        teamColor = Robot.teamColorchsr.getSelected();      //Driver choosen team color
-        enemyColor = teamColor == "Blue" ? "Red" : "Blue";  //The bad guy's color.
-        
-        if (match.color == kBlueTarget) {
-            colorString = "Blue";
-        } else if (match.color == kRedTarget) {
-            colorString = "Red";
-        } else if (match.color == kGreenTarget) {
-            colorString = "Green";
-        } else if (match.color == kYellowTarget) {
-            colorString = "Yellow";
-        } else {
-            colorString = "Unknown";
-        }
-
-        detectedColor = ballColorSensor.getColor();
-        match = colorMatcher.matchClosestColor(detectedColor);
-        boolean ballRejHoldOut = false;
-
         //Bad color Btn for testing the color sensor logic w/o a color sensor.
         if (btnBadColor.isDown()) colorString = enemyColor;
+        ballColorUpdate();
 
-        // if button down and auto snorf, snorf ball            
-        // if not button, stop snorfling                        
-        // if rejecting ball or see enemy color, reject ball    
+        // if button down and auto snorf, snorf ball
+        // if not button, stop snorfling
+        // if rejecting ball or see enemy color, reject ball
         // if not rejecting ball and done with rejecting, normal
 
-        if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && state == 0)  state = 1; // Starts the state machine
-        if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) && state != 0) state = 0;
-        if (btnRejectSnorfle.isDown())  state = 3;  //Reject
-        if (colorString.equals(enemyColor)) ballRejHoldOut = true;
-        if (holdoutTimer.hasExpired(2.0,ballRejHoldOut)) ballRejHoldOut = false;
-        if (btnRejectSnorfle.isUp() && state == 4 && !ballRejHoldOut) state = 0; // Goes back to off
+        if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && state == 0)  state = 1; // Starts the snorfling
+        if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) && (state != 0 && state != 4)) state = 0;   //Stop snorfling
+        if (btnRejectSnorfle.isDown() && state < 11)  state = 11; // Start Manual Rejection
+        if (btnRejectSnorfle.isUp() && state == 12) state = 0;   // Stop Manual Rejection
 
+        if (colorString.equals(enemyColor)) csBallReject = true;    //Reset in 22
+        
         smUpdate();
         sdbUpdate();
     }
@@ -115,29 +97,44 @@ public class Snorfler {
 
         switch (state) {
             case 0: // Everything is off
-                cmdUpdate(false, dirSnorfler.OFF);
+                cmdUpdate(false, 0.0, 0.0);
+                snorfTimer.clearTimer();
                 break;
+            //--------- Manual Snorfle -------------
             case 1: // Waiting a bit before forward
-                cmdUpdate(true,dirSnorfler.OFF);
+                cmdUpdate(true,0.0, 0.0);
                 if (snorfTimer.hasExpired(0.1,state)) {
                     state++;
                 }
                 break;
             case 2: // Start snorfler forward
-                cmdUpdate(true, dirSnorfler.FWD);
+                cmdUpdate(true, 0.7, 1.0);
                 break;
-            case 3: // Waiting a bit before going back
-                cmdUpdate(true, dirSnorfler.OFF);
+            //--------- Manual Reject -------------
+            case 11: // Waiting a bit before going back
+                cmdUpdate(true, 0.0, 0.0);
                 if (snorfTimer.hasExpired(0.1,state)) {
                     state++;
                 }
                 break;
-            case 4: //Go back and reject
-                cmdUpdate(true, dirSnorfler.REJ);
+            case 12: //Go back and reject
+                cmdUpdate(true, -0.7, -1.0);
+                break;           
+            //--------- Color Sensor Reject -------------
+            case 21: // Waiting a bit before going back
+                cmdUpdate(true, 0.0, 0.0);
+                if (snorfTimer.hasExpired(0.1,state)) state++;
+                break;
+            case 22: //Go back and reject for 2.0 seconds
+                cmdUpdate(true, -0.7, -1.0);
+                if (snorfTimer.hasExpired(2.0, state)){
+                    state++;
+                    csBallReject = false;
+                }
                 break;           
             default: // all off
-                cmdUpdate(false,dirSnorfler.OFF);
-                System.out.println("bad snorfle state: " + state);
+                cmdUpdate(false, 0.0, 0.0);
+                System.out.println("Bad snorfle state: " + state);
                 break;
         }
     }
@@ -147,27 +144,10 @@ public class Snorfler {
      * @param snorfEna - drops the snorfler arm, turns on all motors
      * 
      */
-    private static void cmdUpdate(boolean snorfEna, dirSnorfler direction) {
+    private static void cmdUpdate(boolean snorfEna, double mtrSpd, double elvSpd) {
         snorflerExt_SV.set(snorfEna);
-
-        switch (direction) {
-            case OFF:
-                snorfFeed_Mtr.set(0.0);     
-                snorfElv_Mtrs.set(0.0);
-                SmartDashboard.putString("Snorfler/Direction", "OFF");
-                break;
-            case FWD:
-                snorfFeed_Mtr.set(0.7); 
-                snorfElv_Mtrs.set(0.5);
-                SmartDashboard.putString("Snorfler/Direction", "FWD");
-                break;
-            case REJ:
-                snorfFeed_Mtr.set(-0.7); 
-                snorfElv_Mtrs.set(-0.5);
-                SmartDashboard.putString("Snorfler/Direction", "REJ");
-                break;
-        }
-        SmartDashboard.putBoolean("Snorfler/Enable", snorfEna);
+        snorfFeed_Mtr.set(mtrSpd);
+        snorfElv_Mtrs.set(elvSpd);
     }
     
     /**Check if the color of the ball is OK to pass, our team color. */
@@ -188,24 +168,48 @@ public class Snorfler {
         // sumpthin = SmartDashboard.getBoolean("ZZ_Template/Sumpthin", sumpthin.get());
 
         // Put other stuff to be displayed here
-        SmartDashboard.putNumber("Snorfler/state", state);
-        SmartDashboard.putNumber("Red", detectedColor.red);
-        SmartDashboard.putNumber("Green", detectedColor.green);
-        SmartDashboard.putNumber("Blue", detectedColor.blue);
-        SmartDashboard.putString("Detected Color", colorString);
+        SmartDashboard.putNumber("Snorfler/AC/state", state);
+        //Motor & SV
+        SmartDashboard.putBoolean("Snorfler/AC/Snorfler", IO.snorflerExt_SV.get());
+        SmartDashboard.putNumber("Snorfler/AC/SnorfMotor", IO.snorfFeed_Mtr.get());
+        SmartDashboard.putNumber("Snorfler/AC/ElevatorMotor", IO.snorfElv_Mtrs.get());
+
+        SmartDashboard.putNumber("Snorfler/Clr/Red", detectedColor.red);
+        SmartDashboard.putNumber("Snorfler/Clr/Green", detectedColor.green);
+        SmartDashboard.putNumber("Snorfler/Clr/Blue", detectedColor.blue);
+        SmartDashboard.putString("Snorfler/Clr/Detected Color", colorString);
         
         //Joysticks
-        SmartDashboard.putBoolean("Snorfler/btnSnorfle", btnSnorfle.isDown());
-        SmartDashboard.putBoolean("Snorfle/btnRejectSnorfle", btnRejectSnorfle.isDown());
-        SmartDashboard.putBoolean("Snorfle/btnBadColor", btnBadColor.isDown());
-
-
-        //Motor
-        SmartDashboard.putNumber("Snorfler/SnorfMotor", IO.snorfFeed_Mtr.get());
-        SmartDashboard.putNumber("Snorfler/ElevatorMotor", IO.snorfElv_Mtrs.get());
+        SmartDashboard.putBoolean("Snorfler/JS/btnSnorfle", btnSnorfle.isDown());
+        SmartDashboard.putBoolean("Snorfler/JS/btnRejectSnorfle", btnRejectSnorfle.isDown());
+        SmartDashboard.putBoolean("Snorfler/JS/btnBadColor", btnBadColor.isDown());
+        SmartDashboard.putBoolean("Snorfler/JS/btnRejectSnorfleUp", btnRejectSnorfle.isUp());
+        SmartDashboard.putBoolean("Snorfler/JS/btnRejectSnorfleDown", btnRejectSnorfle.isDown());
     }
 
     // ----------------- Shooter statuses and misc.-----------------
+
+    private static void ballColorUpdate(){
+        teamColor = Robot.teamColorchsr.getSelected();      //Driver choosen team color
+        enemyColor = teamColor == "Blue" ? "Red" : 
+                     teamColor == "Red" ? "Blue" : "none";  //The bad guy's color.
+        
+        detectedColor = ballColorSensor.getColor();
+        match = colorMatcher.matchClosestColor(detectedColor);
+
+        if (match.color == kBlueTarget) {
+            colorString = "Blue";
+        } else if (match.color == kRedTarget) {
+            colorString = "Red";
+        } else if (match.color == kGreenTarget) {
+            colorString = "Green";
+        } else if (match.color == kYellowTarget) {
+            colorString = "Yellow";
+        } else {
+            colorString = "Unknown";
+        }
+
+    }
     /**
      * Probably shouldn't use this bc the states can change. Use statuses.
      * 

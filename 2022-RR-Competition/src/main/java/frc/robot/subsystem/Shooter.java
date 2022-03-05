@@ -50,20 +50,14 @@ public class Shooter {
         if (reqShootLowDrvAuto == null) {
             low_select = -axSelLow.get() < 0.10;
         } else {
-            state = 1;
+            //state = 1;
             low_select = reqShootLowDrvAuto;
         }
-        if ((btnFire.onButtonPressed()) && state == 0) {
-            state = 1;
-        }
+        if ((btnFire.onButtonPressed()) && state == 0) state = 1;
 
-        if (btnReject_L.onButtonPressed() && state == 0) {
-            state = 11;
-        }
+        if (btnReject_L.onButtonPressed() && state == 0) state = 11;
 
-        if (btnReject_R.onButtonPressed() && state == 0) {
-            state = 13;
-        }
+        if (btnReject_R.onButtonPressed() && state == 0) state = 13;
 
         smUpdate();
         sdbUpdate();
@@ -78,42 +72,43 @@ public class Shooter {
                 break;
             case 1: // btn Fire, wait for prs settle
                 cmdUpdate(low_select, false, false);
-                if (stateTmr.hasExpired(0.1, state)) state++;
+                if (stateTmr.hasExpired(0.5, state)) state++;
                 break;
             case 2: // Fire left, wait
                 cmdUpdate(low_select, true, false);
-                if (stateTmr.hasExpired(0.1, state)) state++;
+                if (stateTmr.hasExpired(1.0, state)) state++;
                 break;
             case 3: // Left closed, wait
                 cmdUpdate(low_select, false, false);
-                if (stateTmr.hasExpired(0.1, state)) state++;
+                if (stateTmr.hasExpired(0.5, state)) state++;
                 break;
             case 4: // Fire right, return to 0, reset the reqShootDrvAuto 
                 cmdUpdate(low_select, false, true);
-                if (stateTmr.hasExpired(0.1, state)){
+                if (stateTmr.hasExpired(1.0, state)){
                     state = 0;
-                    reqShootLowDrvAuto = false;
+                    reqShootLowDrvAuto = null;
                 }
+
                 break;
             //-----------Reject Balls ---------------
             case 11: // Reject left with low prs, wait for settle
-                cmdUpdate(false, false, false);
-                if (stateTmr.hasExpired(0.1, state)) state++;
+                cmdUpdate(true, false, false);
+                if (stateTmr.hasExpired(0.5, state)) state++;
                 break;
             case 12: // trigger left, wait and return to 0
-                cmdUpdate(false, true, false); //tbd
-                if (stateTmr.hasExpired(0.1, state)) state = 0;
+                cmdUpdate(true, true, false); //tbd
+                if (stateTmr.hasExpired(1.0, state)) state = 0;
                 break;
             case 13: // Reject right with low prs, wait for settle
-                cmdUpdate(false, false, false);
-                if (stateTmr.hasExpired(0.1, state)) state++;
+                cmdUpdate(true, false, false);
+                if (stateTmr.hasExpired(0.5, state)) state++;
                 break;
             case 14: // trigger right, wait and return to 0
-                cmdUpdate(false, false, true);
-                if (stateTmr.hasExpired(0.1, state)) state = 0;
+                cmdUpdate(true, false, true);
+                if (stateTmr.hasExpired(1.0, state)) state = 0;
                 break;
             default: // all off
-                cmdUpdate(false, false, false);
+                cmdUpdate(true, false, false);
                 System.out.println("Bad Shooter state: " + state);
                 break;
 

@@ -9,7 +9,7 @@ public class Trajectories {
     private static double dfltPwr = 0.9;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty", "LM", "LR", "LL", "RM", "RR", "RL",
+        "getEmpty", "LM", "LR", "LL", "RM", "RR", "RL", "SnorfShootTest",
     };
 
     /**Initialize Traj chooser */
@@ -40,6 +40,8 @@ public class Trajectories {
         switch(chsr.getSelected()){
             case "getEmpty":
             return getEmpty(pwr);
+            case "SnorfShootTest":
+            return snorfShootTest(pwr);
             case "LM":
             return getCargo1(pwr);            
             case "LR":
@@ -79,6 +81,17 @@ public class Trajectories {
 
     public static ATrajFunction[] getEmpty(double pwr) {
         ATrajFunction[] traj = { new TurnNMove(0.0, 0.0, 0.0) };
+        return traj;
+    }
+
+    public static ATrajFunction[] snorfShootTest(double pwr) {
+        ATrajFunction[] traj = {
+            new SnorfDrvAuto(true), //Puts down snorfler
+            new TurnNMove(0, 2), //Moves forward 2 ft
+            new TrajDelay(3), //Delays 3 seconds waiting to pick up ball
+            new SnorfDrvAuto(false), //Turns off snorfler
+            new ShootDrvAuto(false), //Shoots high setting
+        };
         return traj;
     }
 

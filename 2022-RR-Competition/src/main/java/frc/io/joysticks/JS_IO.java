@@ -54,7 +54,8 @@ public class JS_IO {
 
     // Snorfler
     public static Button btnSnorfle = new Button();    //Toggle snorfling
-    public static Button btnRejectSnorfle = new Button();
+    public static Button 
+    btnRejectSnorfle = new Button();
     public static Button btnBadColor = new Button(); 
 
     // Shooter

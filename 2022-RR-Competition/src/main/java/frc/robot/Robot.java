@@ -22,67 +22,60 @@ import frc.robot.testing.DriveTest;
 import frc.robot.testing.ShootTest;
 import frc.robot.testing.SnorfTest;
 
-
 /**
  * The VM is configured to automatically run this class, and to call the
- * functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the
- * name of this class or
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or
  * the package after creating this project, you must also update the
- * build.gradle file in the
- * project.
+ * build.gradle file in the project.
  */
 public class Robot extends TimedRobot {
 
-    private static boolean cmprEna = true;  //Don't need cmpr when testing drive.
+    private static boolean cmprEna = true; // Don't need cmpr when testing drive.
 
-    /**
-     * This function is run when the robot is first started up and should be used
-     * for any
-     * initialization code.
-     */
-    
     public static SendableChooser<String> teamColorchsr = new SendableChooser<String>();
-    private static String[] chsrDesc = {
-        "Blue", "Red"
-    };
+    private static String[] chsrDesc = { "Blue", "Red", "none" };
 
-    /**Initialize Traj chooser */
-    public static void teamColorchsrInit(){
-        for(int i = 0; i < chsrDesc.length; i++){
+    /** Initialize Traj chooser */
+    public static void teamColorchsrInit() {
+        for (int i = 0; i < chsrDesc.length; i++) {
             teamColorchsr.addOption(chsrDesc[i], chsrDesc[i]);
         }
-        teamColorchsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
+        teamColorchsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]); // Default MUST have a different name
         SmartDashboard.putData("Robot/TeamColor", teamColorchsr);
     }
 
-    /**Show on sdb traj chooser info.  Called from robotPeriodic  */
-    public static void teamColorchsrUpdate(){
+    /** Show on sdb traj chooser info. Called from robotPeriodic */
+    public static void teamColorchsrUpdate() {
         SmartDashboard.putString("Robot/TeamColorChoosen", teamColorchsr.getSelected());
     }
 
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any initialization code.
+     */
     @Override
     public void robotInit() {
-      teamColorchsrInit();
-      IO.init();
-      JS_IO.init();
-      Drv_Teleop.chsrInit();      //Drv_Teleop init Drv type Chooser.
+        teamColorchsrInit();
+        IO.init();
+        JS_IO.init();
+        Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
+
+        SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
     }
 
     /**
      * This function is called every robot packet, no matter the mode. Use this for
-     * items like
-     * diagnostics that you want ran during disabled, autonomous, teleoperated and
-     * test.
+     * items like diagnostics that you want ran during disabled, autonomous,
+     * teleoperated and test.
      *
      * <p>
      * This runs after the mode specific periodic functions, but before LiveWindow
-     * and
-     * SmartDashboard integrated updating.
+     * and SmartDashboard integrated updating.
      */
     @Override
     public void robotPeriodic() {
-        //Pneu. system has leak.  Dont need it when testing drive.
+        // Pneu. system has leak. Dont need it when testing drive.
         cmprEna = SmartDashboard.getBoolean("Robot/Cmpr Enabled", cmprEna);
         IO.compressorRelay.set(IO.compressor1.enabled() && cmprEna ? Relay.Value.kForward : Relay.Value.kOff);
 
@@ -96,30 +89,30 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-       
+
     }
 
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-       
+
     }
 
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
         Drv_Teleop.init();
-        // Snorfler.init();
-        // Shooter.init();
+        Snorfler.init();
+        Shooter.init();
         Climber.init();
     }
 
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-       Drv_Teleop.update();
-        // Snorfler.update();
-        // Shooter.update();
+        Drv_Teleop.update();
+        Snorfler.update();
+        Shooter.update();
         Climber.update();
     }
 
@@ -137,15 +130,15 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
         ClimbTest.init();
-       // SnorfTest.init();
+        // SnorfTest.init();
     }
 
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
-        //Test to checkout individual devices.  Run one at a tme.
-        //SnorfTest.update();
-        //ShootTest.update();
+        // Test to checkout individual devices. Run one at a tme.
+        // SnorfTest.update();
+        // ShootTest.update();
         // DriveTest.update();
         ClimbTest.update();
 
