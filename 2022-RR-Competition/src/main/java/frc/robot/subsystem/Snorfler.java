@@ -5,6 +5,7 @@ import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.io.hdw_io.IO;
@@ -156,7 +157,29 @@ public class Snorfler {
     }
 
     /*-------------------------  SDB Stuff --------------------------------------
+    
     /**Initialize sdb */
+
+    public static SendableChooser<String> teamColorchsr = new SendableChooser<String>();
+    private static String[] chsrDesc = {
+        "Blue", "Red"
+    };
+    
+    /**Initialize Traj chooser */
+    public static void teamColorchsrInit(){
+        for(int i = 0; i < chsrDesc.length; i++){
+            teamColorchsr.addOption(chsrDesc[i], chsrDesc[i]);
+        }
+        teamColorchsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
+        SmartDashboard.putData("Robot/TeamColor", teamColorchsr);
+    }
+
+    /**Show on sdb traj chooser info.  Called from robotPeriodic  */
+    public static void teamColorchsrUpdate(){
+        SmartDashboard.putString("Robot/TeamColorChoosen", teamColorchsr.getSelected());
+    }
+
+
     private static void sdbInit() {
         // Put stuff here on the sdb to be retrieved from the sdb later
         // SmartDashboard.putBoolean("ZZ_Template/Sumpthin", sumpthin.get());

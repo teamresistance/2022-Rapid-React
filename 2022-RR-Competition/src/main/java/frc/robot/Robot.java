@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
 
     private static boolean cmprEna = true; // Don't need cmpr when testing drive.
 
+<<<<<<< HEAD
     public static SendableChooser<String> teamColorchsr = new SendableChooser<String>();
     private static String[] chsrDesc = { "Blue", "Red", "none" };
 
@@ -49,6 +50,13 @@ public class Robot extends TimedRobot {
     public static void teamColorchsrUpdate() {
         SmartDashboard.putString("Robot/TeamColorChoosen", teamColorchsr.getSelected());
     }
+=======
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any
+     * initialization code.
+     */
+>>>>>>> 3ed02fbb853bb13c77a04418c472431dd677f6db
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -56,12 +64,19 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+<<<<<<< HEAD
         teamColorchsrInit();
         IO.init();
         JS_IO.init();
         Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
+=======
+      Snorfler.teamColorchsrInit();
+      IO.init();
+      JS_IO.init();
+      Drv_Teleop.chsrInit();      //Drv_Teleop init Drv type Chooser.
+>>>>>>> 3ed02fbb853bb13c77a04418c472431dd677f6db
     }
 
     /**
@@ -79,7 +94,7 @@ public class Robot extends TimedRobot {
         cmprEna = SmartDashboard.getBoolean("Robot/Cmpr Enabled", cmprEna);
         IO.compressorRelay.set(IO.compressor1.enabled() && cmprEna ? Relay.Value.kForward : Relay.Value.kOff);
 
-        teamColorchsrUpdate();
+        Snorfler.teamColorchsrUpdate();
         IO.update();
         JS_IO.update();
         Drv_Teleop.chsrUpdate();
