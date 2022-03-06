@@ -3,6 +3,7 @@ package frc.robot.subsystem.drive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
+import frc.io.joysticks.JS_IO;
 import frc.util.PIDXController;
 
 /**
@@ -85,6 +86,7 @@ public class Drive {
             diffDrv.tankDrive(0.0, 0.0, false);
             break;
             case 1:     //Tank
+         //   diffDrv.tankDrive(JS_IO.axLeftY.get(), -JS_IO.axRightY.get(), isSqOrQT);
             diffDrv.tankDrive(-lSpdY, -rSpdRot_XY, isSqOrQT);
             break;
             case 2:     //Arcade

@@ -33,50 +33,18 @@ public class Robot extends TimedRobot {
 
     private static boolean cmprEna = true; // Don't need cmpr when testing drive.
 
-<<<<<<< HEAD
-    public static SendableChooser<String> teamColorchsr = new SendableChooser<String>();
-    private static String[] chsrDesc = { "Blue", "Red", "none" };
-
-    /** Initialize Traj chooser */
-    public static void teamColorchsrInit() {
-        for (int i = 0; i < chsrDesc.length; i++) {
-            teamColorchsr.addOption(chsrDesc[i], chsrDesc[i]);
-        }
-        teamColorchsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]); // Default MUST have a different name
-        SmartDashboard.putData("Robot/TeamColor", teamColorchsr);
-    }
-
-    /** Show on sdb traj chooser info. Called from robotPeriodic */
-    public static void teamColorchsrUpdate() {
-        SmartDashboard.putString("Robot/TeamColorChoosen", teamColorchsr.getSelected());
-    }
-=======
-    /**
-     * This function is run when the robot is first started up and should be used
-     * for any
-     * initialization code.
-     */
->>>>>>> 3ed02fbb853bb13c77a04418c472431dd677f6db
-
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
      */
     @Override
     public void robotInit() {
-<<<<<<< HEAD
-        teamColorchsrInit();
+        Snorfler.teamColorchsrInit();
         IO.init();
         JS_IO.init();
         Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
-=======
-      Snorfler.teamColorchsrInit();
-      IO.init();
-      JS_IO.init();
-      Drv_Teleop.chsrInit();      //Drv_Teleop init Drv type Chooser.
->>>>>>> 3ed02fbb853bb13c77a04418c472431dd677f6db
     }
 
     /**
@@ -125,12 +93,16 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        Drv_Teleop.update();
+       //IO.diffDrv_M.tankDrive(-JS_IO.axLeftY.get(), -JS_IO.axRightY.get());
+       //System.out.println("Periodic: " + JS_IO.axLeftY.get() + " - " + JS_IO.axRightY.get());
+       Drv_Teleop.update();
+        // IO.drvLead_L.set(-JS_IO.axLeftY.get());
+        // IO.drvLead_R.set(-JS_IO.axRightY.get());
+
+        Climber.update();
         Snorfler.update();
         Shooter.update();
-        Climber.update();
     }
-
     /** This function is called once when the robot is disabled. */
     @Override
     public void disabledInit() {

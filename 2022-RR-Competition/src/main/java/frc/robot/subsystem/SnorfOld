@@ -1,7 +1,5 @@
 package frc.robot.subsystem;
 
-import java.net.SocketTimeoutException;
-
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
@@ -75,26 +73,32 @@ public class Snorfler {
      * of a JS button but can be caused by other events.
      */
     public static void update() {
+
         //Bad color Btn for testing the color sensor logic w/o a color sensor.
         if (btnBadColor.isDown()) colorString = enemyColor;
         ballColorUpdate();
+
+        // boolean ballRejHoldOut = false;
+        if (btnBadColor.isDown()){
+            colorString = enemyColor;
+        }
 
         // if button down and auto snorf, snorf ball
         // if not button, stop snorfling
         // if rejecting ball or see enemy color, reject ball
         // if not rejecting ball and done with rejecting, normal
 
-        if (!colorString.equals(enemyColor) && !csBallReject) {
-            if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && (state == 0 || state == 22 || state == 30))  state = 1; // Starts the snorfling
-            if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) &&
-                (state != 0 && state != 12 && state != 30)) state = 30;//Stop snorf but elv for 2 sec.
-            if (btnRejectSnorfle.isDown() && (state < 11 || state == 22 || state == 30))  state = 11; // Start Manual Rejection
-            if (btnRejectSnorfle.isUp() && state == 12) state = 0;   // Stop Manual Rejection
-        } else if (!csBallReject) {
-            System.out.println("State 21");
-            csBallReject = true;
-            state = 21;
-        }
+        if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && (state == 0 || state == 22 || state == 30) && colorString.equals(teamColor)) state = 1;
+        
+            
+        // Starts the snorfling
+        if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) &&
+            (state != 0 && state != 12 && state != 30)) state = 30;//Stop snorf but elv for 2 sec.
+        if ((btnRejectSnorfle.isDown() || colorString.equals(enemyColor)) && (state < 11 || state == 22 || state == 30))  state = 11; // Start Manual Rejection
+        if (btnRejectSnorfle.isUp() && state == 12) state = 0;   // Stop Manual Rejection
+
+        // if (colorString.equals(enemyColor)) csBallReject = true;    //Reset in 22
+        
         smUpdate();
         sdbUpdate();
     }
@@ -134,14 +138,11 @@ public class Snorfler {
                 break;
             case 22: //Go back and reject for 2.0 seconds
                 cmdUpdate(true, -0.7, -1.0);
-                System.out.println("Here");
-                if (snorfTimer.hasExpired(4.0, true)){
-                    System.out.println("Here1");
+                if (snorfTimer.hasExpired(2.0, state)){
+                    state++;
                     csBallReject = false;
-                    state = 0;
                 }
-                break; 
-
+                break;           
             case 30: //Finish snorf but keep elv for 2 sec longer
                 cmdUpdate(false, 0.0, 1.0);
                 if (snorfTimer.hasExpired(2.0, state)){
@@ -207,8 +208,6 @@ public class Snorfler {
 
         // Put other stuff to be displayed here
         SmartDashboard.putNumber("Snorfler/AC/state", state);
-        SmartDashboard.putString("Snorfler/AC/team color", teamColor);
-        SmartDashboard.putString("Snorfler/AC/enemy color", enemyColor);
         //Motor & SV
         SmartDashboard.putBoolean("Snorfler/AC/Snorfler", IO.snorflerExt_SV.get());
         SmartDashboard.putNumber("Snorfler/AC/SnorfMotor", IO.snorfFeed_Mtr.get());
@@ -248,7 +247,6 @@ public class Snorfler {
         } else {
             colorString = "Unknown";
         }
-
     }
     /**
      * Probably shouldn't use this bc the states can change. Use statuses.

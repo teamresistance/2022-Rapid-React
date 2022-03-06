@@ -51,7 +51,7 @@ public class Drv_Teleop extends Drive {
         Drive.init();
 
         sdbInit();
-        // teleDrvChoice = teleDrvChsr.getSelected();
+        teleDrvChoice = teleDrvChsr.getSelected();
         cmdUpdate(0, 0);
         IO.navX.reset();
 
@@ -96,6 +96,7 @@ public class Drv_Teleop extends Drive {
             break;
             case 1: // Tank mode.
             cmdUpdate(tnkLeft(), tnkRight(), false, 1); // Apply Hold, swap & scaling then send
+           // System.out.println("Here teleop " + state +" "+ tnkLeft() + " " + tnkRight());
             break;
             case 2: // Arcade mode.
             cmdUpdate(arcMove(), arcRot(), false, 2); // Apply Hold, swap & scaling then send

@@ -23,7 +23,7 @@ public class Timer {
      * @param delay default time in seconds.
      */
     public Timer(double delay){
-        this.time = (long) delay * 1000;
+        this.time = (long) (delay * 1000);
         startTimer();               //?? Needed in constructor???
     }
 
@@ -35,7 +35,7 @@ public class Timer {
      */
     public boolean hasExpired(double delay, int covTrgr){
         if(this.covTrgr == null || this.covTrgr != covTrgr){ // new state found
-            this.time = (long) delay * 1000;
+            this.time = (long) (delay * 1000);
             timer = System.currentTimeMillis() + this.time; // new time to wait for
             this.covTrgr = covTrgr; // save new state
         }
@@ -52,7 +52,7 @@ public class Timer {
     public boolean hasExpired(double delay, boolean trgr){
         
         if(this.trgr == null || this.trgr != trgr){
-            this.time = (long) delay * 1000;
+            this.time = (long)(delay * 1000);
             startTimer();
             this.trgr = trgr;
         }
@@ -70,7 +70,7 @@ public class Timer {
      * @param sec delay in seconds
      */
     public void startTimer(double sec){
-        time = (long) sec * 1000;
+        time = (long) (sec * 1000);
         startTimer();
     }
 

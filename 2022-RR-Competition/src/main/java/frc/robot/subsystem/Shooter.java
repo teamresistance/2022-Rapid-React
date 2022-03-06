@@ -72,18 +72,18 @@ public class Shooter {
                 break;
             case 1: // btn Fire, wait for prs settle
                 cmdUpdate(low_select, false, false);
-                if (stateTmr.hasExpired(0.5, state)) state++;
+                if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
             case 2: // Fire left, wait
                 cmdUpdate(low_select, true, false);
-                if (stateTmr.hasExpired(1.0, state)) state++;
+                if (stateTmr.hasExpired(0.9, state)) state++;
                 break;
             case 3: // Left closed, wait
-                cmdUpdate(low_select, false, false);
-                if (stateTmr.hasExpired(0.5, state)) state++;
+                cmdUpdate(low_select, true, false);
+                if (stateTmr.hasExpired(0.0, state)) state++;
                 break;
             case 4: // Fire right, return to 0, reset the reqShootDrvAuto 
-                cmdUpdate(low_select, false, true);
+                cmdUpdate(low_select, true, true);
                 if (stateTmr.hasExpired(1.0, state)){
                     state = 0;
                     reqShootLowDrvAuto = null;
