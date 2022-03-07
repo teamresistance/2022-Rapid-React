@@ -1,6 +1,7 @@
 package frc.robot.subsystem.drive.trajFunk;
 
 import frc.robot.subsystem.Snorfler;
+import frc.robot.subsystem.drive.Drive;
 
 // import frc.robot.subsystem.ballHandler.Snorfler; //---- Commented out 2022 ----
 
@@ -22,7 +23,8 @@ public class SnorfDrvAuto extends ATrajFunction {
     public void execute() {
         switch (state) {
         case 0: // set Snorfler control
-            Snorfler.reqsnorfDrvAuto = snorfEna; 
+            Snorfler.reqsnorfDrvAuto = snorfEna;
+            Drive.cmdUpdate(0.0,0.0,false,0);
             state++;
             System.out.println("Snf - 0: ---------- Init -----------");
         case 1:

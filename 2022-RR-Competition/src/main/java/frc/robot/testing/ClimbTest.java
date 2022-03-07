@@ -19,7 +19,7 @@ public class ClimbTest {
         IO.lockPinARet_SV.set(JS_IO.btnClimb2.isDown());    //CB 12
         IO.lockPinBExt_SV.set(JS_IO.btnRejectLeft.isDown());//CB 4
         IO.sliderExt_SV.set(JS_IO.btnRejectRight.isDown()); //CB 6
-
+        IO.climbBrakeRel_SV.set(JS_IO.btnRejectSnorfle.isDown()); //CB 5
 
     
         sdbUpdate();

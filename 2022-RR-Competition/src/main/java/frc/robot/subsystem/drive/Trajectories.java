@@ -6,10 +6,10 @@ import frc.io.vision.RPI;
 import frc.robot.subsystem.drive.trajFunk.*;
 
 public class Trajectories {
-    private static double dfltPwr = 0.9;
+    private static double dfltPwr = 0.4;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty", "LM", "LR", "LL", "RM", "RR", "RL", "SnorfShootTest",
+        "getEmpty", "getCargo1", "getCargo2", "getCargo3", "getCargo4", "getCargo5", "getCargo6", "SnorfShootTest",
     };
 
     /**Initialize Traj chooser */
@@ -19,16 +19,13 @@ public class Trajectories {
         }
         chsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
         SmartDashboard.putData("Drv/Traj/Choice", chsr);
+        
     }
 
     /**Show on sdb traj chooser info.  Called from robotPeriodic  */
     public static void chsrUpdate(){
         SmartDashboard.putString("Drv/Traj/Choosen", chsr.getSelected());
 
-
-
-        
-        SmartDashboard.putNumber("Drv/Traj/Gxtc Num", RPI.galacticShooter());
     }
 
     /**
@@ -42,17 +39,17 @@ public class Trajectories {
             return getEmpty(pwr);
             case "SnorfShootTest":
             return snorfShootTest(pwr);
-            case "LM":
+            case "getCargo1":
             return getCargo1(pwr);            
-            case "LR":
+            case "getCargo2":
             return getCargo2(pwr);
-            case "LL":
+            case "getCargo3":
             return getCargo3(pwr);
-            case "RM":
+            case "getCargo4":
             return getCargo4(pwr);
-            case "RR":
+            case "getCargo5":
             return getCargo5(pwr);
-            case "RL":
+            case "getCargo6":
             return getCargo6(pwr);
             default:
             System.out.println("Traj/Bad Traj Desc - " + chsr.getSelected());
@@ -80,7 +77,10 @@ public class Trajectories {
     // name each method by the path its doing
 
     public static ATrajFunction[] getEmpty(double pwr) {
-        ATrajFunction[] traj = { new TurnNMove(0.0, 0.0, 0.0) };
+        ATrajFunction[] traj = { 
+            new CoorOffset(24.0, -1.5, -3.5),
+            // new TurnNMove(0.0, 0.0, 0.0),
+        };
         return traj;
     }
 
@@ -88,14 +88,15 @@ public class Trajectories {
         ATrajFunction[] traj = {
             new SnorfDrvAuto(true), //Puts down snorfler
             new TurnNMove(0, 2), //Moves forward 2 ft
-            new TrajDelay(3), //Delays 3 seconds waiting to pick up ball
+           // new TrajDelay(3), //Delays 3 seconds waiting to pick up ball
             new SnorfDrvAuto(false), //Turns off snorfler
+            new TrajDelay(2.0),
             new ShootDrvAuto(false), //Shoots high setting
         };
         return traj;
     }
 
-    public static ATrajFunction[] getCargo1(double pwr) {
+    public static ATrajFunction[] getCargo1(double pwr) { //LM
         ATrajFunction traj[] = {
             new CoorOffset(-66.0, 4.0, -1.5),
             new ShootDrvAuto(false),
@@ -111,7 +112,7 @@ public class Trajectories {
         return traj;
     }
 
-    public static ATrajFunction[] getCargo2(double pwr) {
+    public static ATrajFunction[] getCargo2(double pwr) { //LR
         ATrajFunction traj[] = {
             new CoorOffset(-66.0, 3.0, -2.5),
             new ShootDrvAuto(false),
@@ -127,7 +128,7 @@ public class Trajectories {
         return traj;
     }
     
-    public static ATrajFunction[] getCargo3(double pwr) {
+    public static ATrajFunction[] getCargo3(double pwr) { //LL
         ATrajFunction[] traj = {
             new CoorOffset(-66.0, 4.5, 1.0),
             new ShootDrvAuto(false),
@@ -143,22 +144,33 @@ public class Trajectories {
         return traj;
     }
     
-    public static ATrajFunction[] getCargo4(double pwr) { //P5, Shoot Hi , C,( G,) P5, Shoot Hi.
+    public static ATrajFunction[] getCargo4(double pwr) { //RM: P5, Shoot Hi , C,( G,) P5, Shoot Hi.
+        pwr = 0.5;
         ATrajFunction traj[] = {
             new CoorOffset(24.0, -1.5, -3.5),
             new ShootDrvAuto(false),
-            new TurnNMove(24.0, -7.4),
+            // new TrajDelay(2.0),
+            new TurnNMove(24.0, -6.4, pwr), // already at 24 degrees, go back 7.4 feet
+            new TurnNMove(24.0, 0.5, pwr), // braking
+            new TankTurnHdg(-38, -0.1, 0.5), //Turns
             new SnorfDrvAuto(true),
-            new Waypt(-7, -11), // C Ball
-            new SnorfDrvAuto(false),
-            new Waypt(-2, -5),
-            new TurnNMove(24.0, 0.5),
+            new TurnNMove(-38, 9.0, pwr),
+            //new Waypt(-7, -11, 0.3), // C Ball
+            new SnorfDrvAuto(false), //Snorfler up
+            new TurnNMove(-38, -11.0, pwr),
+            new TurnNMove(-38, 0.1, pwr), //brake
+            new TankTurnHdg(24.0, 0.5, -0.1), //turns
+            new TurnNMove(24.0, 5.5, pwr),
+            new TurnNMove(24.0, 1.5, 0.2),
+            //new TurnNMove()
+            // new Waypt(-2, -5), // back in front of shoot area
+            // new TurnNMove(24.0, 0.5), //forward a little
             new ShootDrvAuto(false),
         };
         return traj;
     }
 
-    public static ATrajFunction[] getCargo5(double pwr) { //P6, Shoot Hi , C,( G,) P5, Shoot Hi.
+    public static ATrajFunction[] getCargo5(double pwr) { //RR: P6, Shoot Hi , C,( G,) P5, Shoot Hi.
         ATrajFunction traj[] = {
             new CoorOffset(24.0, -1.5, -3.5),
             new ShootDrvAuto(false),
@@ -173,7 +185,7 @@ public class Trajectories {
         return traj;
     }    
 
-    public static ATrajFunction[] getCargo6(double pwr) { //P4, Shoot Hi , C,( G,) P5, Shoot Hi.
+    public static ATrajFunction[] getCargo6(double pwr) { //RL: P4, Shoot Hi , C,( G,) P5, Shoot Hi.
         ATrajFunction traj[] = {
             new CoorOffset(24.0, -0.5, -4.0),
             new ShootDrvAuto(false),

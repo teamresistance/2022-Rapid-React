@@ -49,9 +49,10 @@ public class Shooter {
     public static void update() {
         if (reqShootLowDrvAuto == null) {
             low_select = -axSelLow.get() < 0.10;
-        } else {
-            //state = 1;
+        } else if (state == 0) {
+            state = 1;
             low_select = reqShootLowDrvAuto;
+            // System.out.println("Shtr Auto" + reqShootLowDrvAuto);
         }
         if ((btnFire.onButtonPressed()) && state == 0) state = 1;
 

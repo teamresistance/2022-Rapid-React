@@ -175,12 +175,12 @@ public class JS_IO {
         btnClimb2.setButton(coJoystick, 12);
         btnClimbSlideRst.setButton(coJoystick, 7);
 
-        btnClimbStep.setButton(rightJoystick, 7); //For testing
+       btnClimbStep.setButton(rightJoystick, 7); //For testing
 
         // Misc
         //TODO: Change button assignments
         btnRstGyro = new Button(rightJoystick, 6);
-        // btnRstFeet = new Button(rightJoystick, 7);
+        //btnRstFeet = new Button(rightJoystick, 7);
         btnRstCoorXY = new Button(rightJoystick, 8);
 
     }

@@ -19,7 +19,7 @@ public class Drv_Auto extends Drive {
      * <p>Reset Heading & Distance to 0.
      */
     public static void init() {
-        traj = Trajectories.getTraj(1.0);
+        traj = Trajectories.getTraj(0.50);
         autoStep = 0;
         idx = 0;
         allDone = false;
@@ -45,6 +45,7 @@ public class Drv_Auto extends Drive {
             autoStep++;
         case 1:                 //Run a leg of the path
             traj[idx].execute();
+            System.out.println("Index: " + idx);
             //Try returning trajCmds
             // strCmd = ATrajFunction.getTrajCmd();
             // cmdUpdate(strCmd[0], strCmd[1], ATrajFunction.getSqOrQT(), ATrajFunction.getDiffType());
@@ -72,6 +73,7 @@ public class Drv_Auto extends Drive {
             cmdUpdate();        //Stop Drive
             autoStep++;
         case 4:     //Loop here
+            cmdUpdate();        //Stop Drive
             break;
         }
     }
@@ -96,5 +98,7 @@ public class Drv_Auto extends Drive {
         SmartDashboard.putNumber("Drv/Auto/Current Traj Idx", idx);
         SmartDashboard.putNumber("Drv/Auto/hdgFB", hdgFB());
         SmartDashboard.putNumber("Drv/Auto/distFB", distFB());
+        SmartDashboard.putNumber("Drv/Auto/coorX", IO.coorXY.getX());
+        SmartDashboard.putNumber("Drv/Auto/coorY", IO.coorXY.getY());
     }
 }

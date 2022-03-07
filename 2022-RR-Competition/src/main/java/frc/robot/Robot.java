@@ -9,18 +9,25 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
+import frc.io.hdw_io.util.CoorSys;
 import frc.io.joysticks.JS_IO;
 import frc.robot.subsystem.Climber;
 import frc.robot.subsystem.Shooter;
 import frc.robot.subsystem.Snorfler;
 import frc.robot.subsystem.Test_Hdw;
+import frc.robot.subsystem.drive.Drive;
+import frc.robot.subsystem.drive.Drv_Auto;
 import frc.robot.subsystem.drive.Drv_Teleop;
+import frc.robot.subsystem.drive.Trajectories;
 import edu.wpi.first.wpilibj.Relay;
 
 import frc.robot.testing.ClimbTest;
 import frc.robot.testing.DriveTest;
 import frc.robot.testing.ShootTest;
 import frc.robot.testing.SnorfTest;
+import frc.robot.testing.TimerTest;
+//TODO: check class placement
+import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,12 +46,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        Climber.init();
         Snorfler.teamColorchsrInit();
         IO.init();
         JS_IO.init();
         Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
+        Trajectories.chsrInit();
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
+        CameraServer.startAutomaticCapture();
     }
 
     /**
@@ -66,24 +76,32 @@ public class Robot extends TimedRobot {
         IO.update();
         JS_IO.update();
         Drv_Teleop.chsrUpdate();
+        Trajectories.chsrUpdate();
+        IO.coorXY.update();
     }
 
     /** This function is called once when autonomous is enabled. */
 
     @Override
     public void autonomousInit() {
-
+        Drv_Auto.init();
+        Snorfler.init();
+        Shooter.init();
+        
     }
 
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-
+        Drv_Auto.update();
+        Snorfler.update();
+        Shooter.update();
     }
 
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
+        Drv_Auto.disable();
         Drv_Teleop.init();
         Snorfler.init();
         Shooter.init();
@@ -116,8 +134,9 @@ public class Robot extends TimedRobot {
     /** This function is called once when test mode is enabled. */
     @Override
     public void testInit() {
-        ClimbTest.init();
+        // ClimbTest.init();
         // SnorfTest.init();
+        TimerTest.init();
     }
 
     /** This function is called periodically during test mode. */
@@ -127,7 +146,8 @@ public class Robot extends TimedRobot {
         // SnorfTest.update();
         // ShootTest.update();
         // DriveTest.update();
-        ClimbTest.update();
+        // ClimbTest.update();
+        TimerTest.update();
 
     }
 

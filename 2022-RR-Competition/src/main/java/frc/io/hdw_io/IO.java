@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.util.*;
+import frc.io.joysticks.JS_IO;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 // import com.ctre.phoenix.motorcontrol.*;
@@ -43,9 +44,9 @@ public class IO {
     public static CANVenom drvFollower_L = new CANVenom(16); // Resrvd 3 & 4 maybe
     //As of 2022 DifferentialDrive no longer inverts the right motor.  Do this in the motor controller.
     public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
-
-    public static double drvLeadTPF_L = -3.684;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
-    public static double drvLeadTPF_R = 3.684; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+                                        // 3.191
+    public static double drvLeadTPF_L = -4.19;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static double drvLeadTPF_R = 4.19; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
     public static Encoder_Pwf drvEnc_L = new Encoder_Pwf(drvLead_L, drvLeadTPF_L);  //Interface for feet, ticks, reset
     public static Encoder_Pwf drvEnc_R = new Encoder_Pwf(drvLead_R, drvLeadTPF_R);
 
@@ -137,7 +138,7 @@ public class IO {
         climbMotorFollow.setIdleMode(IdleMode.kBrake);
         climbMotorFollow.follow(climbMotor);     //Disabled for testing
     }
-
+    private static boolean reset = false;
     public static void update() {
         SmartDashboard.putNumber("Robot/Feet", coorXY.drvFeet());
         SmartDashboard.putNumber("Robot/EncTicks L", drvEnc_L.ticks());
@@ -147,5 +148,13 @@ public class IO {
         SmartDashboard.putNumber("Robot/Mtr12 Cmd", drvLead_L.get());
         SmartDashboard.putNumber("Robot/Mtr11 Cmd", drvFollower_L.get());
         SmartDashboard.putNumber("Climb/leadMtrEnc", climbLdMtr_Enc.ticks());
-    }
+        SmartDashboard.putBoolean("Climb/brakeState_SV", climbBrakeRel_SV.get());
+        SmartDashboard.putBoolean("Robot/Reset", reset);
+        if (reset || JS_IO.btnRstCoorXY.onButtonPressed()) { //TODO: delete this after tesitng
+            IO.coorXY.reset();
+
+        }
+        SmartDashboard.putNumber("Robot/CoorX_OS", IO.coorXY.getX_OS());
+        SmartDashboard.putNumber("Robot/CoorY_OS", IO.coorXY.getY_OS());
+    }   
 }

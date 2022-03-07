@@ -95,6 +95,10 @@ public class CoorSys {
     /** @return the calculated Y (fwd/bkwd) coordinate on the field since the last reset. */
     public double getY(){ return coorY + coorY_OS; }
 
+    public double getX_OS() { return coorX_OS; }
+
+    public double getY_OS() { return coorY_OS; }
+
     /** @return the calculated Y (fwd/bkwd) coordinate on the field since the last reset. */
     public double getDeltaD(){ return deltaD; }
 

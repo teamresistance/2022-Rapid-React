@@ -32,7 +32,7 @@ public class TurnNMove extends ATrajFunction {
         case 0: // Init Trajectory, (1)turn to hdg then (2)moveto dist ...
             pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
             pidHdg.enableContinuousInput(-180.0, 180.0);
-            //Set extended values SP, DB, Mn, Mx, Exp, Cmp
+            //Set extended values        SP,    DB,    Mn,  Mx,   Exp,   Cmp
             PIDXController.setExt(pidHdg, hdgSP, 2.0, 0.35, pwrMx, 2.0, true);
 
             pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
@@ -62,6 +62,7 @@ public class TurnNMove extends ATrajFunction {
             prtShtuff("TNM");
             break;
         case 3:
+            System.out.println("Distance gone in TNM: " + distFB() + " SetPoint: " + pidDist.getSetpoint());
             setDone();
             System.out.println("TNM - 3: ---------- Done -----------");
             break;
