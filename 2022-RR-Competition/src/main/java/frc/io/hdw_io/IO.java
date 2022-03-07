@@ -138,23 +138,28 @@ public class IO {
         climbMotorFollow.setIdleMode(IdleMode.kBrake);
         climbMotorFollow.follow(climbMotor);     //Disabled for testing
     }
-    private static boolean reset = false;
+
     public static void update() {
-        SmartDashboard.putNumber("Robot/Feet", coorXY.drvFeet());
-        SmartDashboard.putNumber("Robot/EncTicks L", drvEnc_L.ticks());
-        SmartDashboard.putNumber("Robot/EncTicks R", drvEnc_R.ticks());
-        SmartDashboard.putNumber("Robot/Mtr0 Cmd", drvLead_R.get());
-        SmartDashboard.putNumber("Robot/Mtr1 Cmd", drvFollower_R.get());
-        SmartDashboard.putNumber("Robot/Mtr12 Cmd", drvLead_L.get());
-        SmartDashboard.putNumber("Robot/Mtr11 Cmd", drvFollower_L.get());
+        if (JS_IO.btnRstCoorXY.onButtonPressed())  IO.coorXY.reset();  //RJS btn 8
+           
+        sdbUpdate();
+    }   
+
+    public static void sdbUpdate() {
+        SmartDashboard.putNumber("Robot/1. Feet", coorXY.drvFeet());
+        SmartDashboard.putNumber("Robot/2. CoorX", IO.coorXY.getX());
+        SmartDashboard.putNumber("Robot/3. CoorY", IO.coorXY.getY());
+        SmartDashboard.putNumber("Robot/4. CoorX_OS", IO.coorXY.getX_OS());
+        SmartDashboard.putNumber("Robot/5. CoorY_OS", IO.coorXY.getY_OS());
+        SmartDashboard.putNumber("Robot/6. EncTicks L", drvEnc_L.ticks());
+        SmartDashboard.putNumber("Robot/7. EncTicks R", drvEnc_R.ticks());
+        SmartDashboard.putNumber("Robot/8. Ld Mtr11 Cmd L", drvLead_R.get());
+        SmartDashboard.putNumber("Robot/9. Fl Mtr12 Cmd L", drvFollower_R.get());
+        SmartDashboard.putNumber("Robot/10. Ld Mtr12 Cmd R", drvLead_L.get());
+        SmartDashboard.putNumber("Robot/11. Fl Mtr11 Cmd R", drvFollower_L.get());
+
         SmartDashboard.putNumber("Climb/leadMtrEnc", climbLdMtr_Enc.ticks());
         SmartDashboard.putBoolean("Climb/brakeState_SV", climbBrakeRel_SV.get());
-        SmartDashboard.putBoolean("Robot/Reset", reset);
-        if (reset || JS_IO.btnRstCoorXY.onButtonPressed()) { //TODO: delete this after tesitng
-            IO.coorXY.reset();
 
-        }
-        SmartDashboard.putNumber("Robot/CoorX_OS", IO.coorXY.getX_OS());
-        SmartDashboard.putNumber("Robot/CoorY_OS", IO.coorXY.getY_OS());
     }   
 }

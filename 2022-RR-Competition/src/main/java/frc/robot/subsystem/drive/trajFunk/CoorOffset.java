@@ -25,7 +25,7 @@ public class CoorOffset extends ATrajFunction {
             IO.navX.setAngleAdjustment(hdg_OS);
             IO.coorXY.setXY_OS(coorX_OS, coorY_OS);
             state++;
-            System.out.println("Snf - 0: ---------- Init -----------");
+            // System.out.println("Snf - 0: ---------- Init -----------");
         case 1:
             setDone();
             System.out.println("Snf - 1: ---------- Done -----------");

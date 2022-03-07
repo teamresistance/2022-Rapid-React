@@ -13,7 +13,7 @@ public class SnorfDrvAuto extends ATrajFunction {
     private boolean snorfEna = false;
 
     /**
-     * Constructor to control the Snorfler
+     * Constructor to control the Snorfler, true = enable, false disable.
      * @param _snorfEna lower snorfler and start sucking up balls
      */
     public SnorfDrvAuto(boolean _snorfEna) {
@@ -22,11 +22,10 @@ public class SnorfDrvAuto extends ATrajFunction {
 
     public void execute() {
         switch (state) {
-        case 0: // set Snorfler control
+        case 0: // set Snorfler control true = enable, false disable
             Snorfler.reqsnorfDrvAuto = snorfEna;
-            Drive.cmdUpdate(0.0,0.0,false,0);
             state++;
-            System.out.println("Snf - 0: ---------- Init -----------");
+            // System.out.println("Snf - 0: ---------- Init -----------");
         case 1:
             setDone();
             System.out.println("Snf - 1: ---------- Done -----------");

@@ -24,6 +24,7 @@ public class TimerTest {
 
     public static void sdbUpdate(){
         SmartDashboard.putBoolean("TimerTst/startIt", startIt);
+        SmartDashboard.putNumber("TimerTst/Sec Left", tstTimer.getRemainingSec());
     }
     
 }

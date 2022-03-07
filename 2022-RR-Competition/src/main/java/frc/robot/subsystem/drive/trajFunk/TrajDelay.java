@@ -1,5 +1,6 @@
 package frc.robot.subsystem.drive.trajFunk;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystem.drive.Drive;
 import frc.util.Timer;
 /*Author - Purab
@@ -16,30 +17,29 @@ public class TrajDelay extends ATrajFunction {
     private double timeDelay;
 
     /**
-     * Constructor to delay execution of the trajectory.
+     * Constructor to delay execution of the autonomous trajectory.
      * @param secDelay seconds to delay execution of the trajectory.
      */
     public TrajDelay(double secDelay) {
-        Drive.cmdUpdate(0.0,0.0,false,0);
         timeDelay = secDelay;
         delayTimer = new Timer(timeDelay);
     }
 
     public void execute() {
         switch (state) {
-        case 0: // set Snorfler control
-            Drive.cmdUpdate(0.0,0.0,false,0); //TODO: if something with drive isn't working, probably remove this.
+        case 0: // Initialize the timer
             delayTimer.clearTimer();
             state++;
         // System.out.println("Snf - 0: ---------- Init -----------");
             break;
-        case 1:
-            Drive.cmdUpdate(0.0,0.0,false,0); //TODO: if something with drive isn't working, probably remove this.
+        case 1: // Wait for the timer
             if(delayTimer.hasExpired(timeDelay, true)) state++;
+            SmartDashboard.putNumber("Traj/TrajDelay", delayTimer.getRemainingSec());
+            // System.out.println("Snf - 1: ---------- Waiting -----------");
             break;
         case 2:
             setDone();
-            // System.out.println("Snf - 1: ---------- Done -----------");
+            System.out.println("Snf - 2: ---------- Done -----------");
             break;
         default:
             setDone();

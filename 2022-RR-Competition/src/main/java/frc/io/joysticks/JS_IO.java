@@ -162,7 +162,7 @@ public class JS_IO {
         // snorfler buttons
         btnSnorfle.setButton(coJoystick, 3);
         btnRejectSnorfle.setButton(coJoystick, 5);
-        btnBadColor.setButton(coJoystick, 2);       //For Testing
+        // btnBadColor.setButton(coJoystick, 2);       //For Testing ball reject snorfler
         
         // shooting buttons
         axGoalSel.setAxis(coJoystick, 3);
@@ -173,15 +173,14 @@ public class JS_IO {
         // climbing buttons
         btnClimb1.setButton(coJoystick, 11);
         btnClimb2.setButton(coJoystick, 12);
-        btnClimbSlideRst.setButton(coJoystick, 7);
+        // btnClimbSlideRst.setButton(coJoystick, 7);
 
        btnClimbStep.setButton(rightJoystick, 7); //For testing
 
         // Misc
-        //TODO: Change button assignments
-        btnRstGyro = new Button(rightJoystick, 6);
-        //btnRstFeet = new Button(rightJoystick, 7);
-        btnRstCoorXY = new Button(rightJoystick, 8);
+        btnRstGyro = new Button(leftJoystick, 7);
+        btnRstFeet = new Button(leftJoystick, 8);
+        btnRstCoorXY = new Button(leftJoystick, 9);
 
     }
 
