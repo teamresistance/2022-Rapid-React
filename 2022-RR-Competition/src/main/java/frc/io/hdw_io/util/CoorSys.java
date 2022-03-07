@@ -3,8 +3,10 @@ package frc.io.hdw_io.util;
 public class CoorSys {
     // Hardware
     private NavX navX;
-    private Encoder_Pwf whlEnc_L;
-    private Encoder_Pwf whlEnc_R;
+    private Encoder_Pwf whlLdEnc_L;
+    private Encoder_Pwf whlLdEnc_R;
+    private Encoder_Pwf whlFlEnc_L;
+    private Encoder_Pwf whlFlEnc_R;
 
     // XY Coordinates
     private double prstDist;     //Present distance traveled since last reset.
@@ -21,10 +23,12 @@ public class CoorSys {
      * @param left wheel encaoder
      * @param right wheel encoder
      */
-    public CoorSys(NavX hdg, Encoder_Pwf left, Encoder_Pwf right){
+    public CoorSys(NavX hdg, Encoder_Pwf leftLd, Encoder_Pwf rightLd, Encoder_Pwf leftFl, Encoder_Pwf rightFl){
         navX = hdg;
-        whlEnc_L = left;
-        whlEnc_R = right;
+        whlLdEnc_L = leftLd;
+        whlLdEnc_R = rightLd;
+        whlFlEnc_L = leftFl;
+        whlFlEnc_R = rightFl;
     }
 
     /**
@@ -50,9 +54,11 @@ public class CoorSys {
     }
 
     /**Reset left & right encoders to 0.  Feet calc reads 0 */
-    public void drvFeetRst() { whlEnc_L.reset(); whlEnc_R.reset(); }
+    public void drvFeetRst() { whlLdEnc_L.reset(); whlLdEnc_R.reset();
+                               whlFlEnc_L.reset(); whlFlEnc_R.reset(); }
     /**Use L/R encoders to calc average distance */
-    public double drvFeet() { return (whlEnc_L.feet() + whlEnc_R.feet()) / 2.0; }
+    public double drvFeet() { return (whlLdEnc_R.feet() + whlFlEnc_L.feet()) / 2.0; }
+                                    //   whlFlEnc_L.feet() + whlFlEnc_R.feet()) / 4.0; }
 
     /**Reset the location on the field to 0.0, 0.0.
      * <p>If needed navX.Reset must be called separtely.

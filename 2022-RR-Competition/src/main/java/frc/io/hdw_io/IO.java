@@ -45,12 +45,17 @@ public class IO {
     //As of 2022 DifferentialDrive no longer inverts the right motor.  Do this in the motor controller.
     public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
                                         // 3.191
-    public static double drvLeadTPF_L = -4.19;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
-    public static double drvLeadTPF_R = 4.19; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
-    public static Encoder_Pwf drvEnc_L = new Encoder_Pwf(drvLead_L, drvLeadTPF_L);  //Interface for feet, ticks, reset
-    public static Encoder_Pwf drvEnc_R = new Encoder_Pwf(drvLead_R, drvLeadTPF_R);
+    public static double tpfAll = 4.15;
+    public static double drvLeadTPF_L = -tpfAll;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static double drvFollowerTPF_L = -tpfAll; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static double drvLeadTPF_R = tpfAll;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static double drvFollowerTPF_R = -tpfAll; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
+    public static Encoder_Pwf drvLdEnc_L = new Encoder_Pwf(drvLead_L, drvLeadTPF_L);  //Interface for feet, ticks, reset
+    public static Encoder_Pwf drvLdEnc_R = new Encoder_Pwf(drvLead_R, drvLeadTPF_R);
+    public static Encoder_Pwf drvFlEnc_L = new Encoder_Pwf(drvFollower_L, drvFollowerTPF_L);  //Interface for feet, ticks, reset
+    public static Encoder_Pwf drvFlEnc_R = new Encoder_Pwf(drvFollower_R, drvFollowerTPF_R);
 
-    public static CoorSys coorXY = new CoorSys(navX, drvEnc_L, drvEnc_R);   //CoorXY & drvFeet
+    public static CoorSys coorXY = new CoorSys(navX, drvLdEnc_L, drvLdEnc_R, drvFlEnc_L, drvFlEnc_R);   //CoorXY & drvFeet
 
     // Snorfler
     public static Victor snorfFeed_Mtr = new Victor(0);     //Feed motor on snorfler
@@ -91,6 +96,7 @@ public class IO {
         motorsInit();
         coorXY.reset();
         coorXY.drvFeetRst();
+        sdbInit();
     }
 
     /**
@@ -140,10 +146,16 @@ public class IO {
     }
 
     public static void update() {
-        if (JS_IO.btnRstCoorXY.onButtonPressed())  IO.coorXY.reset();  //RJS btn 8
+        if (JS_IO.btnRstGyro.onButtonPressed())  IO.navX.reset();           //LJS btn 7
+        if (JS_IO.btnRstFeet.onButtonPressed())  IO.coorXY.drvFeetRst();    //LJS btn 8
+        if (JS_IO.btnRstCoorXY.onButtonPressed())  IO.coorXY.reset();       //LJS btn 9
            
         sdbUpdate();
-    }   
+    }
+
+    public static void sdbInit() {
+        SmartDashboard.putNumber("Robot/18. Enc TPF All", tpfAll);
+    }
 
     public static void sdbUpdate() {
         SmartDashboard.putNumber("Robot/1. Feet", coorXY.drvFeet());
@@ -151,15 +163,29 @@ public class IO {
         SmartDashboard.putNumber("Robot/3. CoorY", IO.coorXY.getY());
         SmartDashboard.putNumber("Robot/4. CoorX_OS", IO.coorXY.getX_OS());
         SmartDashboard.putNumber("Robot/5. CoorY_OS", IO.coorXY.getY_OS());
-        SmartDashboard.putNumber("Robot/6. EncTicks L", drvEnc_L.ticks());
-        SmartDashboard.putNumber("Robot/7. EncTicks R", drvEnc_R.ticks());
-        SmartDashboard.putNumber("Robot/8. Ld Mtr11 Cmd L", drvLead_R.get());
-        SmartDashboard.putNumber("Robot/9. Fl Mtr12 Cmd L", drvFollower_R.get());
-        SmartDashboard.putNumber("Robot/10. Ld Mtr12 Cmd R", drvLead_L.get());
-        SmartDashboard.putNumber("Robot/11. Fl Mtr11 Cmd R", drvFollower_L.get());
-
+        SmartDashboard.putNumber("Robot/6. Ld Enc Ticks L", drvLdEnc_L.ticks());
+        SmartDashboard.putNumber("Robot/7. Ld Enc Ticks R", drvLdEnc_R.ticks());
+        SmartDashboard.putNumber("Robot/8. Fl Enc Ticks L", drvFlEnc_L.ticks());
+        SmartDashboard.putNumber("Robot/9. FL Enc Ticks R", drvFlEnc_R.ticks());
+        SmartDashboard.putNumber("Robot/10. Ld Mtr11 Cmd L", drvLead_R.get());
+        SmartDashboard.putNumber("Robot/11. Fl Mtr12 Cmd L", drvFollower_R.get());
+        SmartDashboard.putNumber("Robot/12. Ld Mtr12 Cmd R", drvLead_L.get());
+        SmartDashboard.putNumber("Robot/13. Fl Mtr11 Cmd R", drvFollower_L.get());
+        SmartDashboard.putNumber("Robot/14. Ld Enc Feet L", drvLdEnc_L.feet());
+        SmartDashboard.putNumber("Robot/15. Ld Enc Feet R", drvLdEnc_R.feet());
+        SmartDashboard.putNumber("Robot/16. Fl Enc Feet L", drvFlEnc_L.feet());
+        SmartDashboard.putNumber("Robot/17. FL Enc Feet R", drvFlEnc_R.feet());
+        tpfAll = SmartDashboard.getNumber("Robot/18. Enc TPF All", 3.91);
+        if(tpfAll != drvLdEnc_L.getTPF()) tpfUpdate();
+        SmartDashboard.putNumber("Robot/19. Ld Enc R tpf chk", drvLdEnc_R.getTPF());
         SmartDashboard.putNumber("Climb/leadMtrEnc", climbLdMtr_Enc.ticks());
         SmartDashboard.putBoolean("Climb/brakeState_SV", climbBrakeRel_SV.get());
+    }
 
-    }   
+    public static void tpfUpdate(){
+        drvLdEnc_L.setTPF(-tpfAll);
+        drvFlEnc_L.setTPF(-tpfAll);
+        drvLdEnc_R.setTPF(tpfAll);
+        drvFlEnc_R.setTPF(-tpfAll);
+    }
 }

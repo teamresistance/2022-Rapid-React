@@ -116,7 +116,7 @@ public class Drv_Teleop extends Drive {
         PIDXController.initSDBPid(pidHdgHold, "Tele/pidHdgHold");
         SmartDashboard.putNumber("Drv/Tele/Drive Scale", getScaledOut());   //push to NetworkTable, sdb
         SmartDashboard.putNumber("Drv/Tele/Drv Enc TPF L", IO.drvLeadTPF_L);
-        SmartDashboard.putNumber("Drv/Tele/Drv Enc TPF R", IO.drvLeadTPF_R);
+        SmartDashboard.putNumber("Drv/Tele/Drv Enc TPF R", IO.drvFollowerTPF_R);
     }
 
     /**Update sdb stuff.  Called every 20mS from update. */
@@ -141,9 +141,11 @@ public class Drv_Teleop extends Drive {
         SmartDashboard.putNumber("Drv/Tele/Motor Fl L", IO.drvFollower_L.get());
         SmartDashboard.putNumber("Drv/Tele/Motor Fl R", IO.drvFollower_R.get());
         IO.drvLeadTPF_L = SmartDashboard.getNumber("Drv/Tele/Drv Enc TPF L", IO.drvLeadTPF_L);
-        IO.drvLeadTPF_R = SmartDashboard.getNumber("Drv/Tele/Drv Enc TPF R", IO.drvLeadTPF_R);
-        SmartDashboard.putNumber("Drv/Tele/Drv Enc Feet L", IO.drvEnc_L.feet());
-        SmartDashboard.putNumber("Drv/Tele/Drv Enc Feet R", IO.drvEnc_R.feet());
+        IO.drvFollowerTPF_R = SmartDashboard.getNumber("Drv/Tele/Drv Enc TPF R", IO.drvFollowerTPF_R);
+        SmartDashboard.putNumber("Drv/Tele/Drv Ld Enc Feet L", IO.drvLdEnc_L.feet());
+        SmartDashboard.putNumber("Drv/Tele/Drv Ld Enc Feet R", IO.drvLdEnc_R.feet());
+        SmartDashboard.putNumber("Drv/Tele/Drv Fl Enc Feet L", IO.drvFlEnc_L.feet());
+        SmartDashboard.putNumber("Drv/Tele/Drv Fl Enc Feet R", IO.drvFlEnc_R.feet());
     }
 
     /**

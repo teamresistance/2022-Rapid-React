@@ -39,8 +39,8 @@ public class Drive {
 
     public static double hdgFB() {return IO.navX.getNormalizedTo180();}  //Only need hdg to Hold Angle 0 or 180
     public static void hdgRst() { IO.navX.reset(); }
-    public static double distFB() { return (IO.drvEnc_L.feet() + IO.drvEnc_R.feet()) / 2; }
-    public static void distRst() { IO.drvEnc_L.reset(); IO.drvEnc_R.reset(); }
+    public static double distFB() { return IO.coorXY.drvFeet(); }
+    public static void distRst() { IO.coorXY.drvFeetRst(); }
 
     public static void init() {
         cmdUpdate(0.0, 0.0, false, 0);

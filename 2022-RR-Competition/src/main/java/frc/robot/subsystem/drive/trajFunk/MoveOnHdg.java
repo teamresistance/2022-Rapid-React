@@ -30,12 +30,21 @@ public class MoveOnHdg extends ATrajFunction {
         errHdgLT = Math.abs(eErrHdgLT);
     }
 
-    /**Constructor - errHdgLT defaults to 180 */
+    /**
+     * Constructor - errHdgLT defaults to 180
+     * @param eHdg
+     * @param eDist
+     * @param ePwr
+     */
     public MoveOnHdg(double eHdg, double eDist, double ePwr) {
         this(eHdg, eDist, ePwr, 180);
     }
 
-    /**Constructor - ePwr defaults to 1.0 & errHdgLT to 180 */
+    /**
+     * Constructor - ePwr defaults to 1.0 & errHdgLT to 180
+     * @param eHdg
+     * @param eDist
+     */
     public MoveOnHdg(double eHdg, double eDist) {
         this(eHdg, eDist, 1.0, 180);
     }
