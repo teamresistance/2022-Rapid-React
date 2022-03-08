@@ -30,12 +30,12 @@ public class TurnNMove extends ATrajFunction {
         // update();
         switch (state) {
         case 0: // Init Trajectory, (1)turn to hdg then (2)moveto dist ...
-            pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
-            pidHdg.enableContinuousInput(-180.0, 180.0);
+            // pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
+            // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values        SP,    DB,    Mn,  Mx,   Exp,   Cmp
             PIDXController.setExt(pidHdg, hdgSP, 2.0, 0.35, pwrMx, 2.0, true);
 
-            pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
+            // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
             //Set extended values SP, DB, Mn, Mx, Exp, Cmp
             PIDXController.setExt(pidDist, distSP, 1.0, 0.2, pwrMx, 1.0, true);
 

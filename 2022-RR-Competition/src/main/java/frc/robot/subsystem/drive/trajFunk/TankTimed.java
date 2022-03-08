@@ -22,10 +22,13 @@ public class TankTimed extends ATrajFunction {
     public void execute() {
         switch(state){
             case 0:
+                timer.startTimer();
+                state++;
+            case 1:
                 Drive.cmdUpdate(lPwr, rPwr,false, 1);
                 if(timer.hasExpired()) state++;
                 break;
-            case 1:
+            case 2:
                 setDone();
                 System.out.println("TT - 1: ---------- Done -----------");
                 break;           

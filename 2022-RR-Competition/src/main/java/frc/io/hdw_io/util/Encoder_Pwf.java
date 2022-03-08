@@ -39,6 +39,9 @@ public class Encoder_Pwf {
     /**@return the existiing ticks per foot, tpf. */
     public double getTPF() { return tpf; }
 
+    /**@return the revolutions/ticks of the venom motor. */
+    public double getTicks(){ return venomCtlr.getPosition(); }
+
     /**@param tpf - Set ticks per foot.  */
     public void setTPF( double tpf) { this.tpf = tpf; }
 }

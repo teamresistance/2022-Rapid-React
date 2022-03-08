@@ -26,20 +26,21 @@ public class TrajDelay extends ATrajFunction {
     }
 
     public void execute() {
+        Drive.cmdUpdate();
         switch (state) {
         case 0: // Initialize the timer
             delayTimer.clearTimer();
             state++;
-        // System.out.println("Snf - 0: ---------- Init -----------");
+            System.out.println("Delay - 0: ---------- Init -----------");
             break;
         case 1: // Wait for the timer
             if(delayTimer.hasExpired(timeDelay, true)) state++;
             SmartDashboard.putNumber("Traj/TrajDelay", delayTimer.getRemainingSec());
-            // System.out.println("Snf - 1: ---------- Waiting -----------");
+            // System.out.println("Delay - 1: ---------- Waiting -----------");
             break;
         case 2:
             setDone();
-            System.out.println("Snf - 2: ---------- Done -----------");
+            System.out.println("Delay - 2: ---------- Done -----------");
             break;
         default:
             setDone();

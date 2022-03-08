@@ -21,6 +21,7 @@ public class SnorfDrvAuto extends ATrajFunction {
     }
 
     public void execute() {
+        // Drive.cmdUpdate();
         switch (state) {
         case 0: // set Snorfler control true = enable, false disable
             Snorfler.reqsnorfDrvAuto = snorfEna;

@@ -53,7 +53,7 @@ public class Drv_Teleop extends Drive {
         sdbInit();
         teleDrvChoice = teleDrvChsr.getSelected();
         cmdUpdate(0, 0);
-        IO.navX.reset();
+        // IO.navX.reset();
 
         setSwapFront(false);
         setScaled(false);

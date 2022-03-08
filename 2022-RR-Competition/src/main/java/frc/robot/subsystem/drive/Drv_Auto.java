@@ -45,7 +45,7 @@ public class Drv_Auto extends Drive {
             autoStep++;
         case 1:                 //Run a leg of the path
             traj[idx].execute();
-            System.out.println("Index: " + idx);
+            System.out.println("Traj Index: " + idx);
             //Try returning trajCmds
             // strCmd = ATrajFunction.getTrajCmd();
             // cmdUpdate(strCmd[0], strCmd[1], ATrajFunction.getSqOrQT(), ATrajFunction.getDiffType());

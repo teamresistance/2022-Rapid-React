@@ -6,6 +6,7 @@ import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
 import frc.io.joysticks.util.Axis;
 import frc.io.joysticks.util.Button;
+import frc.robot.subsystem.drive.Drive;
 import frc.util.Timer;
 
 
@@ -65,7 +66,6 @@ public class Shooter {
     }
 
     private static void smUpdate() { // State Machine Update
-
         switch (state) {
             case 0: // Everything is off, no pressure, pressure default high, Ltrig and Rtrig off.
                 cmdUpdate(low_select, false, false);

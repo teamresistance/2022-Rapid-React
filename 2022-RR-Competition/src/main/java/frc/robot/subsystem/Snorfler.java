@@ -24,7 +24,7 @@ public class Snorfler {
     public static Victor snorfElv_Mtrs = IO.snorfElv_Mtrs; // Upper & Lower elevator motor
 
     //Defines RevRobotics 3 color sensor and RGB colors to sensr ball colors, Red & Blue.
-    public static ColorSensorV3 ballColorSensor = IO.ballColorSensor;
+    public static ColorSensorV3 ballColorSensor;
     public static final ColorMatch colorMatcher = new ColorMatch();
     private static final Color kBlueTarget = new Color(0.17, 0.41, 0.41); // blue: 17 41 41
     private static final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
@@ -77,14 +77,14 @@ public class Snorfler {
     public static void update() {
         //Bad color Btn for testing the color sensor logic w/o a color sensor.
         if (btnBadColor.isDown()) colorString = enemyColor;
-        ballColorUpdate();
+        // ballColorUpdate();
 
         // if button down and auto snorf, snorf ball
         // if not button, stop snorfling
         // if rejecting ball or see enemy color, reject ball
         // if not rejecting ball and done with rejecting, normal
 
-        if (!colorString.equals(enemyColor) && !csBallReject) {
+        if (/*!colorString.equals(enemyColor)*/ true && !csBallReject) {
             if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && (state == 0 || state == 22 || state == 30))  state = 1; // Starts the snorfling
             if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) &&
                 (state != 0 && state != 12 && state != 30)) state = 30;//Stop snorf but elv for 2 sec.
@@ -207,17 +207,17 @@ public class Snorfler {
 
         // Put other stuff to be displayed here
         SmartDashboard.putNumber("Snorfler/AC/state", state);
-        SmartDashboard.putString("Snorfler/AC/team color", teamColor);
-        SmartDashboard.putString("Snorfler/AC/enemy color", enemyColor);
+        // SmartDashboard.putString("Snorfler/AC/team color", teamColor);
+        // SmartDashboard.putString("Snorfler/AC/enemy color", enemyColor);
         //Motor & SV
         SmartDashboard.putBoolean("Snorfler/AC/Snorfler", IO.snorflerExt_SV.get());
         SmartDashboard.putNumber("Snorfler/AC/SnorfMotor", IO.snorfFeed_Mtr.get());
         SmartDashboard.putNumber("Snorfler/AC/ElevatorMotor", IO.snorfElv_Mtrs.get());
 
-        SmartDashboard.putNumber("Snorfler/Clr/Red", detectedColor.red);
-        SmartDashboard.putNumber("Snorfler/Clr/Green", detectedColor.green);
-        SmartDashboard.putNumber("Snorfler/Clr/Blue", detectedColor.blue);
-        SmartDashboard.putString("Snorfler/Clr/Detected Color", colorString);
+        // SmartDashboard.putNumber("Snorfler/Clr/Red", detectedColor.red);
+        // SmartDashboard.putNumber("Snorfler/Clr/Green", detectedColor.green);
+        // SmartDashboard.putNumber("Snorfler/Clr/Blue", detectedColor.blue);
+        // SmartDashboard.putString("Snorfler/Clr/Detected Color", colorString);
         
         //Joysticks
         SmartDashboard.putBoolean("Snorfler/JS/btnSnorfle", btnSnorfle.isDown());

@@ -23,16 +23,15 @@ public class TankTurnHdg extends ATrajFunction {
         // System.out.println("TTH - exec: " + state);
         switch (state) {
         case 0: // Init Trajectory, turn to hdg then (1) ...
-            pidHdg = new PIDXController(-1.0/70, 0.0, 0.0);
-            pidHdg.enableContinuousInput(-180.0, 180.0);
+            // pidHdg = new PIDXController(-1.0/90, 0.0, 0.0);
+            // pidHdg.enableContinuousInput(-180.0, 180.0);
             pidHdg.setSetpoint(hdgSP);
             pidHdg.setInDB(2.0);
-            pidHdg.setOutMn(0.3);
+            pidHdg.setOutMn(0.2);
             pidHdg.setOutMx(Math.abs(lPwr));
             pidHdg.setOutExp(2.0);
 
-            pidDist = new PIDXController(1.0/70, 0.0, 0.0);
-            pidDist.enableContinuousInput(-180.0, 180.0);
+            // pidDist = new PIDXController(1.0/70, 0.0, 0.0);
             pidDist.setSetpoint(hdgSP);
             pidDist.setInDB(2.0);
             pidDist.setOutMn(0.3);

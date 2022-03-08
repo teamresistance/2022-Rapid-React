@@ -145,9 +145,9 @@ public class Robot extends TimedRobot {
         // Test to checkout individual devices. Run one at a tme.
         // SnorfTest.update();
         // ShootTest.update();
-        // DriveTest.update();
+        DriveTest.update();
         // ClimbTest.update();
-        TimerTest.update();
+        // TimerTest.update();
 
     }
 

@@ -52,12 +52,12 @@ public class MoveOnHdg extends ATrajFunction {
     public void execute() {
         switch (state) {
         case 0: // Init Trajectory, turn to hdg then (1) ...
-            pidHdg = new PIDXController(1.0/45, 0.0, 0.0);
-            pidHdg.enableContinuousInput(-180.0, 180.0);
+            // pidHdg = new PIDXController(1.0/45, 0.0, 0.0);
+            // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values SP, DB, Mn, Mx, Exp, Cmp
             PIDXController.setExt(pidHdg, hdgSP, 5.0, 0.3, pwrMx, 1.0, true);
 
-            pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
+            // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
             //Set extended values SP, DB, Mn, Mx, Exp, Cmp
             PIDXController.setExt(pidDist, distSP, 0.5, 0.2, pwrMx, 1.0, true);
 

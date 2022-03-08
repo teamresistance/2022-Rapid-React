@@ -59,14 +59,14 @@ public class CirToHdgTank extends ATrajFunction {
         this traj is active.
         */
         case 0: // Init Trajectory
-            pidHdg = new PIDXController(-1.0/45, 0.0, 0.0);
-            pidHdg.enableContinuousInput(-180.0, 180.0);
+            // pidHdg = new PIDXController(-1.0/45, 0.0, 0.0);
+            // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values pidCtlr, SP, DB, Mn, Mx, Exp, Cmp
             PIDXController.setExt(pidHdg, hdgSP, 5.0, 0.5, 1.0, 2.0, true);
             pidHdg.setOutMx(turnRight ? lCmd : rCmd);   //Outside whl
             pidHdg.setOutMn(0.98 * pidHdg.getOutMx());
 
-            pidDist = new PIDXController(1.0/0.4, 0.0, 0.0);
+            // pidDist = new PIDXController(1.0/0.4, 0.0, 0.0);
             //Set extended values pidCtlr, SP, DB, Mn, Mx, Exp, Cmp
             PIDXController.setExt(pidDist, radiusSP, 0.0, 0.0, 0.5, 2.0, true);
             pidDist.setIntegratorRange(-0.5, 0.5);  //Limt integration to +/-

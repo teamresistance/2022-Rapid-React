@@ -78,7 +78,7 @@ public class Trajectories {
 
     public static ATrajFunction[] getEmpty(double pwr) {
         ATrajFunction[] traj = { 
-            new CoorOffset(24.0, -1.5, -3.5),
+            // new CoorOffset(24.0, -1.5, -3.5),
             // new TurnNMove(0.0, 0.0, 0.0),
         };
         return traj;
@@ -86,8 +86,24 @@ public class Trajectories {
 
     public static ATrajFunction[] snorfShootTest(double pwr) {
         ATrajFunction[] traj = {
-            new MoveOnHdg(0.0, 10.0, 0.5),
-            new TankTimed(0.2, -0.3, -0.3),
+            // new MoveOnHdg(0.0, 5.0, 0.5),
+            new MoveOnHdg(0.0, -5.0, 0.5),
+            new TurnNMove(0.0, 5.0, 0.5),
+            // new TurnNMove(0.0, -5.0, 0.5),
+
+            // new MoveOnHdg(0.0, 10.0, 0.5),
+            // new TankTimed(0.2, 0.3, 0.3), //brake
+            // new TankTurnHdg(-85.0, 0.4, -0.4),
+            // new TurnNMove(-90.0, 5.0, 0.5),
+            // new TankTimed(0.2, 0.3, 0.3), //brake
+            // new TrajDelay(3.0),
+            new SnorfDrvAuto(true),
+            new TrajDelay(3.0),
+            new SnorfDrvAuto(false),
+            // new TurnNMove(-90.0, 3.0, 0.5),
+            // new TrajDelay(3.0),
+            // new SnorfDrvAuto(false),
+            // new TurnNMove(-90.0, -3.0, 0.5),
             // new SnorfDrvAuto(true), //Puts down snorfler
             // new TurnNMove(0, 2),    //Moves forward 2 ft
             // new TrajDelay(3),       //Delays 3 seconds waiting to pick up ball
@@ -100,48 +116,48 @@ public class Trajectories {
 
     public static ATrajFunction[] getCargo1(double pwr) { //LM
         ATrajFunction traj[] = {
-            new CoorOffset(-66.0, 4.0, -1.5),
-            new ShootDrvAuto(false),
-            new TurnNMove(-66.0, 0),
-            new SnorfDrvAuto(true),
-            new Waypt(13.0, -2.0), // B Ball
-            new Waypt(7.0, -10.0), // A Ball
-            new SnorfDrvAuto(false),
-            new Waypt(4, -1.0),
-            new TurnNMove(-66.0, 0.5),
-            new ShootDrvAuto(false),
+            // new CoorOffset(-66.0, 4.0, -1.5),
+            // new ShootDrvAuto(false),
+            // new TurnNMove(-66.0, 0),
+            // new SnorfDrvAuto(true),
+            // new Waypt(13.0, -2.0), // B Ball
+            // new Waypt(7.0, -10.0), // A Ball
+            // new SnorfDrvAuto(false),
+            // new Waypt(4, -1.0),
+            // new TurnNMove(-66.0, 0.5),
+            // new ShootDrvAuto(false),
         };
         return traj;
     }
 
     public static ATrajFunction[] getCargo2(double pwr) { //LR
         ATrajFunction traj[] = {
-            new CoorOffset(-66.0, 3.0, -2.5),
-            new ShootDrvAuto(false),
-            new TurnNMove(-66.0, 0),
-            new SnorfDrvAuto(true),
-            new Waypt(13.0, -2.0), // B Ball
-            new Waypt(7.0, -10.0), // A Ball
-            new SnorfDrvAuto(false),
-            new Waypt(2, -4.5),
-            new TurnNMove(-66.0, 0),
-            new ShootDrvAuto(false),
+            // new CoorOffset(-66.0, 3.0, -2.5),
+            // new ShootDrvAuto(false),
+            // new TurnNMove(-66.0, 0),
+            // new SnorfDrvAuto(true),
+            // new Waypt(13.0, -2.0), // B Ball
+            // new Waypt(7.0, -10.0), // A Ball
+            // new SnorfDrvAuto(false),
+            // new Waypt(2, -4.5),
+            // new TurnNMove(-66.0, 0),
+            // new ShootDrvAuto(false),
         };
         return traj;
     }
     
     public static ATrajFunction[] getCargo3(double pwr) { //LL
         ATrajFunction[] traj = {
-            new CoorOffset(-66.0, 4.5, 1.0),
-            new ShootDrvAuto(false),
-            new TurnNMove(-66.0, 0),
-            new SnorfDrvAuto(true),
-            new Waypt(13.0, -2.0), // A Ball
-            new Waypt(7.0, -10.0), // B Ball
-            new SnorfDrvAuto(false),
-            new Waypt(4.5, 1.0),
-            new TurnNMove(-66.0, 0),
-            new ShootDrvAuto(false),
+            // new CoorOffset(-66.0, 4.5, 1.0),
+            // new ShootDrvAuto(false),
+            // new TurnNMove(-66.0, 0),
+            // new SnorfDrvAuto(true),
+            // new Waypt(13.0, -2.0), // A Ball
+            // new Waypt(7.0, -10.0), // B Ball
+            // new SnorfDrvAuto(false),
+            // new Waypt(4.5, 1.0),
+            // new TurnNMove(-66.0, 0),
+            // new ShootDrvAuto(false),
         };
         return traj;
     }
@@ -149,55 +165,55 @@ public class Trajectories {
     public static ATrajFunction[] getCargo4(double pwr) { //RM: P5, Shoot Hi , C,( G,) P5, Shoot Hi.
         pwr = 0.5;
         ATrajFunction traj[] = {
-            new CoorOffset(24.0, -1.5, -3.5),
-            new ShootDrvAuto(false),
-            // new TrajDelay(2.0),
-            new TurnNMove(24.0, -6.4, pwr), // already at 24 degrees, go back 7.4 feet
-            new TurnNMove(24.0, 0.5, pwr), // braking
-            new TankTurnHdg(-38, -0.1, 0.5), //Turns
-            new SnorfDrvAuto(true),
-            new TurnNMove(-38, 9.0, pwr),
-            //new Waypt(-7, -11, 0.3), // C Ball
-            new SnorfDrvAuto(false), //Snorfler up
-            new TurnNMove(-38, -11.0, pwr),
-            new TurnNMove(-38, 0.1, pwr), //brake
-            new TankTurnHdg(24.0, 0.5, -0.1), //turns
-            new TurnNMove(24.0, 5.5, pwr),
-            new TurnNMove(24.0, 1.5, 0.2),
-            //new TurnNMove()
-            // new Waypt(-2, -5), // back in front of shoot area
-            // new TurnNMove(24.0, 0.5), //forward a little
-            new ShootDrvAuto(false),
+            // new CoorOffset(24.0, -1.5, -3.5),
+            // new ShootDrvAuto(false),
+            // // new TrajDelay(2.0),
+            // new TurnNMove(24.0, -6.4, pwr), // already at 24 degrees, go back 7.4 feet
+            // new TurnNMove(24.0, 0.5, pwr), // braking
+            // new TankTurnHdg(-38, -0.1, 0.5), //Turns
+            // new SnorfDrvAuto(true),
+            // new TurnNMove(-38, 9.0, pwr),
+            // //new Waypt(-7, -11, 0.3), // C Ball
+            // new SnorfDrvAuto(false), //Snorfler up
+            // new TurnNMove(-38, -11.0, pwr),
+            // new TurnNMove(-38, 0.1, pwr), //brake
+            // new TankTurnHdg(24.0, 0.5, -0.1), //turns
+            // new TurnNMove(24.0, 5.5, pwr),
+            // new TurnNMove(24.0, 1.5, 0.2),
+            // //new TurnNMove()
+            // // new Waypt(-2, -5), // back in front of shoot area
+            // // new TurnNMove(24.0, 0.5), //forward a little
+            // new ShootDrvAuto(false),
         };
         return traj;
     }
 
     public static ATrajFunction[] getCargo5(double pwr) { //RR: P6, Shoot Hi , C,( G,) P5, Shoot Hi.
         ATrajFunction traj[] = {
-            new CoorOffset(24.0, -1.5, -3.5),
-            new ShootDrvAuto(false),
-            new TurnNMove(24.0, -7.4),
-            new SnorfDrvAuto(true),
-            new Waypt(-7, -11), // C Ball
-            new SnorfDrvAuto(false),
-            new Waypt(-2, -5),
-            new TurnNMove(24.0, 0.5),
-            new ShootDrvAuto(false),
+            // new CoorOffset(24.0, -1.5, -3.5),
+            // new ShootDrvAuto(false),
+            // new TurnNMove(24.0, -7.4),
+            // new SnorfDrvAuto(true),
+            // new Waypt(-7, -11), // C Ball
+            // new SnorfDrvAuto(false),
+            // new Waypt(-2, -5),
+            // new TurnNMove(24.0, 0.5),
+            // new ShootDrvAuto(false),
         };
         return traj;
     }    
 
     public static ATrajFunction[] getCargo6(double pwr) { //RL: P4, Shoot Hi , C,( G,) P5, Shoot Hi.
         ATrajFunction traj[] = {
-            new CoorOffset(24.0, -0.5, -4.0),
-            new ShootDrvAuto(false),
-            new TurnNMove(24.0, -7.4),
-            new SnorfDrvAuto(true),
-            new Waypt(-7, -11), // C Ball
-            new SnorfDrvAuto(false),
-            new Waypt(-2, -5),
-            new TurnNMove(24.0, 0.5),
-            new ShootDrvAuto(false),
+            // new CoorOffset(24.0, -0.5, -4.0),
+            // new ShootDrvAuto(false),
+            // new TurnNMove(24.0, -7.4),
+            // new SnorfDrvAuto(true),
+            // new Waypt(-7, -11), // C Ball
+            // new SnorfDrvAuto(false),
+            // new Waypt(-2, -5),
+            // new TurnNMove(24.0, 0.5),
+            // new ShootDrvAuto(false),
         };
         return traj;
     }

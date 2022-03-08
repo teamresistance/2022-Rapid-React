@@ -44,8 +44,8 @@ public class Waypt extends ATrajFunction {
         // update();
         switch (state) {
         case 0: // Init Trajectory
-            pidHdg = new PIDXController(1.0/50, 0.0, 0.0);
-            pidHdg.enableContinuousInput(-180.0, 180.0);
+            // pidHdg = new PIDXController(1.0/50, 0.0, 0.0);
+            // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values pidCtlr, SP, DB, Mn, Mx, Exp, Cmp
             PIDXController.setExt(pidHdg, 0.0, 2.0, 0.4, pwrMx, 2.0, true);
 

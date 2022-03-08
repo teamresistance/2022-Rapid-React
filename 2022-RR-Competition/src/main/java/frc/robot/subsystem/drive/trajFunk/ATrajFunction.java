@@ -11,6 +11,7 @@ package frc.robot.subsystem.drive.trajFunk;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
+import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
 
 /**
@@ -21,7 +22,8 @@ public abstract class ATrajFunction {
 
     public static int state = 0;
     private static boolean done = false;
-    public static PIDXController pidHdg, pidDist;
+    public static PIDXController pidHdg = Drive.pidHdg;
+    public static PIDXController pidDist = Drive.pidDist;
 
     public static double hdgFB() {return IO.navX.getNormalizedTo180();}  //Only need hdg to Hold Angle 0 or 180
     public static double distFB() {return IO.coorXY.drvFeet();}  //Only need hdg to Hold Angle 0 or 180
@@ -47,7 +49,7 @@ public abstract class ATrajFunction {
 
     public static void setDone() {
         done = true;
-        // Drive.cmdUpdate();      //Stop motors
+        Drive.cmdUpdate();      //Stop motors, Neede to keep diffDrv active
     }
 
     public static boolean getDone() {

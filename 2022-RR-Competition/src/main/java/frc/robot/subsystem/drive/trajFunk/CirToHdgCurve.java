@@ -52,12 +52,12 @@ public class CirToHdgCurve extends ATrajFunction {
     public void execute() {
         switch (state) {
         case 0: // Init traj
-            pidHdg = new PIDXController(-1.0/45, 0.0, 0.0);
+            // pidHdg = new PIDXController(-1.0/45, 0.0, 0.0);
             pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values SP, DB, Mn, Mx, Exp, Cmp
             PIDXController.setExt(pidHdg, hdgSP, 2.0, 0.35, fwdCmd, 2.0, true);
 
-            pidDist = new PIDXController(1.0/2, 0.0, 0.0);
+            // pidDist = new PIDXController(1.0/2, 0.0, 0.0);
             //Set extended values SP, DB, Mn, Mx, Exp, Cmp
             PIDXController.setExt(pidDist, radiusSP, 0.3, (0.6 * fwdCmd), fwdCmd, 1.0, false);
             //P must be the inverse of the sign of rotCmd.

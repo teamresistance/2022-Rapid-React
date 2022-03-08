@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -13,16 +12,14 @@ import frc.io.hdw_io.util.*;
 import frc.io.joysticks.JS_IO;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
-// import com.ctre.phoenix.motorcontrol.*;
-// import com.ctre.phoenix.motorcontrol.can.*;
 import com.playingwithfusion.CANVenom;
 import com.playingwithfusion.CANVenom.BrakeCoastMode;
 import com.playingwithfusion.CANVenom.ControlMode;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.I2C;
+// import com.revrobotics.ColorSensorV3;
+// import edu.wpi.first.wpilibj.I2C;
 
 
 public class IO {
@@ -62,7 +59,7 @@ public class IO {
     public static Victor snorfElv_Mtrs = new Victor(1);    //Lower elevator motor
     public static ISolenoid snorflerExt_SV = new InvertibleSolenoid(2, PneumaticsModuleType.CTREPCM, 1, false); // Extends both feeders
 
-    public static ColorSensorV3 ballColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+    // public static ColorSensorV3 ballColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
     // Shooter
     public static ISolenoid select_low_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 1);    // Defaults hi prs; true for lo prs
@@ -99,6 +96,14 @@ public class IO {
         sdbInit();
     }
 
+    public static void update() {
+        if (JS_IO.btnRstGyro.onButtonPressed())  IO.navX.reset();           //LJS btn 7
+        if (JS_IO.btnRstFeet.onButtonPressed())  IO.coorXY.drvFeetRst();    //LJS btn 8
+        if (JS_IO.btnRstCoorXY.onButtonPressed())  IO.coorXY.reset();       //LJS btn 9
+           
+        sdbUpdate();
+    }
+
     /**
      * Initialize drive configuration setup.
      */
@@ -107,11 +112,13 @@ public class IO {
         // drvLead_L.configFactoryDefault();    //No equivalent
         drvLead_L.setInverted(false); // Inverts motor direction and encoder if attached
         drvLead_L.setBrakeCoastMode(BrakeCoastMode.Brake);
+        drvLead_L.setControlMode(ControlMode.Proportional);
         // drvLead_L.setSensorPhase(false); // Adjust this to correct phasing with motor
 
         // drvLead_R.configFactoryDefault();
         drvLead_R.setInverted(false); // Inverts motor direction and encoder if attached
         drvLead_R.setBrakeCoastMode(BrakeCoastMode.Brake);
+        drvLead_R.setControlMode(ControlMode.Proportional);
         // drvLead_R.setSensorPhase(false); // Adjust this to correct phasing with motor
 
         // ----- Tells left and right second drive motors to follow the Lead -----
@@ -119,10 +126,12 @@ public class IO {
         drvFollower_L.setInverted(true);
         drvFollower_L.setBrakeCoastMode(BrakeCoastMode.Brake);
         drvFollower_L.follow(drvLead_L);
+        drvFollower_L.setControlMode(ControlMode.FollowTheLeader);
         // drvFollower_R.configFactoryDefault();
         drvFollower_R.setInverted(false);
         drvFollower_R.setBrakeCoastMode(BrakeCoastMode.Brake);
         drvFollower_R.follow(drvLead_R);
+        drvFollower_R.setControlMode(ControlMode.FollowTheLeader);
 
         // drvLead_L.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
         // drvLead_R.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -145,14 +154,6 @@ public class IO {
         climbMotorFollow.follow(climbMotor);     //Disabled for testing
     }
 
-    public static void update() {
-        if (JS_IO.btnRstGyro.onButtonPressed())  IO.navX.reset();           //LJS btn 7
-        if (JS_IO.btnRstFeet.onButtonPressed())  IO.coorXY.drvFeetRst();    //LJS btn 8
-        if (JS_IO.btnRstCoorXY.onButtonPressed())  IO.coorXY.reset();       //LJS btn 9
-           
-        sdbUpdate();
-    }
-
     public static void sdbInit() {
         SmartDashboard.putNumber("Robot/18. Enc TPF All", tpfAll);
     }
@@ -168,7 +169,6 @@ public class IO {
         SmartDashboard.putNumber("Robot/8. Fl Enc Ticks L", drvFlEnc_L.ticks());
         SmartDashboard.putNumber("Robot/9. FL Enc Ticks R", drvFlEnc_R.ticks());
         SmartDashboard.putNumber("Robot/10. Ld Mtr11 Cmd L", drvLead_R.get());
-        SmartDashboard.putNumber("Robot/11. Fl Mtr12 Cmd L", drvFollower_R.get());
         SmartDashboard.putNumber("Robot/12. Ld Mtr12 Cmd R", drvLead_L.get());
         SmartDashboard.putNumber("Robot/13. Fl Mtr11 Cmd R", drvFollower_L.get());
         SmartDashboard.putNumber("Robot/14. Ld Enc Feet L", drvLdEnc_L.feet());
@@ -178,6 +178,8 @@ public class IO {
         tpfAll = SmartDashboard.getNumber("Robot/18. Enc TPF All", 3.91);
         if(tpfAll != drvLdEnc_L.getTPF()) tpfUpdate();
         SmartDashboard.putNumber("Robot/19. Ld Enc R tpf chk", drvLdEnc_R.getTPF());
+        SmartDashboard.putNumber("Robot/20. Heading", navX.getAngle());
+
         SmartDashboard.putNumber("Climb/leadMtrEnc", climbLdMtr_Enc.ticks());
         SmartDashboard.putBoolean("Climb/brakeState_SV", climbBrakeRel_SV.get());
     }
