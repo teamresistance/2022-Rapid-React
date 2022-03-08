@@ -1,5 +1,6 @@
 package frc.robot.subsystem.drive.trajFunk;
 
+import frc.io.hdw_io.IO;
 import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
 
@@ -33,7 +34,7 @@ public class TurnNMove extends ATrajFunction {
             // pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values        SP,    DB,    Mn,  Mx,   Exp,   Cmp
-            PIDXController.setExt(pidHdg, hdgSP, 2.0, 0.35, pwrMx, 2.0, true);
+            PIDXController.setExt(pidHdg, hdgSP, 5.0, 0.35, pwrMx, 2.0, true);
 
             // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
             //Set extended values SP, DB, Mn, Mx, Exp, Cmp
@@ -42,7 +43,7 @@ public class TurnNMove extends ATrajFunction {
             Drive.distRst();
             initSDB();
             state++;
-            System.out.println("TNM - 0");
+            System.out.println("TNM - 0  -----  PB:" + pidHdg.getP());
         case 1: // Turn to heading.  Do not move forward, yet.
             trajCmd[0] = pidHdg.calculate(hdgFB());
             Drive.cmdUpdate(0.0, trajCmd[0], false, 2);
@@ -52,6 +53,7 @@ public class TurnNMove extends ATrajFunction {
                 Drive.distRst();
             }
             prtShtuff("TNM");
+            System.out.println("TNM - 1  -----  hdgFB: " + hdgFB() +" " + IO.navX.getNormalizedTo180());
             break;
         case 2: // Move forward, steer Auto Heading and Dist
             trajCmd[0] = pidHdg.calculate(hdgFB());

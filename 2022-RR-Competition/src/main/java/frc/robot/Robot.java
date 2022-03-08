@@ -50,6 +50,7 @@ public class Robot extends TimedRobot {
         Snorfler.teamColorchsrInit();
         IO.init();
         JS_IO.init();
+        Drive.init();
         Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
         Trajectories.chsrInit();
 

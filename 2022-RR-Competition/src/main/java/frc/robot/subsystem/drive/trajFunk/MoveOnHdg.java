@@ -54,12 +54,24 @@ public class MoveOnHdg extends ATrajFunction {
         case 0: // Init Trajectory, turn to hdg then (1) ...
             // pidHdg = new PIDXController(1.0/45, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
-            //Set extended values SP, DB, Mn, Mx, Exp, Cmp
+            //Set extended values SP, DB, Mn, Mx, Exp, Clmp
             PIDXController.setExt(pidHdg, hdgSP, 5.0, 0.3, pwrMx, 1.0, true);
+            // pidHdg.setSetpoint(hdgSP);
+            // pidHdg.setInDB(5.0);
+            // pidHdg.setOutMn(0.3);
+            // pidHdg.setOutMx(pwrMx);
+            // pidHdg.setOutExp(1.0);
+            // pidDist.setClamp(true);
 
             // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
-            //Set extended values SP, DB, Mn, Mx, Exp, Cmp
+            //Set extended values SP, DB, Mn, Mx, Exp, Clmp
             PIDXController.setExt(pidDist, distSP, 0.5, 0.2, pwrMx, 1.0, true);
+            // pidDist.setSetpoint(distSP);
+            // pidDist.setInDB(0.5);
+            // pidDist.setOutMn(0.2);
+            // pidDist.setOutMx(pwrMx);
+            // pidDist.setOutExp(1.0);
+            // pidDist.setClamp(true);
 
             sqOrQT = false; //tank(1)/arcade(2)-apply sqrt | curvature(3)-quick turn
             diffType = 2;   //0-Off | 1=tank | 2=arcade | 3=curvature

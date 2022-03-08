@@ -31,9 +31,9 @@ public abstract class ATrajFunction {
     public static boolean sqOrQT = false;
     public static int diffType = 0;
 
-    public static double hdgFB = 0;     //For simulator testing
-    public static double distFB = 0;
-    public static double radiusFB = 0;
+    public static double hdgFB_sim = 0;     //For simulator testing
+    public static double distFB_sim = 0;
+    public static double radiusFB_sim = 0;
 
 
     public static void initTraj() {

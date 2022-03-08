@@ -39,7 +39,7 @@ public class CirToHdgTank extends ATrajFunction {
         rCmd = _rCmdBase;
         turnRight = Math.abs(lCmd) > Math.abs(rCmd);
 
-        radiusFB = radiusSP;
+        radiusFB_sim = radiusSP;
     }
 
     /*Trying something different.

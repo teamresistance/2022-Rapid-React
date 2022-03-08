@@ -69,7 +69,7 @@ public class CirToHdgCurve extends ATrajFunction {
             initSDB();
             state++;
         case 1: // Rotate forward, steer with Dist to maintain radius
-            trajCmd[0] = pidHdg.calculateX(hdgFB);                   //[0]=fwd(Y)
+            trajCmd[0] = pidHdg.calculateX(hdgFB_sim);                   //[0]=fwd(Y)
             trajCmd[1] = pidDist.calculateX(radiusFB(ctrX, ctrY));   //[1]=radius(X)
             // strCmd[1] = pidDist.calculateX(radiusFB);   //[1]=radius(X)
             prtShtuff("CHC");    //--------- Print info --------------
