@@ -25,8 +25,8 @@ public abstract class ATrajFunction {
     public static PIDXController pidHdg = Drive.pidHdg;
     public static PIDXController pidDist = Drive.pidDist;
 
-    public static double hdgFB() {return IO.navX.getNormalizedTo180();}  //Only need hdg to Hold Angle 0 or 180
-    public static double distFB() {return IO.coorXY.drvFeet();}  //Only need hdg to Hold Angle 0 or 180
+    public static double hdgFB() {return IO.navX.getNormalizedTo180();}
+    public static double distFB() {return IO.coorXY.drvFeet();}
     public static double[] trajCmd = new double[2];
     public static boolean sqOrQT = false;
     public static int diffType = 0;

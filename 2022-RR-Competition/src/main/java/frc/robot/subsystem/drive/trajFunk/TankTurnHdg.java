@@ -25,18 +25,20 @@ public class TankTurnHdg extends ATrajFunction {
         case 0: // Init Trajectory, turn to hdg then (1) ...
             // pidHdg = new PIDXController(-1.0/90, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
+            pidHdg.setP(-1.0/70);
             pidHdg.setSetpoint(hdgSP);
-            pidHdg.setInDB(2.0);
-            pidHdg.setOutMn(0.2);
+            pidHdg.setInDB(5.0);
+            pidHdg.setOutMn(0.3);
             pidHdg.setOutMx(Math.abs(lPwr));
             pidHdg.setOutExp(2.0);
 
             // pidDist = new PIDXController(1.0/70, 0.0, 0.0);
-            pidDist.setSetpoint(hdgSP);
-            pidDist.setInDB(2.0);
-            pidDist.setOutMn(0.3);
+            pidDist.setP(-pidHdg.getP());
+            pidDist.setSetpoint(pidHdg.getSetpoint());
+            pidDist.setInDB(pidHdg.getInDB());
+            pidDist.setOutMn(pidHdg.getOutMn());
             pidDist.setOutMx(Math.abs(rPwr));
-            pidDist.setOutExp(2.0);
+            pidDist.setOutExp(pidHdg.getOutExp());
 
             // Drive.distRst();
             initSDB();
@@ -48,7 +50,7 @@ public class TankTurnHdg extends ATrajFunction {
             Drive.cmdUpdate(trajCmd[0], trajCmd[1], false, 1);
             // Chk if trajectory is done
             if (pidHdg.atSetpoint()) state++;    // Chk hdg only
-            prtShtuff("TTH");
+            // prtShtuff("TTH");
             break;
         case 2:
             setDone();

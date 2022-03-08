@@ -43,15 +43,9 @@ public class Drv_Auto extends Drive {
             System.out.println("Auto - 0");
             ATrajFunction.initTraj(); // Sets traj[x] state to 0
             autoStep++;
+            System.out.println("Traj Index: " + idx);
         case 1:                 //Run a leg of the path
             traj[idx].execute();
-            System.out.println("Traj Index: " + idx);
-            //Try returning trajCmds
-            // strCmd = ATrajFunction.getTrajCmd();
-            // cmdUpdate(strCmd[0], strCmd[1], ATrajFunction.getSqOrQT(), ATrajFunction.getDiffType());
-
-            // if (ATrajFunction.finished()) autoStep++;
-            // break;
             if (!ATrajFunction.getDone()) break;   //Save time at end of leg
             autoStep++;
         case 2:                 //Closeout Leg

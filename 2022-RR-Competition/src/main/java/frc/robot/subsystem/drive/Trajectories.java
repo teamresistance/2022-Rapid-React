@@ -86,31 +86,24 @@ public class Trajectories {
 
     public static ATrajFunction[] snorfShootTest(double pwr) {
         ATrajFunction[] traj = {
-            // new MoveOnHdg(0.0, 5.0, 0.5),
             new MoveOnHdg(0.0, 5.0, 0.5),
+            new TankTimed(1.2, 0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
+            new TankTurnHdg(85.0, 0.5, -0.2),   //-pwr is bkwd, +pwr fwd
+            new SnorfDrvAuto(true),
+            new TurnNMove(90.0, 6.0, 0.5),
+            new SnorfDrvAuto(false),
+            new MoveOnHdg(90.0, -2.0),
             new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            new TurnNMove(90.0, 5.0, 0.5),
-            new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            new TurnNMove(90.0, -5.0, 0.5),
-            new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            new MoveOnHdg(180.0, 5.0, 0.5),
-            // new TankTimed(0.2, 0.3, 0.3), //brake
-            // new TankTurnHdg(-85.0, 0.4, -0.4),
-            // new TurnNMove(-90.0, 5.0, 0.5),
-            // new TankTimed(0.2, 0.3, 0.3), //brake
+            new TankTurnHdg(0.0, 0.5, -0.2),   //-pwr is bkwd, +pwr fwd
+            new ShootDrvAuto(false), //Shoots high setting
+            // new TurnNMove(90.0, -5.0, 0.5),
+            // new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
+            // new MoveOnHdg(180.0, 5.0, 0.5),
+
             // new TrajDelay(3.0),
             // new SnorfDrvAuto(true),
             // new TrajDelay(3.0),
             // new SnorfDrvAuto(false),
-            // new TurnNMove(-90.0, 3.0, 0.5),
-            // new TrajDelay(3.0),
-            // new SnorfDrvAuto(false),
-            // new TurnNMove(-90.0, -3.0, 0.5),
-            // new SnorfDrvAuto(true), //Puts down snorfler
-            // new TurnNMove(0, 2),    //Moves forward 2 ft
-            // new TrajDelay(3),       //Delays 3 seconds waiting to pick up ball
-            // new SnorfDrvAuto(false),//Turns off snorfler
-            // new TrajDelay(2.0),
             // new ShootDrvAuto(false), //Shoots high setting
         };
         return traj;

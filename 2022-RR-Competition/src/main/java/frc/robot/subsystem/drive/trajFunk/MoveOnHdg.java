@@ -54,8 +54,8 @@ public class MoveOnHdg extends ATrajFunction {
         case 0: // Init Trajectory, turn to hdg then (1) ...
             // pidHdg = new PIDXController(1.0/45, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
-            //Set extended values SP, DB, Mn, Mx, Exp, Clmp
-            PIDXController.setExt(pidHdg, hdgSP, 5.0, 0.3, pwrMx, 1.0, true);
+            //Set extended values SP, PB, DB, Mn, Mx, Exp, Clmp
+            PIDXController.setExt(pidHdg, hdgSP, (1.0/70), 5.0, 0.3, pwrMx, 1.0, true);
             // pidHdg.setSetpoint(hdgSP);
             // pidHdg.setInDB(5.0);
             // pidHdg.setOutMn(0.3);
@@ -64,8 +64,8 @@ public class MoveOnHdg extends ATrajFunction {
             // pidDist.setClamp(true);
 
             // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
-            //Set extended values SP, DB, Mn, Mx, Exp, Clmp
-            PIDXController.setExt(pidDist, distSP, 0.5, 0.2, pwrMx, 1.0, true);
+            //Set extended values SP, PB, DB, Mn, Mx, Exp, Clmp
+            PIDXController.setExt(pidDist, distSP, (-1.0/10), 0.5, 0.2, pwrMx, 1.0, true);
             // pidDist.setSetpoint(distSP);
             // pidDist.setInDB(0.5);
             // pidDist.setOutMn(0.2);
@@ -93,7 +93,7 @@ public class MoveOnHdg extends ATrajFunction {
             trajCmd[0] = pidHdg.calculateX(hdgFB());   //cmd[0]=rotate(X), [1]=fwd(Y)
             trajCmd[1] = pidDist.calculateX(distFB()); //cmd[0]=rotate(X), [1]=fwd(Y)
             Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 2);
-            prtShtuff("MOH");
+            // prtShtuff("MOH");
             if (!pidDist.atSetpoint() || !pidHdg.atSetpoint()) break;   // Chk both done
             state++;
         case 3: // Done

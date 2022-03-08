@@ -81,6 +81,20 @@ public class PIDXController extends PIDController{
         aPidX.setClamp(clmp);
     }
 
+    /**Set extended values for a PIDXController
+     * <p> SP, P, DB, Mn, Mx, Exp, Clmp
+     */
+    public static void setExt(PIDXController aPidX, double sp, double pb, double db, 
+    /*                      */double mn, double mx,double exp, Boolean clmp){
+        aPidX.setSetpoint(sp);
+        aPidX.setP(pb);
+        aPidX.setInDB(db);
+        aPidX.setOutMn(mn);
+        aPidX.setOutMx(mx);
+        aPidX.setOutExp(exp);
+        aPidX.setClamp(clmp);
+    }
+
 
     /** @return kOutMn value */
     public double getOutMn(){ return kOutMn; }

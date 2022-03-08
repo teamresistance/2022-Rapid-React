@@ -179,6 +179,7 @@ public class IO {
         if(tpfAll != drvLdEnc_L.getTPF()) tpfUpdate();
         SmartDashboard.putNumber("Robot/19. Ld Enc R tpf chk", drvLdEnc_R.getTPF());
         SmartDashboard.putNumber("Robot/20. Heading", navX.getAngle());
+        SmartDashboard.putNumber("Robot/21. Hdg 180", navX.getNormalizedTo180());
 
         SmartDashboard.putNumber("Climb/leadMtrEnc", climbLdMtr_Enc.ticks());
         SmartDashboard.putBoolean("Climb/brakeState_SV", climbBrakeRel_SV.get());

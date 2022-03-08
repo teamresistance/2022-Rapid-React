@@ -33,35 +33,37 @@ public class TurnNMove extends ATrajFunction {
         case 0: // Init Trajectory, (1)turn to hdg then (2)moveto dist ...
             // pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
-            //Set extended values        SP,    DB,    Mn,  Mx,   Exp,   Cmp
-            PIDXController.setExt(pidHdg, hdgSP, 5.0, 0.35, pwrMx, 2.0, true);
+            //Set extended values          SP,        PB,  DB,   Mn,  Mx,   Exp,   Clmp
+            PIDXController.setExt(pidHdg, hdgSP, (1.0/90), 5.0, 0.35, pwrMx, 2.0, true);
+            // pidHdg.setP(1.0/70);
 
             // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
-            //Set extended values SP, DB, Mn, Mx, Exp, Cmp
-            PIDXController.setExt(pidDist, distSP, 1.0, 0.2, pwrMx, 1.0, true);
+            //Set extended values            SP,        PB,  DB,   Mn,  Mx,   Exp,   Clmp
+            PIDXController.setExt(pidDist, distSP, (-1.0/10), 1.0, 0.2, pwrMx, 1.0, true);
+            // pidDist.setP(-1.0/10);
 
             Drive.distRst();
             initSDB();
             state++;
             System.out.println("TNM - 0  -----  PB:" + pidHdg.getP());
         case 1: // Turn to heading.  Do not move forward, yet.
-            trajCmd[0] = pidHdg.calculate(hdgFB());
+            trajCmd[0] = pidHdg.calculateX(hdgFB());
             Drive.cmdUpdate(0.0, trajCmd[0], false, 2);
             // Chk if hdg is done
             if (pidHdg.atSetpoint()) {
                 state++;    // Chk hdg only
                 Drive.distRst();
             }
-            prtShtuff("TNM");
-            System.out.println("TNM - 1  -----  hdgFB: " + hdgFB() +" " + IO.navX.getNormalizedTo180());
+            // prtShtuff("TNM");
             break;
         case 2: // Move forward, steer Auto Heading and Dist
-            trajCmd[0] = pidHdg.calculate(hdgFB());
-            trajCmd[1] = pidDist.calculate(distFB());
+            trajCmd[0] = pidHdg.calculateX(hdgFB());
+            trajCmd[1] = pidDist.calculateX(distFB());
             Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 2);
             // Chk if distance is done
             if (pidDist.atSetpoint()) state++; // Chk distance only
-            prtShtuff("TNM");
+            // System.out.println("TNM - 2  -----  hdgFB: " + hdgFB() +" " + IO.navX.getNormalizedTo180());
+            // prtShtuff("TNM");
             break;
         case 3:
             System.out.println("Distance gone in TNM: " + distFB() + " SetPoint: " + pidDist.getSetpoint());
