@@ -47,12 +47,12 @@ public class Drive {
         pidHdg = new PIDXController(1.0/90, 0.0, 0.0);
         pidHdg.enableContinuousInput(-180.0, 180.0);
 
-        pidHdgHold = new PIDXController(1.0/45, 0.0, 0.0);
+        pidHdgHold = new PIDXController(1.0/90, 0.0, 0.0);
         pidHdgHold.enableContinuousInput(-180.0, 180.0);
         pidHdgHold.setInDB(2.0);
-        pidHdgHold.setOutMn(0.30);
+        pidHdgHold.setOutMn(0.20);
         pidHdgHold.setOutMx(1.0);
-        pidHdgHold.setOutExp(1.0);
+        pidHdgHold.setOutExp(2.0);
     }
 
     /**

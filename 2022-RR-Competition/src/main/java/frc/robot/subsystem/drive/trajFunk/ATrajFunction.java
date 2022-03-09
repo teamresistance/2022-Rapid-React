@@ -146,33 +146,33 @@ public abstract class ATrajFunction {
 
     /**Trajectory SDB initialize */
     public static void initSDB() {
-        PIDXController.initSDBPid(pidHdg, "Auto/pidHdg");
-        PIDXController.initSDBPid(pidDist, "Auto/pidDist");
+        // PIDXController.initSDBPid(pidHdg, "Auto/pidHdg");
+        // PIDXController.initSDBPid(pidDist, "Auto/pidDist");
 
-        SmartDashboard.putNumber("Drv/Auto/pidTst/1_HdgOut", pidHdg.getOut());
-        SmartDashboard.putNumber("Drv/Auto/pidTst/2_HdgAdj", pidHdg.getAdj());
-        SmartDashboard.putBoolean("Drv/Auto/pidTst/3_atSP", pidHdg.atSetpoint());
+        // SmartDashboard.putNumber("Drv/Auto/pidTst/1_HdgOut", pidHdg.getOut());
+        // SmartDashboard.putNumber("Drv/Auto/pidTst/2_HdgAdj", pidHdg.getAdj());
+        // SmartDashboard.putBoolean("Drv/Auto/pidTst/3_atSP", pidHdg.atSetpoint());
 
-        SmartDashboard.putNumber("Drv/Auto/pidTst/A_DistOut", pidDist.getOut());
-        SmartDashboard.putNumber("Drv/Auto/pidTst/B_DistAdj", pidDist.getAdj());
-        SmartDashboard.putBoolean("Drv/Auto/pidTst/C_atSP", pidDist.atSetpoint());
+        // SmartDashboard.putNumber("Drv/Auto/pidTst/A_DistOut", pidDist.getOut());
+        // SmartDashboard.putNumber("Drv/Auto/pidTst/B_DistAdj", pidDist.getAdj());
+        // SmartDashboard.putBoolean("Drv/Auto/pidTst/C_atSP", pidDist.atSetpoint());
     }
 
     /**Trajectory SDB update */
     public static void updSDB() {
-        PIDXController.updSDBPid(pidHdg, "Auto/pidHdg");
-        PIDXController.updSDBPid(pidDist, "Auto/pidDist");
+        // PIDXController.updSDBPid(pidHdg, "Auto/pidHdg");
+        // PIDXController.updSDBPid(pidDist, "Auto/pidDist");
 
-        SmartDashboard.putNumber( "Drv/Auto/pidTst/1_HdgOut", pidHdg.getOut());
-        SmartDashboard.putNumber( "Drv/Auto/pidTst/2_HdgAdj", pidHdg.getAdj());
-        SmartDashboard.putBoolean("Drv/Auto/pidTst/3_atSP", pidHdg.atSetpoint());
+        // SmartDashboard.putNumber( "Drv/Auto/pidTst/1_HdgOut", pidHdg.getOut());
+        // SmartDashboard.putNumber( "Drv/Auto/pidTst/2_HdgAdj", pidHdg.getAdj());
+        // SmartDashboard.putBoolean("Drv/Auto/pidTst/3_atSP", pidHdg.atSetpoint());
 
-        SmartDashboard.putNumber( "Drv/Auto/pidTst/A_DistOut", pidDist.getOut());
-        SmartDashboard.putNumber( "Drv/Auto/pidTst/B_DistAdj", pidDist.getAdj());
-        SmartDashboard.putBoolean("Drv/Auto/pidTst/C_atSP", pidDist.atSetpoint());
+        // SmartDashboard.putNumber( "Drv/Auto/pidTst/A_DistOut", pidDist.getOut());
+        // SmartDashboard.putNumber( "Drv/Auto/pidTst/B_DistAdj", pidDist.getAdj());
+        // SmartDashboard.putBoolean("Drv/Auto/pidTst/C_atSP", pidDist.atSetpoint());
 
-        SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorX", IO.coorXY.getX());
-        SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorY", IO.coorXY.getY());
+        // SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorX", IO.coorXY.getX());
+        // SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorY", IO.coorXY.getY());
     }
 
     /**Print common stuff for pidHdg, pidDist & coors XY.  Pid SP, FB & cmd

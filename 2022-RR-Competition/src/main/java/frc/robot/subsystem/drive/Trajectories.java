@@ -87,14 +87,15 @@ public class Trajectories {
     public static ATrajFunction[] snorfShootTest(double pwr) {
         ATrajFunction[] traj = {
             new MoveOnHdg(0.0, 5.0, 0.5),
-            new TankTimed(1.2, 0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
-            new TankTurnHdg(85.0, 0.5, -0.2),   //-pwr is bkwd, +pwr fwd
+            new TankTimed(0.3, -0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
+            new TankTurnHdg(80.0, 0.5, -0.5),   //-pwr is bkwd, +pwr fwd
             new SnorfDrvAuto(true),
             new TurnNMove(90.0, 6.0, 0.5),
             new SnorfDrvAuto(false),
-            new MoveOnHdg(90.0, -2.0),
-            new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            new TankTurnHdg(0.0, 0.5, -0.2),   //-pwr is bkwd, +pwr fwd
+            new MoveOnHdg(90.0, -1.5),
+            new TankTimed(0.3, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
+            new TankTurnHdg(20.0, -0.5, 0.2),   //-pwr is bkwd, +pwr fwd
+            new TurnNMove(20.0, 3.0, 0.5),
             new ShootDrvAuto(false), //Shoots high setting
             // new TurnNMove(90.0, -5.0, 0.5),
             // new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd

@@ -35,10 +35,11 @@ public class Shooter {
      * Robot.java
      */
     public static void init() {
+        btnFire.onButtonPressed();      //Clear button press on startup
         sdbInit();
         cmdUpdate(false, false, false); // select goal, left trigger, right trigger
         state = 0; // Start at state 0
-        reqShootLowDrvAuto = null;
+        reqShootLowDrvAuto = null;      //null=no action, false= hi goal, true=lo goal
     }
 
     /**

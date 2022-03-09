@@ -19,6 +19,7 @@ import frc.robot.subsystem.drive.Drive;
 import frc.robot.subsystem.drive.Drv_Auto;
 import frc.robot.subsystem.drive.Drv_Teleop;
 import frc.robot.subsystem.drive.Trajectories;
+import frc.robot.subsystem.driveSimple.AutoDrv01;
 import edu.wpi.first.wpilibj.Relay;
 
 import frc.robot.testing.ClimbTest;
@@ -46,11 +47,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        Climber.init();
-        Snorfler.teamColorchsrInit();
         IO.init();
         JS_IO.init();
-        Drive.init();
+
+        Snorfler.teamColorchsrInit();
         Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
         Trajectories.chsrInit();
 
@@ -85,7 +85,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        Drv_Auto.init();
+        Drive.init();
+        // Drv_Auto.init();
+        AutoDrv01.init();
         Snorfler.init();
         Shooter.init();
         
@@ -94,7 +96,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        Drv_Auto.update();
+        // Drv_Auto.update();
+        AutoDrv01.update();
         Snorfler.update();
         Shooter.update();
     }
@@ -103,6 +106,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         Drv_Auto.disable();
+        Drive.init();
         Drv_Teleop.init();
         Snorfler.init();
         Shooter.init();

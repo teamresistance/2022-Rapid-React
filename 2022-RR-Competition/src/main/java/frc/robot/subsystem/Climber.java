@@ -41,7 +41,7 @@ public class Climber {
         FWD, // Rotational Motor speed is +ROT_SPD
         REV  // Rotatioanl Motor speed is -ROT_SPD
     }
-    private static double ROT_SPD = 0.3; //Arm motor fixed speed. Var for testing
+    private static double ROT_SPD = 0.45; //Arm motor fixed speed. Var for testing
     private static double armDegrees(){ return IO.climbLdMtr_Enc.degrees();}
     private static double drvSpdSaved;    // Used in case 90, for sdb only
     private static double armSpdSaved;    // Used in case 90, for sdb only
@@ -68,12 +68,12 @@ public class Climber {
      * Robot.java
      */
     public static void init() {
-        sdbInit();
+        // sdbInit();
         cmdUpdate(0.0, 0.0, false, false, false);
         state = 0;
         IO.climbLdMtr_Enc.reset();
         brakeRel.set(false);
-        System.out.println("Init: " + brakeRel.get());
+        // System.out.println("Init: " + brakeRel.get());
     }
 
     /**
@@ -90,7 +90,7 @@ public class Climber {
         if(btnClimbSlideRst.onButtonPressed()) state = 80;     //Reset Slider return to state 0
 
         smUpdate();
-        sdbUpdate();
+        // sdbUpdate();
     }
 
     private static double pitch = 0.0;
@@ -139,7 +139,7 @@ public class Climber {
                 IO.coorXY.drvFeetRst();
                 break;
             case 5: // Robot moves forward (negative Y cmd) 3 feet and arm starts rotating forward
-                cmdUpdate(-0.2, ROT_SPD, true, false, true);
+                cmdUpdate(-0.2, ROT_SPD * 1.15, true, false, true);
                 state++;
                 // if (IO.coorXY.drvFeet() > 3.0) state++;
                 break;
@@ -151,33 +151,32 @@ public class Climber {
 
                 state++;
                 break;
-            case 7: // Continue arm rotation until pitch hits x degrees
+            case 7: // Continue arm rotation until arm degrees GT 250 for 0.5 sec.
                 cmdUpdate(0.0, ROT_SPD, true, false, true);
-
-                // if(pitch < -15.0){       //Use 30 for comp, -5 for testing
-                //     if(stateTmr.hasExpired(0.5, true)) state++;
-                // }else{
-                //     stateTmr.clearTimer();
-                // }
-
-                if(btnClimbStep.onButtonPressed()){
-                    state++;
+                if(IO.climbLdMtr_Enc.degrees() > 250.0){    //
+                    if(stateTmr.hasExpired(0.5, true)) state++;
+                }else{
+                    stateTmr.clearTimer();
                 }
+
+                //Manual btn press by driver
+                // if(btnClimbStep.onButtonPressed()) state++;
+                
                 break;
             //----- Contact Medium bar. Grab it. Release low arm and clear it.
             //----- Climb to transversal bar -----
             case 8: // Latch onto second bar with Pin B. Stop rotation.
-                cmdUpdate(0.0, ROT_SPD/2, true, true, true);
+                cmdUpdate(0.0, ROT_SPD/1.75, true, true, true);
                 if (lockPinBExt_FB() == true) state++;
                 break;
             case 9: // Retract Pin A in order to release the first bar
-                cmdUpdate(0.0, ROT_SPD/2, false, true, true);
-                if (stateTmr.hasExpired(0.5, state)){;
+                cmdUpdate(0.0, ROT_SPD/1.75, false, true, true);
+                if (stateTmr.hasExpired(0.25, state)){;
                     if (!lockPinAExt_FB()) state++;
                 }
                 break;
             case 10: // Rotating upward/REV to clear slider.  //Do we need this one?  Doesn't hurt.
-                cmdUpdate(0.0, ROT_SPD/2, false, true, true);
+                cmdUpdate(0.0, ROT_SPD/1.75, false, true, true);
                 state++;
                 // if (stateTmr.hasExpired(0.5, state)) state++;
                 break;
@@ -186,7 +185,7 @@ public class Climber {
                 cmdUpdate(0.0, -ROT_SPD, false, true, true);
                 System.out.println("Degrees @11: " + armDegrees());
                 //Chg this to use the degrees.
-                if (stateTmr.hasExpired(2.0, state)) state++;   //New
+                if (stateTmr.hasExpired(0.5, state)) state++;   //1.0 @ 30%, 
                 // if (stateTmr.hasExpired(1.0, state))     //Old
                 //     if (!sliderExt_FB()) state++;        //Old
                 break;
@@ -201,22 +200,22 @@ public class Climber {
                 case 13: // Go forward towards transversal bar, passed the low bar.
                 cmdUpdate(0.0, ROT_SPD, false, true, false);
                 //Replace with degrees
-                if (stateTmr.hasExpired(4.7, state)) state++;
+                if (stateTmr.hasExpired(2.5, state)) state++;
                 break;
             case 14: // Slider cleared low bar, extend the slider.  Keep going forward.
                 cmdUpdate(0.0, ROT_SPD, false, true, true);
                 if (sliderExt_FB())state++;
                 break;
-            case 15: // Keep going till we pitch x
-                cmdUpdate(0.0, ROT_SPD, false, true, true);
-                // TODO: keep going until robot hits pitch x
-                // if(pitch < -15.0 ){      //Use x for comp, testing -5
-                //     if(stateTmr.hasExpired(1.0, true)) state++;
-                // }else{
-                //     stateTmr.clearTimer();
-                // }
-                // state++;
-                if(btnClimbStep.onButtonPressed()) state++;
+            case 15: // Keep going till arm degrees GT 420 for 0.5 sec.
+                cmdUpdate(0.0, ROT_SPD * 1.25, false, true, true);
+                if(IO.climbLdMtr_Enc.degrees() > 415.0){    //
+                    if(stateTmr.hasExpired(0.5, true)) state++;
+                }else{
+                    stateTmr.clearTimer();
+                }
+
+                //Manual btn press by driver
+                // if(btnClimbStep.onButtonPressed()) state++;
 
                 break;
             //----- Contact Traversal bar. Grab it. Release Medium bar.
@@ -234,8 +233,15 @@ public class Climber {
                 if (!lockPinBExt_FB()) state++;
                 break;
             case 19: // Rotating Reverse to give leeway
-                cmdUpdate(0.0, -ROT_SPD, true, false, true);
-                if (stateTmr.hasExpired(3.5, state)) state++;
+                cmdUpdate(0.0, -ROT_SPD * 1.25, true, false, true);
+                if(IO.climbLdMtr_Enc.degrees() < 320.0){    //
+                    if(stateTmr.hasExpired(0.5, true)) state++;
+                }else{
+                    stateTmr.clearTimer();
+                }
+
+                // if (stateTmr.hasExpired(1.7, state)) state++;   //Manually stopped
+
                 break;
             case 20: // Turn arm motor off.  --- DONE! --- 
                      // Degrees was near 25 degrees. Higher is 30 degrees

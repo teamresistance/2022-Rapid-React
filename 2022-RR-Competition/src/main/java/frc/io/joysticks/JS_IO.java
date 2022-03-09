@@ -173,7 +173,7 @@ public class JS_IO {
         // climbing buttons
         btnClimb1.setButton(coJoystick, 11);
         btnClimb2.setButton(coJoystick, 12);
-        // btnClimbSlideRst.setButton(coJoystick, 7);
+        btnClimbSlideRst.setButton(coJoystick, 7);
 
        btnClimbStep.setButton(rightJoystick, 7); //For testing
 

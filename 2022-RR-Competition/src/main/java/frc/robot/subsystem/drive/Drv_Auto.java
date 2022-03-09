@@ -19,7 +19,7 @@ public class Drv_Auto extends Drive {
      * <p>Reset Heading & Distance to 0.
      */
     public static void init() {
-        traj = Trajectories.getTraj(0.50);
+        traj = Trajectories.getTraj(0.70);
         autoStep = 0;
         idx = 0;
         allDone = false;
@@ -27,7 +27,6 @@ public class Drv_Auto extends Drive {
         distRst();
         IO.coorXY.reset();
         IO.coorXY.drvFeetRst();
-        Drive.init();
 
         System.out.println("Auto - Init");
     }
