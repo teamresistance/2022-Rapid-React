@@ -86,15 +86,17 @@ public class Trajectories {
 
     public static ATrajFunction[] snorfShootTest(double pwr) {
         ATrajFunction[] traj = {
-            new MoveOnHdg(0.0, 5.0, 0.5),
+            // new MoveOnHdg(0.0, 5.0, 0.5),
+            new TurnNMove(0.0, 5.0, 0.5),
             new TankTimed(1.2, 0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
             new TankTurnHdg(85.0, 0.5, -0.2),   //-pwr is bkwd, +pwr fwd
             new SnorfDrvAuto(true),
-            new TurnNMove(90.0, 6.0, 0.5),
+            new TurnNMove(90.0, 5.0, 0.5),
             new SnorfDrvAuto(false),
-            new MoveOnHdg(90.0, -2.0),
-            new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            new TankTurnHdg(0.0, 0.5, -0.2),   //-pwr is bkwd, +pwr fwd
+            new MoveOnHdg(90.0, -1.5),
+            new TankTimed(0.2, 0.3, 0.3), //brake, -pwr is bkwd, +pwr fwd
+            new TankTurnHdg(20, 0.5, -0.2),   //-pwr is bkwd, +pwr fwd
+            new TurnNMove(20, 2.0, 0.3),
             new ShootDrvAuto(false), //Shoots high setting
             // new TurnNMove(90.0, -5.0, 0.5),
             // new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
@@ -111,16 +113,16 @@ public class Trajectories {
 
     public static ATrajFunction[] getCargo1(double pwr) { //LM
         ATrajFunction traj[] = {
-            // new CoorOffset(-66.0, 4.0, -1.5),
-            // new ShootDrvAuto(false),
-            // new TurnNMove(-66.0, 0),
-            // new SnorfDrvAuto(true),
+            new CoorOffset(-66.0, 4.0, -1.5),
+            new ShootDrvAuto(false),
+            new TurnNMove(-66.0, 0),
+            new SnorfDrvAuto(true),
             // new Waypt(13.0, -2.0), // B Ball
             // new Waypt(7.0, -10.0), // A Ball
-            // new SnorfDrvAuto(false),
+            new SnorfDrvAuto(false),
             // new Waypt(4, -1.0),
-            // new TurnNMove(-66.0, 0.5),
-            // new ShootDrvAuto(false),
+            new TurnNMove(-66.0, 0.5),
+            new ShootDrvAuto(false),
         };
         return traj;
     }
