@@ -75,10 +75,13 @@ public class Drv_Teleop extends Drive {
         if(tglScaleBtn()) setScaled(!isScaled());           //Apply scale limiting
         if(holdZeroBtn()){          //Hold 0 heading
             setHdgHold(0.0);
+            setScaled(true);
         }else if(hold180Btn()){     //else gold 180 heading
             setHdgHold(180.0);
+            setScaled(true);            
         }else{
             relHdgHold();           //else release
+            setScaled(false);
         }
 
         smUpdate();

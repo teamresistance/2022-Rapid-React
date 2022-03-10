@@ -71,9 +71,10 @@ public class JS_IO {
     public static Button btnClimbStep = new Button();
 
     // Misc
-    public static Button btnRstGyro = new Button();
-    public static Button btnRstFeet = new Button();
-    public static Button btnRstCoorXY = new Button();
+    public static Button btnRst = new Button();
+    // public static Button btnRstGyro = new Button();
+    // public static Button btnRstFeet = new Button();
+    // public static Button btnRstCoorXY = new Button();
 
     // Constructor not needed, bc
     public JS_IO() {
@@ -172,15 +173,16 @@ public class JS_IO {
 
         // climbing buttons
         btnClimb1.setButton(coJoystick, 11);
-        btnClimb2.setButton(coJoystick, 12);
+        btnClimb2.setButton(coJoystick, 2);
         btnClimbSlideRst.setButton(coJoystick, 7);
 
        btnClimbStep.setButton(rightJoystick, 7); //For testing
 
         // Misc
-        btnRstGyro = new Button(leftJoystick, 7);
-        btnRstFeet = new Button(leftJoystick, 8);
-        btnRstCoorXY = new Button(leftJoystick, 9);
+        btnRst = new Button(leftJoystick, 3);
+        // btnRstGyro = new Button(leftJoystick, 7);
+        // btnRstFeet = new Button(leftJoystick, 8);
+        // btnRstCoorXY = new Button(leftJoystick, 9);
 
     }
 
@@ -247,9 +249,9 @@ public class JS_IO {
         btnClimb2.setButton(null, 0);
 
     // Misc
-        btnRstGyro = new Button(null, 0);
-        btnRstFeet = new Button(null, 0);
-        btnRstCoorXY = new Button(null, 0);
+        // btnRstGyro = new Button(null, 0);
+        // btnRstFeet = new Button(null, 0);
+        // btnRstCoorXY = new Button(null, 0);
 
     }
 }

@@ -106,7 +106,8 @@ public class Climber {
         switch (state) {
             case 0: // Turns everything off
                 //        drv, arm, pinA,  pinB,  Slide
-                cmdUpdate(0.0, 0.0, false, false, false );
+                cmdUpdate(0.0, 0.0, false, false, false);
+                IO.climbLdMtr_Enc.reset();
                 stateTmr.clearTimer();
                 break;
             //----- Prep arm and move to low bar -----
@@ -155,6 +156,7 @@ public class Climber {
                 cmdUpdate(0.0, ROT_SPD, true, false, true);
                 if(IO.climbLdMtr_Enc.degrees() > 250.0){    //
                     if(stateTmr.hasExpired(0.5, true)) state++;
+                    System.out.println("Degrees @7: " + armDegrees());
                 }else{
                     stateTmr.clearTimer();
                 }
@@ -183,7 +185,7 @@ public class Climber {
             //=============== Changes here ==============
             case 11: // Retract the slider arm.  Slider will retract when it clears the bar.
                 cmdUpdate(0.0, -ROT_SPD, false, true, true);
-                System.out.println("Degrees @11: " + armDegrees());
+                // System.out.println("Degrees @11: " + armDegrees());
                 //Chg this to use the degrees.
                 if (stateTmr.hasExpired(0.5, state)) state++;   //1.0 @ 30%, 
                 // if (stateTmr.hasExpired(1.0, state))     //Old
@@ -191,8 +193,8 @@ public class Climber {
                 break;
             case 12: // Motor Union Break Timer.  Stop before chging direction
                 cmdUpdate(0.0, -ROT_SPD/2, false, true, false);
-                System.out.println("Degrees @12: " + armDegrees());
-                System.out.println("Amps @12 @12: " + IO.pdp.getCurrent(2) + " " + IO.pdp.getCurrent(3));
+                // System.out.println("Degrees @12: " + armDegrees());
+                // System.out.println("Amps @12 @12: " + IO.pdp.getCurrent(2) + " " + IO.pdp.getCurrent(3));
                 if (!sliderExt_FB()) state++;   //New
                 // if (stateTmr.hasExpired(0.5, state)) state++;   //Old
                 break;
@@ -210,6 +212,7 @@ public class Climber {
                 cmdUpdate(0.0, ROT_SPD * 1.25, false, true, true);
                 if(IO.climbLdMtr_Enc.degrees() > 415.0){    //
                     if(stateTmr.hasExpired(0.5, true)) state++;
+                    System.out.println("Degrees @15: " + armDegrees());
                 }else{
                     stateTmr.clearTimer();
                 }
@@ -234,8 +237,9 @@ public class Climber {
                 break;
             case 19: // Rotating Reverse to give leeway
                 cmdUpdate(0.0, -ROT_SPD * 1.25, true, false, true);
-                if(IO.climbLdMtr_Enc.degrees() < 320.0){    //
+                if(IO.climbLdMtr_Enc.degrees() < 325.0){    //
                     if(stateTmr.hasExpired(0.5, true)) state++;
+                    System.out.println("Degrees @19: " + armDegrees());
                 }else{
                     stateTmr.clearTimer();
                 }
@@ -369,7 +373,7 @@ public class Climber {
         SmartDashboard.putBoolean("Climber/FB/3. sliderExt", sliderExt_FB());
         SmartDashboard.putNumber( "Climber/FB/4. Feet", IO.coorXY.drvFeet());
 
-        ROT_SPD = SmartDashboard.getNumber("Climber/Mtr/1. ROT_SPD", 0.3);
+        // ROT_SPD = SmartDashboard.getNumber("Climber/Mtr/1. ROT_SPD", 0.3);
         SmartDashboard.putNumber("Climber/Mtr/2. climbMotor", climberMotor.get());
         SmartDashboard.putNumber("Climber/Mtr/3. Ld enc Ticks", IO.climbLdMtr_Enc.ticks());
         IO.climbLdMtr_Enc.setTPF(SmartDashboard.getNumber("Climber/Mtr/4. climb TPD", 300.0));

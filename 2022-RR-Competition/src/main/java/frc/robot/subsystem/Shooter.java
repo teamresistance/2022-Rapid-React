@@ -78,7 +78,7 @@ public class Shooter {
                 break;
             case 2: // Fire left, wait
                 cmdUpdate(low_select, true, false);
-                if (stateTmr.hasExpired(0.9, state)) state++;
+                if (stateTmr.hasExpired(0.6, state)) state++;
                 break;
             case 3: // Left closed, wait
                 cmdUpdate(low_select, true, false);

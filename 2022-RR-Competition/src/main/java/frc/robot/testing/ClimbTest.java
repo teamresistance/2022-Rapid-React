@@ -44,9 +44,6 @@ public class ClimbTest {
         SmartDashboard.putNumber("Test/Climb/JS/Follow Mtr", JS_IO.axRightY.get());
         SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ext", JS_IO.btnClimb1.isDown());
         SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ret", JS_IO.btnClimb2.isDown());
-        SmartDashboard.putBoolean("Test/Climb/JS/Pin B Ext", JS_IO.btnRstGyro.isDown());
-        SmartDashboard.putBoolean("Test/Climb/JS/Slide Ext", JS_IO.btnRstFeet.isDown());
-
     }
     
 }

@@ -97,9 +97,14 @@ public class IO {
     }
 
     public static void update() {
-        if (JS_IO.btnRstGyro.onButtonPressed())  IO.navX.reset();           //LJS btn 7
-        if (JS_IO.btnRstFeet.onButtonPressed())  IO.coorXY.drvFeetRst();    //LJS btn 8
-        if (JS_IO.btnRstCoorXY.onButtonPressed())  IO.coorXY.reset();       //LJS btn 9
+        if (JS_IO.btnRst.onButtonPressed()){
+            IO.navX.reset();
+            IO.coorXY.drvFeetRst();
+            IO.coorXY.reset();
+        }
+        // if (JS_IO.btnRstGyro.onButtonPressed())  IO.navX.reset();           //LJS btn 7
+        // if (JS_IO.btnRstFeet.onButtonPressed())  IO.coorXY.drvFeetRst();    //LJS btn 8
+        // if (JS_IO.btnRstCoorXY.onButtonPressed())  IO.coorXY.reset();       //LJS btn 9
            
         // sdbUpdate();
     }

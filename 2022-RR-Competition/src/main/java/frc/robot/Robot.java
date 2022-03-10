@@ -20,6 +20,7 @@ import frc.robot.subsystem.drive.Drv_Auto;
 import frc.robot.subsystem.drive.Drv_Teleop;
 import frc.robot.subsystem.drive.Trajectories;
 import frc.robot.subsystem.driveSimple.AutoDrv01;
+import frc.robot.subsystem.driveSimple.AutoDrv03;
 import edu.wpi.first.wpilibj.Relay;
 
 import frc.robot.testing.ClimbTest;
@@ -28,7 +29,7 @@ import frc.robot.testing.ShootTest;
 import frc.robot.testing.SnorfTest;
 import frc.robot.testing.TimerTest;
 //TODO: check class placement
-import edu.wpi.first.cameraserver.CameraServer;
+// import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -55,7 +56,7 @@ public class Robot extends TimedRobot {
         Trajectories.chsrInit();
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
-        CameraServer.startAutomaticCapture();
+        // CameraServer.startAutomaticCapture();
     }
 
     /**
@@ -88,6 +89,7 @@ public class Robot extends TimedRobot {
         Drive.init();
         // Drv_Auto.init();
         AutoDrv01.init();
+        // AutoDrv03.init();
         Snorfler.init();
         Shooter.init();
         
@@ -98,6 +100,7 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         // Drv_Auto.update();
         AutoDrv01.update();
+        // AutoDrv03.update();
         Snorfler.update();
         Shooter.update();
     }
@@ -116,9 +119,9 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-       //IO.diffDrv_M.tankDrive(-JS_IO.axLeftY.get(), -JS_IO.axRightY.get());
-       //System.out.println("Periodic: " + JS_IO.axLeftY.get() + " - " + JS_IO.axRightY.get());
-       Drv_Teleop.update();
+        //IO.diffDrv_M.tankDrive(-JS_IO.axLeftY.get(), -JS_IO.axRightY.get());
+        //System.out.println("Periodic: " + JS_IO.axLeftY.get() + " - " + JS_IO.axRightY.get());
+        Drv_Teleop.update();
         // IO.drvLead_L.set(-JS_IO.axLeftY.get());
         // IO.drvLead_R.set(-JS_IO.axRightY.get());
 
