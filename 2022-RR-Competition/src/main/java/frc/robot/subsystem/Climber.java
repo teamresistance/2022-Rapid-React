@@ -113,6 +113,14 @@ public class Climber {
             //----- Prep arm and move to low bar -----
             case 1: //Postion arm vertical, 'A' up for climb, low bar
                 cmdUpdate(0.0, 0.01, false, false, true );
+                IO.climbMotor.restoreFactoryDefaults();
+                IO.climbMotor.setInverted(false);
+                // IO.climbMotor.setIdleMode(IO.IdleMode.kBrake);
+        
+                IO.climbMotorFollow.restoreFactoryDefaults();
+                IO.climbMotorFollow.setInverted(false);
+                // IO.climbMotorFollow.setIdleMode(IdleMode.kBrake);
+                IO.climbMotorFollow.follow(IO.climbMotor);     //Disabled for testing
                 //Drive.setHdgHold(180.0);    // Set drive steering to hold 180 heading
                 if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
@@ -238,7 +246,7 @@ public class Climber {
                 break;
             case 19: // Rotating Reverse to give leeway
                 cmdUpdate(0.0, -ROT_SPD, true, false, true);
-                if(IO.climbLdMtr_Enc.degrees() < 345.0){    //
+                if(IO.climbLdMtr_Enc.degrees() < 330.0){    //
                     if(stateTmr.hasExpired(0.25, true)) state++;
                     System.out.println("Degrees @19: " + armDegrees());
                 }else{
@@ -320,7 +328,8 @@ public class Climber {
 
         //Drive.cmdUpdate(drvSpd, 0.0, false, 2); //Send cmd to drive system as arcade
 
-        if(armDegrees() < -5.0) rotSpd = 0.0;    //SAFETY!  Stop rot motor if arm moved Rev too far.
+        if(armDegrees() < -10.0) rotSpd = 0.0;    //SAFETY!  Stop rot motor if arm moved Rev too far.
+        if(armDegrees() < -5.0) state = 1;
         
         if(eStop && (state != 90)){
             if(!armStartTmr.hasExpired(0.3, true)){
