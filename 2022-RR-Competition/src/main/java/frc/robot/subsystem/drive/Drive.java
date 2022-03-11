@@ -43,6 +43,8 @@ public class Drive {
 
     public static void init() {
         // cmdUpdate(0.0, 0.0, false, 0);
+        IO.drvsInit();
+        
         pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
         pidHdg = new PIDXController(1.0/90, 0.0, 0.0);
         pidHdg.enableContinuousInput(-180.0, 180.0);

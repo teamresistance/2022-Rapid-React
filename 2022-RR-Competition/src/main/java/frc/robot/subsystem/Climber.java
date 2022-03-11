@@ -115,15 +115,16 @@ public class Climber {
             //----- Prep arm and move to low bar -----
             case 1: //Postion arm vertical, 'A' up for climb, low bar
                 //Reinitialize the motors, bc maybe missing on startup
-                IO.climbMotor.restoreFactoryDefaults();
-                IO.climbMotor.setInverted(false);
-                IO.climbMotor.setIdleMode(IdleMode.kBrake);
+                // IO.climbMotor.restoreFactoryDefaults();
+                // IO.climbMotor.setInverted(false);
+                // IO.climbMotor.setIdleMode(IdleMode.kBrake);
         
-                IO.climbMotorFollow.restoreFactoryDefaults();
-                IO.climbMotorFollow.setInverted(false);
-                IO.climbMotorFollow.setIdleMode(IdleMode.kBrake);
-                IO.climbMotorFollow.follow(IO.climbMotor);     //Disabled for testing
+                // IO.climbMotorFollow.restoreFactoryDefaults();
+                // IO.climbMotorFollow.setInverted(false);
+                // IO.climbMotorFollow.setIdleMode(IdleMode.kBrake);
+                // IO.climbMotorFollow.follow(IO.climbMotor);     //Disabled for testing
 
+                IO.motorsInit();
 
                 //Drive.setHdgHold(180.0);    // Set drive steering to hold 180 heading
                 cmdUpdate(0.0, 0.01, false, false, true );
