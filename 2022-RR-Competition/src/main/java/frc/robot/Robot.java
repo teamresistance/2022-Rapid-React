@@ -19,8 +19,11 @@ import frc.robot.subsystem.drive.Drive;
 import frc.robot.subsystem.drive.Drv_Auto;
 import frc.robot.subsystem.drive.Drv_Teleop;
 import frc.robot.subsystem.drive.Trajectories;
+import frc.robot.subsystem.driveSimple.AutoDrv00;
 import frc.robot.subsystem.driveSimple.AutoDrv01;
+import frc.robot.subsystem.driveSimple.AutoDrv02;
 import frc.robot.subsystem.driveSimple.AutoDrv03;
+import frc.robot.subsystem.driveSimple.AutoDrv04;
 import edu.wpi.first.wpilibj.Relay;
 
 import frc.robot.testing.ClimbTest;
@@ -41,6 +44,24 @@ import frc.robot.testing.TimerTest;
 public class Robot extends TimedRobot {
 
     private static boolean cmprEna = true; // Don't need cmpr when testing drive.
+    private static SendableChooser<String> chsr = new SendableChooser<String>();
+    private static String[] chsrDesc = {
+        "AutoDrv00", "AutoDrv01", "AutoDrv02", "AutoDrv03", "AutoDrv04"
+    };
+    /**Initialize Traj chooser */
+    public static void chsrInit(){
+        for(int i = 0; i < chsrDesc.length; i++){
+            chsr.addOption(chsrDesc[i], chsrDesc[i]);
+        }
+        chsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
+        SmartDashboard.putData("Drv/Auto/Choice", chsr);
+        
+    }
+
+    /**Show on sdb traj chooser info.  Called from robotPeriodic  */
+    public static void chsrUpdate(){
+        SmartDashboard.putString("Drv/Auto/Choosen", chsr.getSelected());
+    }
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -54,6 +75,7 @@ public class Robot extends TimedRobot {
         Snorfler.teamColorchsrInit();
         Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
         Trajectories.chsrInit();
+        chsrInit();
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
         // CameraServer.startAutomaticCapture();
@@ -80,6 +102,7 @@ public class Robot extends TimedRobot {
         Drv_Teleop.chsrUpdate();
         Trajectories.chsrUpdate();
         IO.coorXY.update();
+        chsrUpdate();
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -87,22 +110,64 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         Drive.init();
-        // Drv_Auto.init();
-        AutoDrv01.init();
-        // AutoDrv03.init();
         Snorfler.init();
-        Shooter.init();
-        
+        Shooter.init();        
+        switch(chsr.getSelected()){
+            case "AutoDrv00":
+            System.out.println("Auto00");
+            AutoDrv00.init();
+            break;
+            case "AutoDrv01":
+            AutoDrv01.init();
+            break;
+            case "AutoDrv02":
+            AutoDrv02.init();
+            break;
+            case "AutoDrv03":
+            AutoDrv03.init();
+            break;
+            case "AutoDrv04":
+            AutoDrv04.init();
+            break;
+            default:
+            System.out.println("Robot/Bad Auto " + chsr.getSelected());
+            //AutoDrv00.init();
+            break;
+        }
+        // Drv_Auto.init();
+        // AutoDrv01.init();
+        // AutoDrv03.init();
     }
 
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        // Drv_Auto.update();
-        AutoDrv01.update();
-        // AutoDrv03.update();
         Snorfler.update();
         Shooter.update();
+        Drive.update();
+        switch(chsr.getSelected()){
+            case "AutoDrv00":
+            AutoDrv00.update();
+            break;
+            case "AutoDrv01":
+            AutoDrv01.update();
+            break;
+            case "AutoDrv02":
+            AutoDrv02.update();
+            break;
+            case "AutoDrv03":
+            AutoDrv03.update();
+            break;
+            case "AutoDrv04":
+            AutoDrv04.update();
+            break;
+            default:
+            System.out.println("Robot/Bad Auto " + chsr.getSelected());
+           // AutoDrv00.update();
+        }
+        // Drv_Auto.update();
+        //AutoDrv01.update();
+        // AutoDrv03.update();
     }
 
     /** This function is called once when teleop is enabled. */

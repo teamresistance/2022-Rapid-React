@@ -12,7 +12,7 @@ import frc.util.Timer;
  * Example of simple timed moves.
  */
 public class AutoDrv04 {
-    //Picks up a and b balls
+    //Shoot and move back
 
     // variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
@@ -52,8 +52,10 @@ public class AutoDrv04 {
                 Shooter.reqShootLowDrvAuto = false;
                 state++;
             case 2:
-                state = 20;
-
+                if (stateTmr.hasExpired(3, state)) state++;
+            case 3:
+                Drive.cmdUpdate(0.4, 0.5);
+                if (stateTmr.hasExpired(3, state)) state = 20;
             case 20: // Stop, send 0, 0 cmds and stay here until end of auto.
                 cmdUpdate(0.0, 0.0);
                 // if (stateTmr.hasExpired(0.05, state)) state++;

@@ -25,7 +25,6 @@ public class Trajectories {
     /**Show on sdb traj chooser info.  Called from robotPeriodic  */
     public static void chsrUpdate(){
         SmartDashboard.putString("Drv/Traj/Choosen", chsr.getSelected());
-
     }
 
     /**

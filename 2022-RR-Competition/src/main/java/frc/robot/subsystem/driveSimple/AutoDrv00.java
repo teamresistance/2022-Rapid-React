@@ -2,14 +2,16 @@ package frc.robot.subsystem.driveSimple;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.util.*;
+import frc.robot.subsystem.Shooter;
+import frc.robot.subsystem.Snorfler;
 import frc.robot.subsystem.drive.Drive;
 import frc.io.hdw_io.IO;
 import frc.util.Timer;
 
 /**
- * Example of straight with hdg chg.
+ * Example of simple timed moves.
  */
-public class AutoDrv02 {
+public class AutoDrv00 {
     // hdw defintions:
 
     // joystick buttons:
@@ -40,20 +42,21 @@ public class AutoDrv02 {
     }
 
     private static void smUpdate() { // State Machine Update
-        //All off
 
         switch (state) {
             case 0: // Everything is off
                 Drive.cmdUpdate(0.0, 0.0);
-                stateTmr.hasExpired(0.05, state); // Initialize timer for covTrgr. Do nothing.
+                stateTmr.clearTimer(); // Initialize timer for covTrgr. Do nothing.
+                System.out.println("AutoDrv00 Init.");
+                state = 20;
                 break;
-            case 1: // Go straight for 1 sec.
-                cmdUpdate(-0.4, -0.5);
-                if (stateTmr.hasExpired(1.0, state)) state++;
+            case 20: // Stop, send 0, 0 cmds and stay here until end of auto.
+                cmdUpdate(0.0, 0.0);
+                // if (stateTmr.hasExpired(0.05, state)) state++;
                 break;
             default: // all off
                 cmdUpdate(0.0, 0.0);
-                System.out.println("Bad DrvAuto01 state: " + state);
+                System.out.println("Bad DrvAuto00 state: " + state);
                 break;
 
         }
