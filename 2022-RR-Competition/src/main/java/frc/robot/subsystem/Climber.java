@@ -227,18 +227,19 @@ public class Climber {
                 cmdUpdate(0.0, ROT_SPD, true, true, true);
                 if (lockPinAExt_FB()) state++;
                 break;
-            case 17: // Motor Union Break
+            case 17: // no more union break
                 cmdUpdate(0.0, ROT_SPD, true, true, true);
-                if (stateTmr.hasExpired(0.1, state)) state++;
+                state++;
+                // if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
             case 18: // Release the B pin
                 cmdUpdate(0.0, ROT_SPD, true, false, true);
                 if (!lockPinBExt_FB()) state++;
                 break;
             case 19: // Rotating Reverse to give leeway
-                cmdUpdate(0.0, -ROT_SPD * 1.25, true, false, true);
-                if(IO.climbLdMtr_Enc.degrees() < 325.0){    //
-                    if(stateTmr.hasExpired(0.5, true)) state++;
+                cmdUpdate(0.0, -ROT_SPD, true, false, true);
+                if(IO.climbLdMtr_Enc.degrees() < 345.0){    //
+                    if(stateTmr.hasExpired(0.25, true)) state++;
                     System.out.println("Degrees @19: " + armDegrees());
                 }else{
                     stateTmr.clearTimer();
