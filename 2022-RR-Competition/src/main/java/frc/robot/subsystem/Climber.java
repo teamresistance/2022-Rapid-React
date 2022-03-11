@@ -10,6 +10,8 @@ import frc.io.joysticks.util.Button;
 import frc.util.Timer;
 import frc.robot.subsystem.drive.Drive;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Climber {
   
@@ -112,16 +114,19 @@ public class Climber {
                 break;
             //----- Prep arm and move to low bar -----
             case 1: //Postion arm vertical, 'A' up for climb, low bar
-                cmdUpdate(0.0, 0.01, false, false, true );
+                //Reinitialize the motors, bc maybe missing on startup
                 IO.climbMotor.restoreFactoryDefaults();
                 IO.climbMotor.setInverted(false);
-                // IO.climbMotor.setIdleMode(IO.IdleMode.kBrake);
+                IO.climbMotor.setIdleMode(IdleMode.kBrake);
         
                 IO.climbMotorFollow.restoreFactoryDefaults();
                 IO.climbMotorFollow.setInverted(false);
-                // IO.climbMotorFollow.setIdleMode(IdleMode.kBrake);
+                IO.climbMotorFollow.setIdleMode(IdleMode.kBrake);
                 IO.climbMotorFollow.follow(IO.climbMotor);     //Disabled for testing
+
+
                 //Drive.setHdgHold(180.0);    // Set drive steering to hold 180 heading
+                cmdUpdate(0.0, 0.01, false, false, true );
                 if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
             case 2: // Move backwards (positive Y cmd) 6' to start climb position
