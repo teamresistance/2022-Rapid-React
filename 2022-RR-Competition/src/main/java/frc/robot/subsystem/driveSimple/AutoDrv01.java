@@ -52,10 +52,11 @@ public class AutoDrv01 {
                 break;
             case 1:
                 Snorfler.reqsnorfDrvAuto = true;
+                IO.navX.reset();
                 state++;
             case 2: // Go straight fwd for 1 sec (4.7') to ball.
-                cmdUpdate(-0.6, -0.7);     //  4.7'/sec @ (-0.4, -0.5)
-                if (stateTmr.hasExpired(1.25, state)) state++;
+                cmdUpdate(-0.4, -0.5);     //  4.7'/sec @ (-0.4, -0.5)
+                if (stateTmr.hasExpired(1.35, state)) state++;
                 break;
             case 3: // Coastout.
                 cmdUpdate(0.0, 0.0);
@@ -68,7 +69,7 @@ public class AutoDrv01 {
                 // break;
             case 5: // Pivot CCW to 180 hdg
                 cmdUpdate(0.3, -0.6);     //4.7/sec @ 0.4, 0.5
-                if (IO.navX.getAngle() < -110.0) state++;
+                if (IO.navX.getAngle() < -140.0) state++;
                 // if (stateTmr.hasExpired(1.25, state)) state++;
                 break;
             case 6: // Coastout.
@@ -104,7 +105,7 @@ public class AutoDrv01 {
                 cmdUpdate(0.0, 0.0);
                 // if (stateTmr.hasExpired(0.05, state)) state++;
                 break;
-            default: // all off
+            default: // allAA off
                 cmdUpdate(0.0, 0.0);
                 System.out.println("Bad DrvAuto01 state: " + state);
                 break;

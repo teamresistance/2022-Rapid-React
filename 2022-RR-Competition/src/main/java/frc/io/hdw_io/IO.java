@@ -112,7 +112,7 @@ public class IO {
     /**
      * Initialize drive configuration setup.
      */
-    public static void drvsInit() {
+    private static void drvsInit() {
         // -------- Configure Lead drive motors ---------
         // drvLead_L.configFactoryDefault();    //No equivalent
         drvLead_L.setInverted(false); // Inverts motor direction and encoder if attached
@@ -145,7 +145,7 @@ public class IO {
     /**
      * Initialize other motors besides the drive motors.
      */
-    public static void motorsInit() {
+    private static void motorsInit() {
         snorfFeed_Mtr.setInverted(true);
         snorfElv_Mtrs.setInverted(true);
 

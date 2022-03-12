@@ -5,15 +5,16 @@ import frc.io.hdw_io.util.*;
 import frc.robot.subsystem.Shooter;
 import frc.robot.subsystem.Snorfler;
 import frc.robot.subsystem.drive.Drive;
-import frc.robot.subsystem.drive.Drv_Auto;
 import frc.io.hdw_io.IO;
 import frc.util.Timer;
 
 /**
  * Example of simple timed moves.
  */
-public class AutoDrv03 {
-    //Picks up a and b balls
+public class AutoDrv05 {
+    // hdw defintions:
+
+    // joystick buttons:
 
     // variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM
@@ -38,7 +39,6 @@ public class AutoDrv03 {
         //Add code here to start state machine or override the sm sequence
         smUpdate();
         sdbUpdate();
-        System.out.println();
     }
 
     private static void smUpdate() { // State Machine Update
@@ -47,65 +47,57 @@ public class AutoDrv03 {
             case 0: // Everything is off
                 Drive.cmdUpdate(0.0, 0.0);
                 stateTmr.clearTimer();; // Initialize timer for covTrgr. Do nothing.
+                System.out.println("AutoDrv01 Init.");
                 state++;
                 break;
-            case 1:// Shoots exhisting ball
-                Shooter.reqShootLowDrvAuto = false;
-                if (stateTmr.hasExpired(1.0, state))state++;
-                break;
-            case 2: //Backs out
-                Drive.cmdUpdate(0.4, 0.5);
-                if (stateTmr.hasExpired(2.0, state)) state++;
-                break;
-            case 3: //Coastout
-                cmdUpdate(0.0, 0.0);
-                if (stateTmr.hasExpired(0.2, state)) state++;
-                break;
-            case 4:
-                Drive.cmdUpdate(-0.2, 0.5);
-                if (IO.navX.getAngle() > 160) state++;
-                break;
-            case 5:
+            case 1:
                 Snorfler.reqsnorfDrvAuto = true;
                 state++;
+            case 2: // Go straight fwd for 1 sec (4.7') to ball.
+                cmdUpdate(-0.6, -0.7);     //  4.7'/sec @ (-0.4, -0.5)
+                if (stateTmr.hasExpired(1.15, state)) state++;
                 break;
-            case 6: // Go straight fwd for 1 sec (4.7') to ball.
-                cmdUpdate(-0.2, -0.3);     //  4.7'/sec @ (-0.4, -0.5)
-                if (stateTmr.hasExpired(1.0, state)) state++;
-                break;
-            case 7: // Coastout.
+            case 3: // Coastout.
                 cmdUpdate(0.0, 0.0);
                 if (stateTmr.hasExpired(0.2, state)) state++;
                 break;
-            case 8: //Turns towards b ball
-                cmdUpdate(-0.5, 0.2);
-                if (IO.navX.getAngle() > 220) state++;
+            case 4: // Brake.
+                // cmdUpdate(0.3, 0.4);
+                // if (stateTmr.hasExpired(0.3, state)) state++;
+                state = 6;
+                // break;
+            case 5: // Pivot CCW to 180 hdg
+                cmdUpdate(0.3, -0.6);     //4.7/sec @ 0.4, 0.5
+                if (IO.navX.getAngle() < -135.0) state++;
+                // if (stateTmr.hasExpired(1.25, state)) state++;
                 break;
-            case 9: //drives towards b ball
-                cmdUpdate(-0.2, -0.3);
-                if (stateTmr.hasExpired(3, state)) state++;
-                break;
-            case 10: //Coastout
+            case 6: // Coastout.
                 cmdUpdate(0.0, 0.0);
                 if (stateTmr.hasExpired(0.2, state)) state++;
                 break;
-            case 11: //Snorf up
-                Snorfler.reqsnorfDrvAuto = false;
+            case 7: // Brake.
                 state++;
                 break;
-            case 12: //Turns
-                cmdUpdate(-0.5, 0.2);
-                if (IO.navX.getAngle() > 360) state++;
+                // cmdUpdate(0.3, -0.5);
+                // if (stateTmr.hasExpired(0.3, state)) state++;
+                // break;
+            case 8: // Snorf off
+                Snorfler.reqsnorfDrvAuto = false;
+                state = 20;
+            case 9: // Go straight fwd for 1 sec (4.7') to goal.
+                cmdUpdate(-0.4, -0.5);     //4.7/sec @ 0.4, 0.5
+                if (stateTmr.hasExpired(2.6, state)) state++;
                 break;
-            case 13: //Drives forward
-                cmdUpdate(-0.4, -0.5);
-                if (stateTmr.hasExpired(3, state)) state++;
+            case 10: // Coastout.
+                cmdUpdate(0.0, 0.0);
+                if (stateTmr.hasExpired(0.2, state)) state++;
                 break;
-            case 14: //Sqaure up on wall
-                cmdUpdate(-0.2, -0.25);
-                if (stateTmr.hasExpired(1, state)) state++;
-                break;
-            case 15:    // Shoot
+            case 11: // Brake.
+                // cmdUpdate(0.3, 0.4);
+                // if (stateTmr.hasExpired(0.3, state)) state++;
+                state++;
+                // break;
+            case 12:    // Shoot
                 Shooter.reqShootLowDrvAuto = false;
                 state = 20;
             case 20: // Stop, send 0, 0 cmds and stay here until end of auto.

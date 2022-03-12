@@ -24,6 +24,7 @@ import frc.robot.subsystem.driveSimple.AutoDrv01;
 import frc.robot.subsystem.driveSimple.AutoDrv02;
 import frc.robot.subsystem.driveSimple.AutoDrv03;
 import frc.robot.subsystem.driveSimple.AutoDrv04;
+import frc.robot.subsystem.driveSimple.AutoDrv05;
 import edu.wpi.first.wpilibj.Relay;
 
 import frc.robot.testing.ClimbTest;
@@ -46,7 +47,7 @@ public class Robot extends TimedRobot {
     private static boolean cmprEna = true; // Don't need cmpr when testing drive.
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "AutoDrv00", "AutoDrv01", "AutoDrv02", "AutoDrv03", "AutoDrv04"
+        "AutoDrv00", "AutoDrv01", "AutoDrv02", "AutoDrv03", "AutoDrv04", "Pick up ball",
     };
     /**Initialize Traj chooser */
     public static void chsrInit(){
@@ -129,6 +130,8 @@ public class Robot extends TimedRobot {
             case "AutoDrv04":
             AutoDrv04.init();
             break;
+            case "Pick up ball":
+            AutoDrv05.init();
             default:
             System.out.println("Robot/Bad Auto " + chsr.getSelected());
             //AutoDrv00.init();
@@ -161,6 +164,8 @@ public class Robot extends TimedRobot {
             case "AutoDrv04":
             AutoDrv04.update();
             break;
+            case "Pick up ball":
+            AutoDrv05.update();
             default:
             System.out.println("Robot/Bad Auto " + chsr.getSelected());
            // AutoDrv00.update();
