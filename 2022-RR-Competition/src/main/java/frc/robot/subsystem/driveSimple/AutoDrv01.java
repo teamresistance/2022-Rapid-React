@@ -69,7 +69,7 @@ public class AutoDrv01 {
                 // break;
             case 5: // Pivot CCW to 180 hdg
                 cmdUpdate(0.3, -0.6);     //4.7/sec @ 0.4, 0.5
-                if (IO.navX.getAngle() < -140.0) state++;
+                if (IO.navX.getAngle() < -138.0) state++;
                 // if (stateTmr.hasExpired(1.25, state)) state++;
                 break;
             case 6: // Coastout.
@@ -87,7 +87,7 @@ public class AutoDrv01 {
                 state++;
             case 9: // Go straight fwd for 1 sec (4.7') to goal.
                 cmdUpdate(-0.4, -0.5);     //4.7/sec @ 0.4, 0.5
-                if (stateTmr.hasExpired(2.6, state)) state++;
+                if (stateTmr.hasExpired(2.3, state)) state++;
                 break;
             case 10: // Coastout.
                 cmdUpdate(0.0, 0.0);

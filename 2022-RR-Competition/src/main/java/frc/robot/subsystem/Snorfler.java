@@ -115,7 +115,7 @@ public class Snorfler {
                 }
                 break;
             case 2: // Start snorfler forward
-                cmdUpdate(true, 0.9, 1.0);
+                cmdUpdate(true, 1.0, 1.0);
                 break;
             //--------- Manual Reject -------------
             case 11: // Waiting a bit before going back
@@ -125,7 +125,7 @@ public class Snorfler {
                 }
                 break;
             case 12: //Go back and reject
-                cmdUpdate(true, -0.9, -1.0);
+                cmdUpdate(true, -1.0, -1.0);
                 break;           
             //--------- Color Sensor Reject -------------
             case 21: // Waiting a bit before going back
@@ -133,7 +133,7 @@ public class Snorfler {
                 if (snorfTimer.hasExpired(0.1,state)) state++;
                 break;
             case 22: //Go back and reject for 2.0 seconds
-                cmdUpdate(true, -0.9, -1.0);
+                cmdUpdate(true, -1.0, -1.0);
                 System.out.println("Here");
                 if (snorfTimer.hasExpired(4.0, true)){
                     System.out.println("Here1");
