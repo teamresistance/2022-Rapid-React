@@ -7,6 +7,9 @@ import frc.io.hdw_io.util.Encoder_Pwf;
 import frc.io.hdw_io.util.NavX;
 import frc.io.joysticks.JS_IO;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -27,6 +30,11 @@ public class PathWeaverTest extends Drive {
     private static DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.2); //TODO: Check wheel width
     private static DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading());
 
+    private static SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.0, 0.0, 0.0); //TODO: Enter values
+
+    private static PIDController leftPIDController = new PIDController(0, 0, 0); //TODO: Enter values
+    private static PIDController rightPIDController = new PIDController(0, 0, 0); //TODO: Enter values
+
     private static Pose2d pose;
 
     public static Rotation2d getHeading(){
@@ -43,6 +51,18 @@ public class PathWeaverTest extends Drive {
     public static void update() {
         sdbUpdate();        
         pose = odometry.update(getHeading(), IO.drvLead_L.getPosition(), IO.drvLead_R.getPosition());
+    }
+
+    public SimpleMotorFeedforward getFeedforward(){
+        return feedforward;
+    }
+
+    public PIDController getRightPIDController(){
+        return rightPIDController;
+    }
+    
+    public PIDController getLeftPIDController(){
+        return leftPIDController;
     }
 
     //Constructor.  Called with the path array
