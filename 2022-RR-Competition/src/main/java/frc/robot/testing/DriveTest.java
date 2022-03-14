@@ -1,9 +1,11 @@
 package frc.robot.testing;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
 
 public class DriveTest {
+    private static DifferentialDrive diffDrv = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
 
     public static void init(){
         // // -------- Configure Lead drive motors ---------
@@ -34,7 +36,7 @@ public class DriveTest {
         //--------- !!! DISABLE FOLLOWER FOR FIRST TESTS !!! -----------
        // IO.drvLead_L.set(-JS_IO.axLeftY.get());
         //IO.drvLead_R.set(-JS_IO.axRightY.get());
-        IO.diffDrv_M.tankDrive(-JS_IO.axLeftY.get(), -JS_IO.axRightY.get());
+        diffDrv.tankDrive(-JS_IO.axLeftY.get(), -JS_IO.axRightY.get());
         // IO.drvFollower_L.set(-JS_IO.axLeftY.get());
         // IO.drvFollower_R.set(-JS_IO.axRightY.get());
     }

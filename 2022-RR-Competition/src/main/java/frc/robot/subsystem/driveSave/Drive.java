@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive;
+package frc.robot.subsystem.driveSave;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +17,7 @@ public class Drive {
     // private static DifferentialDrive diffDrv = IO.diffDrv_M;
     private static DifferentialDrive diffDrv = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
 
-    private static Double lSpdY, rSpdRot_XY;    //Cmd values
+    private static double lSpdY, rSpdRot_XY;    //Cmd values
     private static boolean isSqOrQT;            //DiffDrvshould sq input or quick turn
     private static int diffType;                //0-Off | 1=tank | 2=arcade | 3=curvature
 
@@ -84,13 +84,6 @@ public class Drive {
      * Called from Robot telopPerodic every 20mS to Update the drive sub system.
      */
     private static void smUpdate() {
-        if(lSpdY == null || rSpdRot_XY == null){
-            cmdUpdate(0.0, 0.0, false, 0);
-            System.out.println("No Drive cmd requested.");
-        }else{
-            cmdUpdate(lSpdY, rSpdRot_XY, isSqOrQT, diffType);
-        }
-        lSpdY = null;   //Set to null to test if something is sending cmds.
     }
 
     private static void sdbUpdate() {
@@ -137,9 +130,9 @@ public class Drive {
      * Defaults to no squaring and arcade drive
      * @param [0] = rotation, [1] = fwd
      */
-    // public void cmdUpdate(double tCmd[]){
-    //     cmdUpdate(tCmd[0], tCmd[1], false, 2);
-    // }
+    public void cmdUpdate(double tCmd[]){
+        cmdUpdate(tCmd[0], tCmd[1], false, 2);
+    }
 
     /**
      * Defaults to no squaring

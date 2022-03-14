@@ -40,7 +40,7 @@ public class IO {
     public static CANVenom drvLead_L = new CANVenom(15); // Cmds right wheels. Includes encoders
     public static CANVenom drvFollower_L = new CANVenom(16); // Resrvd 3 & 4 maybe
     //As of 2022 DifferentialDrive no longer inverts the right motor.  Do this in the motor controller.
-    public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
+    // public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
                                         // 3.191
     public static double tpfAll = 4.15;
     public static double drvLeadTPF_L = -tpfAll;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63

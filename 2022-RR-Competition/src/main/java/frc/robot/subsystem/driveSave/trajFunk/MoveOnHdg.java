@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
@@ -84,7 +84,7 @@ public class MoveOnHdg extends ATrajFunction {
             System.out.println("MOH - 1");
             trajCmd[0] = pidHdg.calculateX(hdgFB());   //cmd[0]=rotate(X), [1]=fwd(Y)
             trajCmd[1] = 0.0;
-            sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);    //Send to Drive system
+            Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 2);
             prtShtuff("MOH");
             if (Math.abs(pidHdg.getPositionError()) > errHdgLT ) break;   // Chk hdg error
             state++;
@@ -92,7 +92,7 @@ public class MoveOnHdg extends ATrajFunction {
             System.out.println("MOH - 2");
             trajCmd[0] = pidHdg.calculateX(hdgFB());   //cmd[0]=rotate(X), [1]=fwd(Y)
             trajCmd[1] = pidDist.calculateX(distFB()); //cmd[0]=rotate(X), [1]=fwd(Y)
-            sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);
+            Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 2);
             // prtShtuff("MOH");
             if (!pidDist.atSetpoint() || !pidHdg.atSetpoint()) break;   // Chk both done
             state++;

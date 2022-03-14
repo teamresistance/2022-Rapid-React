@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
@@ -63,7 +63,7 @@ public class Waypt extends ATrajFunction {
             state++;
         case 1: // Turn to hdg error LT then move to WPT
             trajCmd[0] = pidHdg.calculateX(hdgFB()); //cmd[0]=rotate(JSX)
-            sendDriveCmds(0.0, trajCmd[0], false, 2); // cmdUpdate for hdg & dist.
+            Drive.cmdUpdate(0.0, trajCmd[0], false, 2); // cmdUpdate for hdg & dist.
             prtShtuff("WPT");
             if (Math.abs(pidHdg.getPositionError()) > hdgErrLT ){
                 trajCmd = wpCalcHdgDistSP(wpX, wpY); //Get present XY Loc and calc hdg & distSP's (static)
@@ -80,7 +80,7 @@ public class Waypt extends ATrajFunction {
             trajCmd[0] = pidHdg.calculateX(hdgFB()); //cmd[0]=rotate(JSX)
             trajCmd[1] = pidDist.calculateX(distFB()); //cmd[1]=fwd(JSY)
             prtShtuff("WPT");
-            sendDriveCmds(trajCmd[1], trajCmd[0], false, 2); // cmdUpdate for hdg & dist.
+            Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 2); // cmdUpdate for hdg & dist.
             if (!pidDist.atSetpoint() || !pidHdg.atSetpoint()) break; //Chk hdg & dist done.
             state++;
         case 3: //Done

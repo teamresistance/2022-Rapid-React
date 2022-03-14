@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
@@ -47,7 +47,7 @@ public class TankTurnHdg extends ATrajFunction {
         case 1: // Turn to heading using l & r Pwr's passed as tank drive.
             trajCmd[0] = pidHdg.calculateX(hdgFB());   //left power
             trajCmd[1] = pidDist.calculateX(hdgFB());  //right power
-            sendDriveCmds(trajCmd[0], trajCmd[1], false, 1);
+            Drive.cmdUpdate(trajCmd[0], trajCmd[1], false, 1);
             // Chk if trajectory is done
             if (pidHdg.atSetpoint()) state++;    // Chk hdg only
             // prtShtuff("TTH");

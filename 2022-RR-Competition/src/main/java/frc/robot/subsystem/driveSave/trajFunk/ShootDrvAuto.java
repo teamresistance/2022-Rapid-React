@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystem.Shooter;
@@ -21,7 +21,7 @@ public class ShootDrvAuto extends ATrajFunction {
     }
 
     public void execute() {
-        // Drive.cmdUpdate();   //Shouldn't need this anymore.  Issues 0, 0 cmds by default
+        Drive.cmdUpdate();
         switch (state) {
         case 0: // set shooter lo/hi control and time delay to allow shot
             Shooter.reqShootLowDrvAuto = low_select; // shooter resets it

@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
@@ -60,7 +60,7 @@ public class Waypt3 extends ATrajFunction {
 
             trajCmd[0] = pidHdg.calculateX(hdgFB()); //cmd[0]=rotate(JSX)
             trajCmd[1] = pidDist.calculateX(distFB()); //cmd[1]=fwd(JSY)
-            sendDriveCmds(trajCmd[1], trajCmd[0], false, 2); // cmdUpdate for hdg & dist.
+            Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 2); // cmdUpdate for hdg & dist.
             prtShtuff("WPT3");
             if (pidDist.atSetpoint() && pidHdg.atSetpoint()) state++; //Chk hdg & dist done.
             break;

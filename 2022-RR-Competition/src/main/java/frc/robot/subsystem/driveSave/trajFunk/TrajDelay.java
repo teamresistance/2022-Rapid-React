@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystem.drive.Drive;
@@ -26,7 +26,7 @@ public class TrajDelay extends ATrajFunction {
     }
 
     public void execute() {
-        // Drive.cmdUpdate();   //By defualt issues 0, 0 cmds.
+        Drive.cmdUpdate();
         switch (state) {
         case 0: // Initialize the timer
             delayTimer.clearTimer();

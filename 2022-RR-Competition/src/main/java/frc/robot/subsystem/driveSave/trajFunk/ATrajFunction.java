@@ -7,7 +7,7 @@ History:
 7/11    - JCH - Chgd to PIDX from TSteer and some cleanup
 */
 
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
@@ -47,21 +47,9 @@ public abstract class ATrajFunction {
 
     }
 
-    /**issue commands to the Drive system.
-     * 
-     * @param lSpdY
-     * @param rSpdRot_XY
-     * @param isSqOrQT
-     * @param diffType
-     */
-    public void sendDriveCmds(double lSpdY, double rSpdRot_XY, boolean isSqOrQT, int diffType){
-        Drive.setDriveCmds(lSpdY, rSpdRot_XY, isSqOrQT, diffType);
-    }
-
     public static void setDone() {
         done = true;
-        // Drive.cmdUpdate();      //Stop motors, Neede to keep diffDrv active
-        Drive.setDriveCmds(0.0, 0.0, false, 0);   //Stop motors --added to stop after each leg
+        Drive.cmdUpdate();      //Stop motors, Neede to keep diffDrv active
     }
 
     public static boolean getDone() {

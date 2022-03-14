@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import frc.io.hdw_io.IO;
 import frc.robot.subsystem.drive.Drive;
@@ -48,7 +48,7 @@ public class TurnNMove extends ATrajFunction {
             System.out.println("TNM - 0  -----  PB:" + pidHdg.getP());
         case 1: // Turn to heading.  Do not move forward, yet.
             trajCmd[0] = pidHdg.calculateX(hdgFB());
-            sendDriveCmds(0.0, trajCmd[0], false, 2);
+            Drive.cmdUpdate(0.0, trajCmd[0], false, 2);
             // Chk if hdg is done
             if (pidHdg.atSetpoint()) {
                 state++;    // Chk hdg only
@@ -59,7 +59,7 @@ public class TurnNMove extends ATrajFunction {
         case 2: // Move forward, steer Auto Heading and Dist
             trajCmd[0] = pidHdg.calculateX(hdgFB());
             trajCmd[1] = pidDist.calculateX(distFB());
-            sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);
+            Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 2);
             // Chk if distance is done
             if (pidDist.atSetpoint()) state++; // Chk distance only
             // System.out.println("TNM - 2  -----  hdgFB: " + hdgFB() +" " + IO.navX.getNormalizedTo180());

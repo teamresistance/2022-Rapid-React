@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive;
+package frc.robot.subsystem.driveSave;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
@@ -52,8 +52,7 @@ public class Drv_Auto extends Drive {
             System.out.println("\tCoorX: " + IO.coorXY.getX() + "\tCoorY " + IO.coorXY.getY() + 
                                 "\tHdg " + hdgFB() + "\tDist: " + IO.coorXY.drvFeet());
 
-            // cmdUpdate();        //Stop motors --added to stop after each leg
-            setDriveCmds(0.0, 0.0, false, 0);   //Stop motors --added to stop after each leg
+            cmdUpdate();        //Stop motors --added to stop after each leg
             idx++;
             // autoStep = idx < traj.length ? 0 : autoStep++;
             if( idx < traj.length ) {
@@ -64,12 +63,10 @@ public class Drv_Auto extends Drive {
         case 3:                 //Done path
             System.out.println("---------- ALL DONE Auto: ");
             setAllDone();       //Flag allDone (not sure who we're flagging)
-            // cmdUpdate();        //Stop Drive
-            setDriveCmds(0.0, 0.0, false, 0);   //Stop motors --added to stop after each leg
+            cmdUpdate();        //Stop Drive
             autoStep++;
         case 4:     //Loop here
-            // cmdUpdate();        //Stop Drive
-            setDriveCmds(0.0, 0.0, false, 0);   //Stop motors --added to stop after each leg
+            cmdUpdate();        //Stop Drive
             break;
         }
     }

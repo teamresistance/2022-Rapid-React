@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive.trajFunk;
+package frc.robot.subsystem.driveSave.trajFunk;
 
 import frc.robot.subsystem.drive.Drive;
 import frc.util.*;
@@ -26,7 +26,7 @@ public class TankTimed extends ATrajFunction {
                 state++;
                 System.out.println("TT - 0: ---------- Init -----------");
             case 1:
-                sendDriveCmds(-lPwr, -rPwr,false, 1);
+                Drive.cmdUpdate(-lPwr, -rPwr,false, 1);
                 if(timer.hasExpired()) state++;
                 break;
             case 2:
