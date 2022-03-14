@@ -128,7 +128,8 @@ public class AutoDrv03 {
      */
     private static void cmdUpdate(double lCmd, double rCmd) {
         //Check any safeties, mod passed cmds if needed.
-        Drive.cmdUpdate(lCmd, rCmd);
+        // Drive.cmdUpdate(lCmd, rCmd);
+        Drive.setDriveCmds(lCmd, rCmd, false, 2);   //Tank steer, no squaring.
     }
 
     /*-------------------------  SDB Stuff --------------------------------------

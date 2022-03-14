@@ -44,7 +44,7 @@ public class AutoDrv05 {
 
         switch (state) {
             case 0: // Everything is off
-                Drive.cmdUpdate(0.0, 0.0);
+                cmdUpdate(0.0, 0.0);
                 stateTmr.clearTimer();; // Initialize timer for covTrgr. Do nothing.
                 System.out.println("AutoDrv01 Init.");
                 state++;
@@ -120,7 +120,8 @@ public class AutoDrv05 {
      */
     private static void cmdUpdate(double lCmd, double rCmd) {
         //Check any safeties, mod passed cmds if needed.
-        Drive.cmdUpdate(lCmd, rCmd);
+        // Drive.cmdUpdate(lCmd, rCmd);
+        Drive.setDriveCmds(lCmd, rCmd, false, 2);   //Tank steer, no squaring.
     }
 
     /*-------------------------  SDB Stuff --------------------------------------
