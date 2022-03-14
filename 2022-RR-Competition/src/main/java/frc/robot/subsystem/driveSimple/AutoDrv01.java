@@ -10,6 +10,9 @@ import frc.util.Timer;
 
 /**
  * Example of simple timed moves.
+ * <p>
+ * Aligned on 'D' ball to go straight, pick it up turn ~180 hdg
+ * then go to fender and shoot.
  */
 public class AutoDrv01 {
     // hdw defintions:
@@ -21,19 +24,16 @@ public class AutoDrv01 {
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
 
     /**
-     * Called from autoInit in Robot.java
+     * Called from autoInit in robot.java.
      */
     public static void init() {
         sdbInit();
-        Drive.cmdUpdate(0.0, 0.0);
+        // Drive.cmdUpdate(0.0, 0.0);       //Don't think we need this.  State 0 does the same.
         state = 0; // Start at state 0
     }
 
     /**
      * Called from autoPeriodic in robot.java.
-     * <p>
-     * Determine any state that needs to interupt the present state, usually by way
-     * of a JS button but can be caused by other events.
      */
     public static void update() {
         //Add code here to start state machine or override the sm sequence

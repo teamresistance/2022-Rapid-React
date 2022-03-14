@@ -51,21 +51,23 @@ public class Robot extends TimedRobot {
 
     private static boolean cmprEna = true; // Don't need cmpr when testing drive.
     private static SendableChooser<String> chsr = new SendableChooser<String>();
+
     private static String[] chsrDesc = {
-        "AutoDrv00", "AutoDrv01", "AutoDrv02", "AutoDrv03", "AutoDrv04", "Pick up ball",
-    };
+        "AutoDrv00", "AutoDrv01", "AutoDrv02", "AutoDrv03",
+        "AutoDrv04", "Pick up ball" };
+    private static final int ad_ChsrDeflt = 0;  //Chooser default.  Index to a chsrDesc[].
+
     /**Initialize Traj chooser */
-    public static void chsrInit(){
+    public static void ad_ChsrInit(){
         for(int i = 0; i < chsrDesc.length; i++){
             chsr.addOption(chsrDesc[i], chsrDesc[i]);
         }
-        chsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
+        chsr.setDefaultOption(chsrDesc[ad_ChsrDeflt] + " (Default)", chsrDesc[ad_ChsrDeflt]);   //Default MUST have a different name
         SmartDashboard.putData("Drv/Auto/Choice", chsr);
-        
     }
 
     /**Show on sdb traj chooser info.  Called from robotPeriodic  */
-    public static void chsrUpdate(){
+    public static void ad_ChsrUpdate(){
         SmartDashboard.putString("Drv/Auto/Choosen", chsr.getSelected());
     }
 
@@ -79,9 +81,10 @@ public class Robot extends TimedRobot {
         JS_IO.init();
 
         Snorfler.teamColorchsrInit();
+
         Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
         Trajectories.chsrInit();
-        chsrInit();
+        ad_ChsrInit();
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
         // CameraServer.startAutomaticCapture();
@@ -105,10 +108,11 @@ public class Robot extends TimedRobot {
         Snorfler.teamColorchsrUpdate();
         IO.update();
         JS_IO.update();
+        IO.coorXY.update();
+        //Chooser here so they can be selected before auto or teleop active.
         Drv_Teleop.chsrUpdate();
         Trajectories.chsrUpdate();
-        IO.coorXY.update();
-        chsrUpdate();
+        ad_ChsrUpdate();    //Quick fix for auto.
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -117,31 +121,9 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         Drive.init();
         Snorfler.init();
-        Shooter.init();        
-        switch(chsr.getSelected()){
-            case "AutoDrv00":
-            System.out.println("Auto00");
-            AutoDrv00.init();
-            break;
-            case "AutoDrv01":
-            AutoDrv01.init();
-            break;
-            case "AutoDrv02":
-            AutoDrv02.init();
-            break;
-            case "AutoDrv03":
-            AutoDrv03.init();
-            break;
-            case "AutoDrv04":
-            AutoDrv04.init();
-            break;
-            case "Pick up ball":
-            AutoDrv05.init();
-            default:
-            System.out.println("Robot/Bad Auto " + chsr.getSelected());
-            //AutoDrv00.init();
-            break;
-        }
+        Shooter.init();
+
+        ad_Init();    //Quick fix for auto.  Below.
         // Drv_Auto.init();
         // AutoDrv01.init();
         // AutoDrv03.init();
@@ -152,40 +134,18 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         Snorfler.update();
         Shooter.update();
-        Drive.update();
-        switch(chsr.getSelected()){
-            case "AutoDrv00":
-            AutoDrv00.update();
-            break;
-            case "AutoDrv01":
-            AutoDrv01.update();
-            break;
-            case "AutoDrv02":
-            AutoDrv02.update();
-            break;
-            case "AutoDrv03":
-            AutoDrv03.update();
-            break;
-            case "AutoDrv04":
-            AutoDrv04.update();
-            break;
-            case "Pick up ball":
-            AutoDrv05.update();
-            default:
-            System.out.println("Robot/Bad Auto " + chsr.getSelected());
-           // AutoDrv00.update();
-        }
+        Drive.update();         //Pre-Orl, does nothing.
         // Drv_Auto.update();
-        //AutoDrv01.update();
-        // AutoDrv03.update();
+        ad_Update();    //Quick fix for auto.  Below.
     }
 
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        Drv_Auto.disable();
+        Drv_Auto.disable(); //Close out any cmds from Auto.
         Drive.init();
         Drv_Teleop.init();
+
         Snorfler.init();
         Shooter.init();
         Climber.init();
@@ -234,4 +194,60 @@ public class Robot extends TimedRobot {
 
     }
 
+    //============== Quick patch for a Simple Autonomous ===================
+    /**Quick fix for auto.  Sumpthin of Drv_Auto not getting initialized corectly. */
+    private static void ad_Init(){
+        switch(chsr.getSelected()){
+            case "AutoDrv00":
+            System.out.println("Auto00");   //Does nothing, sits but sends 0.0 cmd to diffDrv
+            AutoDrv00.init();
+            break;
+            case "AutoDrv01":
+            AutoDrv01.init();
+            break;
+            case "AutoDrv02":
+            AutoDrv02.init();
+            break;
+            case "AutoDrv03":
+            AutoDrv03.init();
+            break;
+            case "AutoDrv04":
+            AutoDrv04.init();
+            break;
+            case "Pick up ball":
+            AutoDrv05.init();
+            default:
+            System.out.println("Robot/Bad Auto " + chsr.getSelected());
+            //AutoDrv00.init();
+            break;
+        }
+    }
+
+        /**Quick fix for auto.  Sumpthin of Drv_Auto not getting initialized corectly. */
+    private static void ad_Update(){
+        switch(chsr.getSelected()){
+            case "AutoDrv00":
+            System.out.println("Auto00");   //Does nothing, sits but sends 0.0 cmd to diffDrv
+            AutoDrv00.update();
+            break;
+            case "AutoDrv01":
+            AutoDrv01.update();
+            break;
+            case "AutoDrv02":
+            AutoDrv02.update();
+            break;
+            case "AutoDrv03":
+            AutoDrv03.update();
+            break;
+            case "AutoDrv04":
+            AutoDrv04.update();
+            break;
+            case "Pick up ball":
+            AutoDrv05.update();
+            default:
+            System.out.println("Robot/Bad Auto " + chsr.getSelected());
+            AutoDrv00.update();
+            break;
+        }
+    }
 }

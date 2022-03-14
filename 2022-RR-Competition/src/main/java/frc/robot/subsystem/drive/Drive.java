@@ -41,6 +41,21 @@ public class Drive {
     public static double distFB() { return IO.coorXY.drvFeet(); }
     public static void distRst() { IO.coorXY.drvFeetRst(); }
 
+    /**
+     * Set the commands to be issues when Drive.update is called.
+     * <p> This is used to keep the diffDrv alive by calling update from Robot.
+     * <p> Drive.update clears (set to null) lSpdY & rSpdRot_XY after execution.
+     * If no commands sent 0.0 is issued to keep diffDrv alive.
+     * 
+     * @param _lSpdY - tank(1)-left JS | arcade(2)-fwd  |  curvature(3)-fwd
+     * @param _rSpdRot_XY - tank(1)-right JS | arcade(2)-rotation  |  curvature(3)-rotation
+     * @param _isSqOrQT - tank(1)/arcade(2)-apply sqrt  |  curvature(3)-quick turn
+     * @param _diffType - 0-Off  |  1=tank  |  2=arcade  |  3=curvature
+     */
+    public static void setDriveCmds(Double _lSpdY, Double _rSpdRot_XY, boolean _isSqOrQT, int _diffType ){
+        lSpdY = _lSpdY;  rSpdRot_XY = _rSpdRot_XY; isSqOrQT = _isSqOrQT; diffType = _diffType;
+    }
+
     public static void init() {
         cmdUpdate(0.0, 0.0, false, 0);
         pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
@@ -102,6 +117,9 @@ public class Drive {
             diffDrv.tankDrive(0.0, 0.0, false);
             System.out.println("Bad Diff Drive type - " + diffType);
         }
+
+        // lSpdY = null; rSpdRot_XY = null;
+        
         // System.out.println("Drive-" + diffType + ":\tlSpd: " + lSpdY + "\trSpdRot: " + rSpdRot_XY);
         SmartDashboard.putNumber("Drive/MtrL Out", IO.drvLead_L.get());
         SmartDashboard.putNumber("Drive/MtrR Out", IO.drvLead_R.get());

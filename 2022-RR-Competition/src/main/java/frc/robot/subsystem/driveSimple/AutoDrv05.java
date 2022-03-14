@@ -10,6 +10,8 @@ import frc.util.Timer;
 
 /**
  * Example of simple timed moves.
+ * <p>
+ * Not sure about this one.  Appears to just pickup a ball.
  */
 public class AutoDrv05 {
     // hdw defintions:
@@ -25,15 +27,12 @@ public class AutoDrv05 {
      */
     public static void init() {
         sdbInit();
-        Drive.cmdUpdate(0.0, 0.0);
+        // Drive.cmdUpdate(0.0, 0.0);       //Don't think we need this.  State 0 does the same.
         state = 0; // Start at state 0
     }
 
     /**
      * Called from autoPeriodic in robot.java.
-     * <p>
-     * Determine any state that needs to interupt the present state, usually by way
-     * of a JS button but can be caused by other events.
      */
     public static void update() {
         //Add code here to start state machine or override the sm sequence
@@ -64,7 +63,7 @@ public class AutoDrv05 {
             case 4: // Brake.
                 // cmdUpdate(0.3, 0.4);
                 // if (stateTmr.hasExpired(0.3, state)) state++;
-                state = 6;
+                state = 6;  //<=== Skip turning around?
                 // break;
             case 5: // Pivot CCW to 180 hdg
                 cmdUpdate(0.3, -0.6);     //4.7/sec @ 0.4, 0.5
@@ -83,7 +82,7 @@ public class AutoDrv05 {
                 // break;
             case 8: // Snorf off
                 Snorfler.reqsnorfDrvAuto = false;
-                state = 20;
+                state = 20; //Goto state 20?  Just hold for teleop?
             case 9: // Go straight fwd for 1 sec (4.7') to goal.
                 cmdUpdate(-0.4, -0.5);     //4.7/sec @ 0.4, 0.5
                 if (stateTmr.hasExpired(2.6, state)) state++;

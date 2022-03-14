@@ -10,6 +10,8 @@ import frc.util.Timer;
 
 /**
  * Example of simple timed moves.
+ * <p>
+ * Does nuttin.  Sends 0.0 to diffDrv to keep it alive.
  */
 public class AutoDrv00 {
     // hdw defintions:
@@ -21,19 +23,16 @@ public class AutoDrv00 {
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
 
     /**
-     * Called from autoInit in Robot.java
+     * Called from autoInit in robot.java.
      */
     public static void init() {
         sdbInit();
-        Drive.cmdUpdate(0.0, 0.0);
+        // Drive.cmdUpdate(0.0, 0.0);       //Don't think we need this.  State 0 does the same.
         state = 0; // Start at state 0
     }
 
     /**
      * Called from autoPeriodic in robot.java.
-     * <p>
-     * Determine any state that needs to interupt the present state, usually by way
-     * of a JS button but can be caused by other events.
      */
     public static void update() {
         //Add code here to start state machine or override the sm sequence
