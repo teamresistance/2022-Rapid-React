@@ -119,32 +119,33 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        Drive.init();
-        Snorfler.init();
-        Shooter.init();
-
         ad_Init();    //Quick fix for auto.  Below.
         // Drv_Auto.init();
         // AutoDrv01.init();
         // AutoDrv03.init();
+        Drive.init();
+
+        Snorfler.init();
+        Shooter.init();
     }
 
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        Snorfler.update();
-        Shooter.update();
-        Drive.update();         //Pre-Orl, does nothing.
         // Drv_Auto.update();
         ad_Update();    //Quick fix for auto.  Below.
+        Drive.update();         //Pre-Orl, did nothing.
+
+        Snorfler.update();
+        Shooter.update();
     }
 
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
         Drv_Auto.disable(); //Close out any cmds from Auto.
-        Drive.init();
         Drv_Teleop.init();
+        Drive.init();
 
         Snorfler.init();
         Shooter.init();
@@ -154,11 +155,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        //IO.diffDrv_M.tankDrive(-JS_IO.axLeftY.get(), -JS_IO.axRightY.get());
-        //System.out.println("Periodic: " + JS_IO.axLeftY.get() + " - " + JS_IO.axRightY.get());
         Drv_Teleop.update();
-        // IO.drvLead_L.set(-JS_IO.axLeftY.get());
-        // IO.drvLead_R.set(-JS_IO.axRightY.get());
+        Drive.update();
 
         Climber.update();
         Snorfler.update();
