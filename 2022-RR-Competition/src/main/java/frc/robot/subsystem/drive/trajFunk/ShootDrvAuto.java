@@ -24,8 +24,9 @@ public class ShootDrvAuto extends ATrajFunction {
         // Drive.cmdUpdate();   //Shouldn't need this anymore.  Issues 0, 0 cmds by default
         switch (state) {
         case 0: // set shooter lo/hi control and time delay to allow shot
+            System.out.println("Shoot - 0:");
             Shooter.reqShootLowDrvAuto = low_select; // shooter resets it
-            shootTimer.startTimer(3.0);
+            shootTimer.startTimer(2.0);
             state++;
             // System.out.println("Shoot - 0: ---------- Init -----------");
         case 1: // Wait for timer

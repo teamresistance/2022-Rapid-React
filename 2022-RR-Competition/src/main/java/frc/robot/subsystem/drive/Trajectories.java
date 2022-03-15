@@ -162,7 +162,7 @@ public class Trajectories {
         ATrajFunction traj[] = {
             new CoorOffset(24.0, -1.5, -3.5),
             new ShootDrvAuto(false),
-            new TrajDelay(2.0),
+            new TrajDelay(0.5),
             new TurnNMove(24.0, -6.4, pwr), // already at 24 degrees, go back 7.4 feet
             new TurnNMove(24.0, 0.5, pwr), // braking
             new TankTurnHdg(-38, -0.1, 0.5), //Turns
@@ -174,7 +174,7 @@ public class Trajectories {
             new TurnNMove(-38, 0.1, pwr), //brake
             new TankTurnHdg(24.0, 0.5, -0.1), //turns
             new TurnNMove(24.0, 4.5, pwr),
-            new TurnNMove(24.0, 1.5, 0.2),
+            new TurnNMove(24.0, 1.0, 0.2),
             new ShootDrvAuto(false),
             // // new Waypt(-2, -5), // back in front of shoot area
             // // new TurnNMove(24.0, 0.5), //forward a little

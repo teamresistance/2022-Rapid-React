@@ -48,8 +48,10 @@ public class TurnNMove extends ATrajFunction {
             state++;
             System.out.println("TNM - 0  -----  PB:" + pidHdg.getP());
         case 1: // Turn to heading.  Do not move forward, yet.
+            System.out.println("TNM - 1: Pre");
             trajCmd[0] = pidHdg.calculateX(hdgFB());
             sendDriveCmds(0.0, trajCmd[0], false, 2);
+            System.out.println("TNM - 1: Post DrvCmdXY:  " + trajCmd[0]);
             // Chk if hdg is done
             if (pidHdg.atSetpoint()) {
                 state++;    // Chk hdg only
@@ -63,7 +65,8 @@ public class TurnNMove extends ATrajFunction {
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);
             // Chk if distance is done
             if (pidDist.atSetpoint()) state++; // Chk distance only
-            // System.out.println("TNM - 2  -----  hdgFB: " + hdgFB() +" " + IO.navX.getNormalizedTo180());
+            System.out.println("TNM - 2  -----  hdgFB: " + hdgFB() +" " + IO.navX.getNormalizedTo180());
+            System.out.println("TNM - 2  -----  distFB: " + distFB() + "cmd: " + trajCmd[1]);
             // prtShtuff("TNM");
             break;
         case 3:
