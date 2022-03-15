@@ -33,6 +33,7 @@ import frc.robot.subsystem.driveSimple.AutoDrv05;
 import edu.wpi.first.wpilibj.Relay;
 
 import frc.robot.testing.ClimbTest;
+import frc.robot.testing.CompressorTest;
 import frc.robot.testing.DriveTest;
 import frc.robot.testing.ShootTest;
 import frc.robot.testing.SnorfTest;
@@ -123,7 +124,7 @@ public class Robot extends TimedRobot {
         Drv_Auto.init();
         // AutoDrv01.init();
         // AutoDrv03.init();
-        Drive.init();
+        // Drive.init();
 
         Snorfler.init();
         Shooter.init();
@@ -177,7 +178,7 @@ public class Robot extends TimedRobot {
     public void testInit() {
         // ClimbTest.init();
         // SnorfTest.init();
-        TimerTest.init();
+        // TimerTest.init();
     }
 
     /** This function is called periodically during test mode. */
@@ -186,9 +187,10 @@ public class Robot extends TimedRobot {
         // Test to checkout individual devices. Run one at a tme.
         // SnorfTest.update();
         // ShootTest.update();
-        DriveTest.update();
+        // DriveTest.update();
         // ClimbTest.update();
         // TimerTest.update();
+        CompressorTest.update();
 
     }
 

@@ -1,5 +1,7 @@
 package frc.robot.subsystem.drive;
 
+import org.opencv.features2d.FlannBasedMatcher;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.robot.subsystem.drive.trajFunk.*;
@@ -28,6 +30,7 @@ public class Drv_Auto extends Drive {
         IO.coorXY.reset();
         IO.coorXY.drvFeetRst();
 
+        Drive.init();
         System.out.println("Auto - Init");
     }
 
@@ -83,7 +86,8 @@ public class Drv_Auto extends Drive {
     }
 
     public static void disable() {
-        cmdUpdate();
+        // cmdUpdate();
+        setDriveCmds(0.0, 0.0, false, 0);
     }
 
     public static void sdbInit() {

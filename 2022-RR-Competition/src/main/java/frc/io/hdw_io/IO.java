@@ -93,7 +93,7 @@ public class IO {
         motorsInit();
         coorXY.reset();
         coorXY.drvFeetRst();
-        sdbInit();
+        // sdbInit();
     }
 
     public static void update() {
@@ -190,6 +190,7 @@ public class IO {
         SmartDashboard.putBoolean("Climb/brakeState_SV", climbBrakeRel_SV.get());
     }
 
+    /**Update all the tpf if changed from the sdb. */
     public static void tpfUpdate(){
         drvLdEnc_L.setTPF(-tpfAll);
         drvFlEnc_L.setTPF(-tpfAll);

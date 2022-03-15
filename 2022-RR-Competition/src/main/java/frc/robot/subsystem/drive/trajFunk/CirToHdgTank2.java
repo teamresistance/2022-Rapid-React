@@ -87,9 +87,11 @@ public class CirToHdgTank2 extends ATrajFunction {
 
             System.out.println("rad cmd0: " + trajCmd[0] + "\tcmd1: " + trajCmd[1] );
             if(turnRight){      //If left is inside wheel
-                Drive.cmdUpdate(trajCmd[0], trajCmd[1], false, 1); //Turning right, left whl is outside
+                // Drive.cmdUpdate(trajCmd[0], trajCmd[1], false, 1); //Turning right, left whl is outside
+                Drive.setDriveCmds(trajCmd[0], trajCmd[1], false, 1); //Turning right, left whl is outside
             }else{              //else right is inside wheel
-                Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 1); //Turning left, right whl is outside
+                // Drive.cmdUpdate(trajCmd[1], trajCmd[0], false, 1); //Turning left, right whl is outside
+                Drive.setDriveCmds(trajCmd[1], trajCmd[0], false, 1); //Turning left, right whl is outside
             }
             if (pidHdg.atSetpoint()) state++;    // Chk hdg only
             prtShtuff("CHT2");

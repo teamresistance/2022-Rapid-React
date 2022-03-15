@@ -52,12 +52,15 @@ public class Drv_Teleop extends Drive {
 
         sdbInit();
         teleDrvChoice = teleDrvChsr.getSelected();
-        cmdUpdate(0, 0);
+        // cmdUpdate(0, 0);
+        setDriveCmds(0.0, 0.0, false, 0);
         // IO.navX.reset();
 
         setSwapFront(false);
         setScaled(false);
         relHdgHold();
+
+        Drive.init();
     }
 
     /**
@@ -95,20 +98,24 @@ public class Drv_Teleop extends Drive {
         Drive.update();
         switch (state) {
             case 0: // Stop Moving
-            cmdUpdate(); // Stop moving
+            // cmdUpdate(); // Stop moving
+            setDriveCmds(0.0, 0.0, false, 0);
             break;
             case 1: // Tank mode.
-            cmdUpdate(tnkLeft(), tnkRight(), false, 1); // Apply Hold, swap & scaling then send
+            // cmdUpdate(tnkLeft(), tnkRight(), false, 1); // Apply Hold, swap & scaling then send
+            setDriveCmds(tnkLeft(), tnkRight(), false, 1);
            // System.out.println("Here teleop " + state +" "+ tnkLeft() + " " + tnkRight());
             break;
             case 2: // Arcade mode.
-            cmdUpdate(arcMove(), arcRot(), false, 2); // Apply Hold, swap & scaling then send
+            // cmdUpdate(arcMove(), arcRot(), false, 2); // Apply Hold, swap & scaling then send
+            setDriveCmds(arcMove(), arcRot(), false, 2);
             break;
             case 3: // Curvature mode.
-            cmdUpdate(curMove(), curRot(), false, 3); // Apply Hold, swap & scaling then send
+            // cmdUpdate(curMove(), curRot(), false, 3); // Apply Hold, swap & scaling then send
+            setDriveCmds(curMove(), curRot(), false, 3);
             break;
             default:
-            cmdUpdate();
+            // cmdUpdate();
             System.out.println("Invaid Drive State - " + state);
             break;
         }

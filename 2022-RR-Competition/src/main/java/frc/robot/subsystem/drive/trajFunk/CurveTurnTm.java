@@ -28,7 +28,8 @@ public CurveTurnTm(double eFwd, double eROT, double eTime) {
             break;
         case 1:
             // diffDrv.curvatureDrive(pwr, rot, false);
-            Drive.cmdUpdate(fwd, rot, false, 3);
+            // Drive.cmdUpdate(fwd, rot, false, 3);
+            Drive.setDriveCmds(fwd, rot, false, 3);
             if (curveTime.hasExpired(time, state)) {
                 state++;
             }

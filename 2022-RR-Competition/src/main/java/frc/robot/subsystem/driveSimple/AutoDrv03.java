@@ -37,14 +37,13 @@ public class AutoDrv03 {
         //Add code here to start state machine or override the sm sequence
         smUpdate();
         sdbUpdate();
-        System.out.println();
     }
 
     private static void smUpdate() { // State Machine Update
 
         switch (state) {
             case 0: // Everything is off
-                Drive.cmdUpdate(0.0, 0.0);
+                cmdUpdate(0.0, 0.0);    //below
                 stateTmr.clearTimer();; // Initialize timer for covTrgr. Do nothing.
                 state++;
                 break;
@@ -53,7 +52,7 @@ public class AutoDrv03 {
                 if (stateTmr.hasExpired(1.0, state))state++;
                 break;
             case 2: //Backs out
-                Drive.cmdUpdate(0.4, 0.5);
+                cmdUpdate(0.4, 0.5);
                 if (stateTmr.hasExpired(2.0, state)) state++;
                 break;
             case 3: //Coastout
@@ -61,7 +60,7 @@ public class AutoDrv03 {
                 if (stateTmr.hasExpired(0.2, state)) state++;
                 break;
             case 4:
-                Drive.cmdUpdate(-0.2, 0.5);
+                cmdUpdate(-0.2, 0.5);
                 if (IO.navX.getAngle() > 160) state++;
                 break;
             case 5:
@@ -113,7 +112,7 @@ public class AutoDrv03 {
                 break;
             default: // all off
                 cmdUpdate(0.0, 0.0);
-                System.out.println("Bad DrvAuto01 state: " + state);
+                System.out.println("Bad DrvAuto03 state: " + state);
                 break;
 
         }
@@ -129,7 +128,7 @@ public class AutoDrv03 {
     private static void cmdUpdate(double lCmd, double rCmd) {
         //Check any safeties, mod passed cmds if needed.
         // Drive.cmdUpdate(lCmd, rCmd);
-        Drive.setDriveCmds(lCmd, rCmd, false, 2);   //Tank steer, no squaring.
+        Drive.setDriveCmds(lCmd, rCmd, false, 1);   //Tank steer, no squaring.
     }
 
     /*-------------------------  SDB Stuff --------------------------------------
@@ -139,7 +138,7 @@ public class AutoDrv03 {
 
     /**Update the Smartdashboard. */
     private static void sdbUpdate() {
-        SmartDashboard.putNumber("AutoDrv/01. state", state);
+        SmartDashboard.putNumber("AutoDrv/03. state", state);
     }
 
     // ----------------- Shooter statuses and misc.-----------------

@@ -25,7 +25,7 @@ public class AutoDrv02 {
      */
     public static void init() {
         sdbInit();
-        // Drive.cmdUpdate(0.0, 0.0);       //Don't think we need this.  State 0 does the same.
+        // cmdUpdate(0.0, 0.0);       //Don't think we need this.  State 0 does the same.
         state = 0; // Start at state 0
     }
 
@@ -43,16 +43,16 @@ public class AutoDrv02 {
 
         switch (state) {
             case 0: // Everything is off
-                Drive.cmdUpdate(0.0, 0.0);
+                cmdUpdate(0.0, 0.0);    //below
                 stateTmr.hasExpired(0.05, state); // Initialize timer for covTrgr. Do nothing.
                 break;
             case 1: // Go straight for 1 sec.
-                cmdUpdate(-0.4, -0.5);
+                cmdUpdate(-0.4, -0.5);  //below
                 if (stateTmr.hasExpired(1.0, state)) state++;
                 break;
             default: // all off
                 cmdUpdate(0.0, 0.0);
-                System.out.println("Bad DrvAuto01 state: " + state);
+                System.out.println("Bad DrvAuto02 state: " + state);
                 break;
 
         }
@@ -68,7 +68,7 @@ public class AutoDrv02 {
     private static void cmdUpdate(double lCmd, double rCmd) {
         //Check any safeties, mod passed cmds if needed.
         // Drive.cmdUpdate(lCmd, rCmd);
-        Drive.setDriveCmds(lCmd, rCmd, false, 2);   //Tank steer, no squaring.
+        Drive.setDriveCmds(lCmd, rCmd, false, 1);   //Tank steer, no squaring.
     }
 
     /*-------------------------  SDB Stuff --------------------------------------
@@ -78,7 +78,7 @@ public class AutoDrv02 {
 
     /**Update the Smartdashboard. */
     private static void sdbUpdate() {
-        SmartDashboard.putNumber("AutoDrv/01. state", state);
+        SmartDashboard.putNumber("AutoDrv/02. state", state);
     }
 
     // ----------------- Shooter statuses and misc.-----------------

@@ -46,7 +46,7 @@ public class AutoDrv05 {
             case 0: // Everything is off
                 cmdUpdate(0.0, 0.0);
                 stateTmr.clearTimer();; // Initialize timer for covTrgr. Do nothing.
-                System.out.println("AutoDrv01 Init.");
+                System.out.println("AutoDrv05 Init.");
                 state++;
                 break;
             case 1:
@@ -105,7 +105,7 @@ public class AutoDrv05 {
                 break;
             default: // all off
                 cmdUpdate(0.0, 0.0);
-                System.out.println("Bad DrvAuto01 state: " + state);
+                System.out.println("Bad DrvAuto05 state: " + state);
                 break;
 
         }
@@ -121,7 +121,7 @@ public class AutoDrv05 {
     private static void cmdUpdate(double lCmd, double rCmd) {
         //Check any safeties, mod passed cmds if needed.
         // Drive.cmdUpdate(lCmd, rCmd);
-        Drive.setDriveCmds(lCmd, rCmd, false, 2);   //Tank steer, no squaring.
+        Drive.setDriveCmds(lCmd, rCmd, false, 1);   //Tank steer, no squaring.
     }
 
     /*-------------------------  SDB Stuff --------------------------------------
@@ -131,7 +131,7 @@ public class AutoDrv05 {
 
     /**Update the Smartdashboard. */
     private static void sdbUpdate() {
-        SmartDashboard.putNumber("AutoDrv/01. state", state);
+        SmartDashboard.putNumber("AutoDrv/05. state", state);
     }
 
     // ----------------- Shooter statuses and misc.-----------------

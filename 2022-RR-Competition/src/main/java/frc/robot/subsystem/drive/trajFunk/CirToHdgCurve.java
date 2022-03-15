@@ -78,7 +78,8 @@ public class CirToHdgCurve extends ATrajFunction {
             // }else{
 
             // }
-            Drive.cmdUpdate(trajCmd[0], trajCmd[1], false, 3); // cmdUpdate for curvature hdg & dist.
+            // Drive.cmdUpdate(trajCmd[0], trajCmd[1], false, 3); // cmdUpdate for curvature hdg & dist.
+            Drive.setDriveCmds(trajCmd[0], trajCmd[1], false, 3); // cmdUpdate for curvature hdg & dist.
             if (pidHdg.atSetpoint()) state++;    // Chk hdg only
             break;
         case 2:

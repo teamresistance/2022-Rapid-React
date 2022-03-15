@@ -61,8 +61,9 @@ public class Drive {
     }
 
     public static void init() {
+        diffDrv.setExpiration(1.0);
+        diffDrv.setSafetyEnabled(false);
         cmdUpdate(0.0, 0.0, false, 0);
-        // diffDrv.setSafetyEnabled(false);
         // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
         // pidHdg = new PIDXController(1.0/90, 0.0, 0.0);
         pidHdg.enableContinuousInput(-180.0, 180.0);
@@ -109,7 +110,7 @@ public class Drive {
      * @param isSqOrQT - tank(1)/arcade(2)-apply sqrt  |  curvature(3)-quick turn
      * @param diffType - 0-Off  |  1=tank  |  2=arcade  |  3=curvature
      */
-    public static void cmdUpdate(double _lSpdY, double _rSpdRot_XY, boolean _isSqOrQT, int _diffType) {
+    private static void cmdUpdate(double _lSpdY, double _rSpdRot_XY, boolean _isSqOrQT, int _diffType) {
         lSpdY = _lSpdY;  rSpdRot_XY = _rSpdRot_XY; isSqOrQT = _isSqOrQT; diffType = _diffType;
         chkInput();     //Chk for hdg hold, front swap or scaling
         switch(diffType){
@@ -151,7 +152,7 @@ public class Drive {
      * @param [0] = rotation, [1] = fwd
      * @param dType - 0-Off  |  1=tank  |  2=arcade  |  3=curvature
      */
-    public void cmdUpdate(double tCmd[], int dType){
+    private void cmdUpdate(double tCmd[], int dType){
         cmdUpdate(tCmd[0], tCmd[1], false, dType);
     }
 
@@ -233,14 +234,14 @@ public class Drive {
     /**
      * Stop moving  (Legacy & quick calls)
      */
-    public static void cmdUpdate() { cmdUpdate(0.0, 0.0, true, 0); }
+    private static void cmdUpdate() { cmdUpdate(0.0, 0.0, true, 0); }
 
     /**
      * Tank drive
      * @param lSpdY - left tank control
      * @param rSpdRot_XY - right tank control
      */
-    public static void cmdUpdate(double lSpdY, double rSpdRot_XY) { cmdUpdate(lSpdY, rSpdRot_XY, false, 1); }
+    private static void cmdUpdate(double lSpdY, double rSpdRot_XY) { cmdUpdate(lSpdY, rSpdRot_XY, false, 1); }
 
     /**
      * Tank or Arcade drive  (Legacy & quick calls, Sqr true.)
@@ -248,7 +249,7 @@ public class Drive {
      * @param rSpdRot_XY - tank-right | arcade-rotation
      * @param isTank else arcade
      */
-    public static void cmdUpdate(double lSpdY, double rSpdRot_XY, boolean isTank) {
+    private static void cmdUpdate(double lSpdY, double rSpdRot_XY, boolean isTank) {
         cmdUpdate(lSpdY, rSpdRot_XY, true, isTank ? 1 : 2);
     }
 }

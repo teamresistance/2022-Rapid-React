@@ -175,6 +175,7 @@ public class Trajectories {
             new TankTurnHdg(24.0, 0.5, -0.1), //turns
             new TurnNMove(24.0, 4.5, pwr),
             new TurnNMove(24.0, 1.0, 0.2),
+            new TrajDelay(0.5),
             new ShootDrvAuto(false),
             // // new Waypt(-2, -5), // back in front of shoot area
             // // new TurnNMove(24.0, 0.5), //forward a little

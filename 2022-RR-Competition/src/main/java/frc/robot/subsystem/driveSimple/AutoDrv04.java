@@ -25,7 +25,7 @@ public class AutoDrv04 {
      */
     public static void init() {
         sdbInit();
-        // Drive.cmdUpdate(0.0, 0.0);       //Don't think we need this.  State 0 does the same.
+        // cmdUpdate(0.0, 0.0);       //Don't think we need this.  State 0 does the same.
         state = 0; // Start at state 0
     }
 
@@ -44,7 +44,7 @@ public class AutoDrv04 {
             case 0: // Everything is off
                 cmdUpdate(0.0, 0.0);
                 stateTmr.clearTimer();; // Initialize timer for covTrgr. Do nothing.
-                System.out.println("AutoDrv01 Init.");
+                System.out.println("AutoDrv04 Init.");
                 state++;
                 break;
             case 1:    // Shoot
@@ -64,7 +64,7 @@ public class AutoDrv04 {
                 break;
             default: // all off
                 cmdUpdate(0.0, 0.0);
-                System.out.println("Bad DrvAuto01 state: " + state);
+                System.out.println("Bad DrvAuto04 state: " + state);
                 break;
 
         }
@@ -90,7 +90,7 @@ public class AutoDrv04 {
 
     /**Update the Smartdashboard. */
     private static void sdbUpdate() {
-        SmartDashboard.putNumber("AutoDrv/01. state", state);
+        SmartDashboard.putNumber("AutoDrv/04. state", state);
     }
 
     // ----------------- Shooter statuses and misc.-----------------

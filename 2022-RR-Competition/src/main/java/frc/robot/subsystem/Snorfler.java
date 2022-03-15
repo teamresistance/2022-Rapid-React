@@ -142,9 +142,9 @@ public class Snorfler {
                 }
                 break; 
 
-            case 30: //Finish snorf but keep elv for 2 sec longer
+            case 30: //Finish snorf but keep elv for 4 sec longer
                 cmdUpdate(false, 0.0, 1.0);
-                if (snorfTimer.hasExpired(2.0, state)){
+                if (snorfTimer.hasExpired(4.0, state)){
                     state = 0;
                     csBallReject = false;
                 }

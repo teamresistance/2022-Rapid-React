@@ -46,7 +46,7 @@ public class AutoDrv00 {
             case 0: // Everything is off
                 cmdUpdate(0.0, 0.0);
                 stateTmr.clearTimer(); // Initialize timer for covTrgr. Do nothing.
-                System.out.println("AutoDrv00 Init.");
+                // System.out.println("AutoDrv00 Init.");
                 state = 20;
                 break;
             case 20: // Stop, send 0, 0 cmds and stay here until end of auto.
@@ -81,7 +81,7 @@ public class AutoDrv00 {
 
     /**Update the Smartdashboard. */
     private static void sdbUpdate() {
-        SmartDashboard.putNumber("AutoDrv/01. state", state);
+        SmartDashboard.putNumber("AutoDrv/00. state", state);
     }
 
     // ----------------- Shooter statuses and misc.-----------------
