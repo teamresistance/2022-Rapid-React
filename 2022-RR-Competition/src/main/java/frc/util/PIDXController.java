@@ -73,7 +73,6 @@ public class PIDXController extends PIDController{
      */
     public static void setExt(PIDXController aPidX, double sp, double db, 
     /*                      */double mn, double mx,double exp, Boolean clmp){
-        System.out.println("PIDX SP: " + sp);
         aPidX.setSetpoint(sp);
         aPidX.setInDB(db);
         aPidX.setOutMn(mn);
