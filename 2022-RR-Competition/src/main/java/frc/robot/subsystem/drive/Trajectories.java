@@ -17,7 +17,7 @@ public class Trajectories {
         for(int i = 0; i < chsrDesc.length; i++){
             chsr.addOption(chsrDesc[i], chsrDesc[i]);
         }
-        chsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
+        chsr.setDefaultOption(chsrDesc[4] + " (Default)", chsrDesc[4]);   //Default MUST have a different name
         SmartDashboard.putData("Drv/Traj/Choice", chsr);
         
     }
@@ -160,25 +160,24 @@ public class Trajectories {
     public static ATrajFunction[] getCargo4(double pwr) { //RM: P5, Shoot Hi , C,( G,) P5, Shoot Hi.
         pwr = 0.5;
         ATrajFunction traj[] = {
-            // new CoorOffset(24.0, -1.5, -3.5),
-            // new ShootDrvAuto(false),
-            // // new TrajDelay(2.0),
-            // new TurnNMove(24.0, -6.4, pwr), // already at 24 degrees, go back 7.4 feet
-            // new TurnNMove(24.0, 0.5, pwr), // braking
-            // new TankTurnHdg(-38, -0.1, 0.5), //Turns
-            // new SnorfDrvAuto(true),
-            // new TurnNMove(-38, 9.0, pwr),
-            // //new Waypt(-7, -11, 0.3), // C Ball
-            // new SnorfDrvAuto(false), //Snorfler up
-            // new TurnNMove(-38, -11.0, pwr),
-            // new TurnNMove(-38, 0.1, pwr), //brake
-            // new TankTurnHdg(24.0, 0.5, -0.1), //turns
-            // new TurnNMove(24.0, 5.5, pwr),
-            // new TurnNMove(24.0, 1.5, 0.2),
-            // //new TurnNMove()
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(false),
+            new TrajDelay(2.0),
+            new TurnNMove(24.0, -6.4, pwr), // already at 24 degrees, go back 7.4 feet
+            new TurnNMove(24.0, 0.5, pwr), // braking
+            new TankTurnHdg(-38, -0.1, 0.5), //Turns
+            new SnorfDrvAuto(true),
+            new TurnNMove(-38, 6.0, pwr),
+            // // new Waypt(-7, -11, 0.3), // C Ball
+            new SnorfDrvAuto(false), //Snorfler up
+            new TurnNMove(-38, -4.5, pwr),
+            new TurnNMove(-38, 0.1, pwr), //brake
+            new TankTurnHdg(24.0, 0.5, -0.1), //turns
+            new TurnNMove(24.0, 4.5, pwr),
+            new TurnNMove(24.0, 1.5, 0.2),
+            new ShootDrvAuto(false),
             // // new Waypt(-2, -5), // back in front of shoot area
             // // new TurnNMove(24.0, 0.5), //forward a little
-            // new ShootDrvAuto(false),
         };
         return traj;
     }

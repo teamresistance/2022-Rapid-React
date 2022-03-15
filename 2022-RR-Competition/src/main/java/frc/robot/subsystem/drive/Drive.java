@@ -34,7 +34,10 @@ public class Drive {
     // /*                               */ { 0.0, 10.0, 0.7, 0.45, 1.0, 0.07 } };
     // public static Steer steer = new Steer(parms);  //Create steer instance for hdg & dist, use default parms
 
-    public static PIDXController pidHdg, pidDist, pidHdgHold;
+    public static PIDXController pidHdg = new PIDXController(1.0/90, 0.0, 0.0);
+    public static PIDXController pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
+    public static PIDXController pidHdgHold = new PIDXController(1.0/90, 0.0, 0.0);
+
     public static double strCmd[] = new double[2]; //Storage for steer return
 
     public static double hdgFB() {return IO.navX.getNormalizedTo180();}  //Only need hdg to Hold Angle 0 or 180
@@ -59,11 +62,12 @@ public class Drive {
 
     public static void init() {
         cmdUpdate(0.0, 0.0, false, 0);
-        pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
-        pidHdg = new PIDXController(1.0/90, 0.0, 0.0);
+        // diffDrv.setSafetyEnabled(false);
+        // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
+        // pidHdg = new PIDXController(1.0/90, 0.0, 0.0);
         pidHdg.enableContinuousInput(-180.0, 180.0);
 
-        pidHdgHold = new PIDXController(1.0/90, 0.0, 0.0);
+        // pidHdgHold = new PIDXController(1.0/90, 0.0, 0.0);
         pidHdgHold.enableContinuousInput(-180.0, 180.0);
         pidHdgHold.setInDB(2.0);
         pidHdgHold.setOutMn(0.20);
@@ -76,6 +80,7 @@ public class Drive {
      * can be caused by other events.
      */
     public static void update() {
+        diffDrv.feed();
         smUpdate();
         sdbUpdate();
     }

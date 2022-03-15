@@ -119,8 +119,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        ad_Init();    //Quick fix for auto.  Below.
-        // Drv_Auto.init();
+        // ad_Init();    //Quick fix for auto.  Below.
+        Drv_Auto.init();
         // AutoDrv01.init();
         // AutoDrv03.init();
         Drive.init();
@@ -132,8 +132,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        // Drv_Auto.update();
-        ad_Update();    //Quick fix for auto.  Below.
+        Drv_Auto.update();
+        // ad_Update();    //Quick fix for auto.  Below.
         Drive.update();         //Pre-Orl, did nothing.
 
         Snorfler.update();
@@ -216,7 +216,6 @@ public class Robot extends TimedRobot {
             AutoDrv05.init();
             default:
             System.out.println("Robot/Bad Auto " + chsr.getSelected());
-            //AutoDrv00.init();
             break;
         }
     }

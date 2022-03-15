@@ -18,6 +18,7 @@ public class SnorfDrvAuto extends ATrajFunction {
      */
     public SnorfDrvAuto(boolean _snorfEna) {
         snorfEna = _snorfEna;
+        System.out.println(snorfEna);
     }
 
     public void execute() {

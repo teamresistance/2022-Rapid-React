@@ -34,16 +34,17 @@ public class TurnNMove extends ATrajFunction {
             // pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values          SP,        PB,  DB,   Mn,  Mx,   Exp,   Clmp
-            PIDXController.setExt(pidHdg, hdgSP, (1.0/90), 5.0, 0.35, pwrMx, 2.0, true);
-            // pidHdg.setP(1.0/70);
+            PIDXController.setExt(pidHdg, hdgSP, 5.0, 0.35, pwrMx, 2.0, true);
+            pidHdg.setP(1.0/70);
 
             // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
             //Set extended values            SP,        PB,  DB,   Mn,  Mx,   Exp,   Clmp
-            PIDXController.setExt(pidDist, distSP, (-1.0/10), 1.0, 0.2, pwrMx, 1.0, true);
-            // pidDist.setP(-1.0/10);
+            PIDXController.setExt(pidDist, distSP, 1.0, 0.2, pwrMx, 1.0, true);
+            pidDist.setP(-1.0/10);
 
             Drive.distRst();
             initSDB();
+            sendDriveCmds(0.0, 0.0, false, 2);
             state++;
             System.out.println("TNM - 0  -----  PB:" + pidHdg.getP());
         case 1: // Turn to heading.  Do not move forward, yet.

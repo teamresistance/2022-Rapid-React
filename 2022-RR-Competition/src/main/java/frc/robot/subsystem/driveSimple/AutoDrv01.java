@@ -54,6 +54,7 @@ public class AutoDrv01 {
                 Snorfler.reqsnorfDrvAuto = true;
                 IO.navX.reset();
                 state++;
+                break;
             case 2: // Go straight fwd for 1 sec (4.7') to ball.
                 cmdUpdate(-0.4, -0.5);     //  4.7'/sec @ (-0.4, -0.5)
                 if (stateTmr.hasExpired(1.35, state)) state++;
@@ -66,7 +67,7 @@ public class AutoDrv01 {
                 // cmdUpdate(0.3, 0.4);
                 // if (stateTmr.hasExpired(0.3, state)) state++;
                 state++;
-                // break;
+                break;
             case 5: // Pivot CCW to 180 hdg
                 cmdUpdate(0.3, -0.6);     //4.7/sec @ 0.4, 0.5
                 if (IO.navX.getAngle() < -138.0) state++;
@@ -85,6 +86,7 @@ public class AutoDrv01 {
             case 8: // Start the Snofler
                 Snorfler.reqsnorfDrvAuto = false;
                 state++;
+                break;
             case 9: // Go straight fwd for 1 sec (4.7') to goal.
                 cmdUpdate(-0.4, -0.5);     //4.7/sec @ 0.4, 0.5
                 if (stateTmr.hasExpired(2.3, state)) state++;
@@ -97,10 +99,11 @@ public class AutoDrv01 {
                 // cmdUpdate(0.3, 0.4);
                 // if (stateTmr.hasExpired(0.3, state)) state++;
                 state++;
-                // break;
+                break;
             case 12:    // Shoot
                 Shooter.reqShootLowDrvAuto = false;
                 state = 20;
+                break;
             case 20: // Stop, send 0, 0 cmds and stay here until end of auto.
                 cmdUpdate(0.0, 0.0);
                 // if (stateTmr.hasExpired(0.05, state)) state++;
@@ -123,7 +126,7 @@ public class AutoDrv01 {
     private static void cmdUpdate(double lCmd, double rCmd) {
         //Check any safeties, mod passed cmds if needed.
         // Drive.cmdUpdate(lCmd, rCmd);
-        Drive.setDriveCmds(lCmd, rCmd, false, 2);   //Tank steer, no squaring.
+        Drive.setDriveCmds(lCmd, rCmd, false, 1);   //Tank steer, no squaring.
     }
 
     /*-------------------------  SDB Stuff --------------------------------------

@@ -50,11 +50,14 @@ public class AutoDrv04 {
             case 1:    // Shoot
                 Shooter.reqShootLowDrvAuto = false;
                 state++;
+                break;
             case 2:
                 if (stateTmr.hasExpired(3, state)) state++;
+                break;
             case 3:
                 cmdUpdate(0.4, 0.5);
-                if (stateTmr.hasExpired(3, state)) state = 20;
+                if (stateTmr.hasExpired(1, state)) state = 20;
+                break;
             case 20: // Stop, send 0, 0 cmds and stay here until end of auto.
                 cmdUpdate(0.0, 0.0);
                 // if (stateTmr.hasExpired(0.05, state)) state++;
@@ -77,7 +80,7 @@ public class AutoDrv04 {
     private static void cmdUpdate(double lCmd, double rCmd) {
         //Check any safeties, mod passed cmds if needed.
         // Drive.cmdUpdate(lCmd, rCmd);
-        Drive.setDriveCmds(lCmd, rCmd, false, 2);   //Tank steer, no squaring.
+        Drive.setDriveCmds(lCmd, rCmd, false, 1);   //Tank steer, no squaring.
     }
 
     /*-------------------------  SDB Stuff --------------------------------------
