@@ -45,8 +45,8 @@ public class Drv_Auto extends Drive {
             System.out.println("Traj Index: " + idx);
         case 1:                 //Run a leg of the path
             traj[idx].execute();
-            if (!ATrajFunction.getDone()) break;   //Save time at end of leg
-            autoStep++;
+            if (ATrajFunction.getDone()) autoStep++;
+            break;
         case 2:                 //Closeout Leg
             System.out.print("DONE Auto: ");
             System.out.println("\tCoorX: " + IO.coorXY.getX() + "\tCoorY " + IO.coorXY.getY() + 
