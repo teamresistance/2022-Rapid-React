@@ -95,7 +95,7 @@ public class Drv_Teleop extends Drive {
      * Called from Robot telopPerodic every 20mS to Update the drive sub system.
      */
     private static void smUpdate() {
-        Drive.update();
+        // Drive.update();
         switch (state) {
             case 0: // Stop Moving
             // cmdUpdate(); // Stop moving

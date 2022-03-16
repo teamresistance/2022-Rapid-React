@@ -78,14 +78,14 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
+        Trajectories.chsrInit();
+        ad_ChsrInit();
         IO.init();
         JS_IO.init();
 
         Snorfler.teamColorchsrInit();
 
-        Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
-        Trajectories.chsrInit();
-        ad_ChsrInit();
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
         // CameraServer.startAutomaticCapture();
@@ -102,6 +102,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        //Chooser here so they can be selected before auto or teleop active.
+        Drv_Teleop.chsrUpdate();
+        Trajectories.chsrUpdate();
+        ad_ChsrUpdate();    //Quick fix for auto.
         // Pneu. system has leak. Dont need it when testing drive.
         cmprEna = SmartDashboard.getBoolean("Robot/Cmpr Enabled", cmprEna);
         IO.compressorRelay.set(IO.compressor1.enabled() && cmprEna ? Relay.Value.kForward : Relay.Value.kOff);
@@ -110,10 +114,6 @@ public class Robot extends TimedRobot {
         IO.update();
         JS_IO.update();
         IO.coorXY.update();
-        //Chooser here so they can be selected before auto or teleop active.
-        Drv_Teleop.chsrUpdate();
-        Trajectories.chsrUpdate();
-        ad_ChsrUpdate();    //Quick fix for auto.
     }
 
     /** This function is called once when autonomous is enabled. */
@@ -133,9 +133,9 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
+        Drive.update();         //Pre-Orl, did nothing.
         Drv_Auto.update();
         // ad_Update();    //Quick fix for auto.  Below.
-        Drive.update();         //Pre-Orl, did nothing.
 
         Snorfler.update();
         Shooter.update();
@@ -144,9 +144,9 @@ public class Robot extends TimedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
+        Drive.init();
         Drv_Auto.disable(); //Close out any cmds from Auto.
         Drv_Teleop.init();
-        Drive.init();
 
         Snorfler.init();
         Shooter.init();
@@ -156,8 +156,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        Drv_Teleop.update();
         Drive.update();
+        Drv_Teleop.update();
 
         Climber.update();
         Snorfler.update();
