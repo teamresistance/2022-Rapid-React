@@ -48,8 +48,6 @@ public class Drv_Teleop extends Drive {
 
     /**Initial items to teleop driving */
     public static void init() {
-        Drive.init();
-
         sdbInit();
         teleDrvChoice = teleDrvChsr.getSelected();
         // cmdUpdate(0, 0);
