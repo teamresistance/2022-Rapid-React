@@ -36,7 +36,7 @@ public class Drv_Teleop extends Drive {
         for(int i=0; i < teleDrvType.length; i++){
             teleDrvChsr.addOption(teleDrvType[i], i);
         }
-        teleDrvChsr.setDefaultOption(teleDrvType[0] + " (Dflt)", 0);
+        teleDrvChsr.setDefaultOption(teleDrvType[1] + " (Dflt)", 1);
 
         chsrUpdate();
     }
