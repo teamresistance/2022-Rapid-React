@@ -157,12 +157,12 @@ public class Trajectories {
         ATrajFunction[] traj = {
             new CoorOffset(-66.0, 4.0, -1.5),
             new ShootDrvAuto(false),
-            new TankTurnHdg(10.0, -0.3, -0.5),
-            new TurnNMove(10.0, -6.0),
+            new TankTurnHdg(0.0, -0.3, -0.5),
+            new TurnNMove(0.0, -8.0),
             new TankTurnHdg(65.0, -0.3, -0.5),
             new SnorfDrvAuto(true), //Start snorfle
-            new TurnNMove(65.0, 9.0), //Move forward
-            new TurnNMove(65.0, -0.1), //Brake
+            new TurnNMove(65.0, 9.0, pwr), //Move forward
+            new TurnNMove(65.0, -0.3, pwr), //Brake
             new SnorfDrvAuto(false), //Stop snorfle
             // new TurnNMove(220.0, -3.0), //Move Back
             // new TurnNMove(220.0, 0.1), //Brake
