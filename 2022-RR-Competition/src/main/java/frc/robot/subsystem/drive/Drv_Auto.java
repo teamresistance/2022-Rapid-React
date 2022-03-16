@@ -30,7 +30,6 @@ public class Drv_Auto extends Drive {
         IO.coorXY.reset();
         IO.coorXY.drvFeetRst();
 
-        Drive.init();
         System.out.println("Auto - Init");
     }
 

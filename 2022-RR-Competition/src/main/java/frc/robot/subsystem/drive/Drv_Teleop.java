@@ -57,8 +57,6 @@ public class Drv_Teleop extends Drive {
         setSwapFront(false);
         setScaled(false);
         relHdgHold();
-
-        Drive.init();
     }
 
     /**
