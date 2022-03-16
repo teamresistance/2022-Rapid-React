@@ -81,11 +81,11 @@ public class Robot extends TimedRobot {
         Drv_Teleop.chsrInit(); // Drv_Teleop init Drv type Chooser.
         Trajectories.chsrInit();
         ad_ChsrInit();
+
         IO.init();
         JS_IO.init();
 
         Snorfler.teamColorchsrInit();
-
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
         // CameraServer.startAutomaticCapture();
@@ -106,6 +106,7 @@ public class Robot extends TimedRobot {
         Drv_Teleop.chsrUpdate();
         Trajectories.chsrUpdate();
         ad_ChsrUpdate();    //Quick fix for auto.
+
         // Pneu. system has leak. Dont need it when testing drive.
         cmprEna = SmartDashboard.getBoolean("Robot/Cmpr Enabled", cmprEna);
         IO.compressorRelay.set(IO.compressor1.enabled() && cmprEna ? Relay.Value.kForward : Relay.Value.kOff);
@@ -120,11 +121,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        // ad_Init();    //Quick fix for auto.  Below.
+        Drive.init();
         Drv_Auto.init();
+        // ad_Init();    //Quick fix for auto.  Below.
         // AutoDrv01.init();
         // AutoDrv03.init();
-        // Drive.init();
 
         Snorfler.init();
         Shooter.init();
