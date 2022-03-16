@@ -153,17 +153,21 @@ public class Trajectories {
         return traj;
     }
     
-    public static ATrajFunction[] getCargo3(double pwr) { //LL
+    public static ATrajFunction[] getCargo3(double pwr) { //3 ball auto v2
         ATrajFunction[] traj = {
-            // new CoorOffset(-66.0, 4.5, 1.0),
-            // new ShootDrvAuto(false),
-            // new TurnNMove(-66.0, 0),
-            // new SnorfDrvAuto(true),
-            // new Waypt(13.0, -2.0), // A Ball
-            // new Waypt(7.0, -10.0), // B Ball
-            // new SnorfDrvAuto(false),
-            // new Waypt(4.5, 1.0),
-            // new TurnNMove(-66.0, 0),
+            new CoorOffset(-66.0, 4.0, -1.5),
+            new ShootDrvAuto(false),
+            new TankTurnHdg(10.0, -0.3, -0.5),
+            new TurnNMove(10.0, -6.0),
+            new TankTurnHdg(65.0, -0.3, -0.5),
+            new SnorfDrvAuto(true), //Start snorfle
+            new TurnNMove(65.0, 9.0), //Move forward
+            new TurnNMove(65.0, -0.1), //Brake
+            new SnorfDrvAuto(false), //Stop snorfle
+            // new TurnNMove(220.0, -3.0), //Move Back
+            // new TurnNMove(220.0, 0.1), //Brake
+            // new TankTurnHdg(-62.0, 0.3, -0.3), //Turns, with adjustment for 
+            // new TurnNMove(-62.0, 4.0),
             // new ShootDrvAuto(false),
         };
         return traj;
@@ -174,19 +178,19 @@ public class Trajectories {
         ATrajFunction traj[] = {
             new CoorOffset(24.0, -1.5, -3.5),
             new ShootDrvAuto(false),
-            new TrajDelay(0.5),
-            new TurnNMove(24.0, -6.4, pwr), // already at 24 degrees, go back 7.4 feet
+            new TrajDelay(0.2),
+            new TurnNMove(24.0, -6.0, pwr), // already at 24 degrees, go back 7.4 feet
             new TurnNMove(24.0, 0.5, pwr), // braking
-            new TankTurnHdg(-38, -0.1, 0.5), //Turns
+            new TankTurnHdg(-38, -0.15, 0.9), //Turns
             new SnorfDrvAuto(true),
-            new TurnNMove(-38, 6.0, pwr),
+            new TurnNMove(-38, 5.9, pwr),
             // // new Waypt(-7, -11, 0.3), // C Ball
             new SnorfDrvAuto(false), //Snorfler up
-            new TurnNMove(-38, -5.0, pwr),
-            new TurnNMove(-38, 0.1, pwr), //brake
-            new TankTurnHdg(24.0, 0.5, -0.1), //turns
+            new TurnNMove(-38, -5.3, pwr),
+            new TurnNMove(-38, 0.2, pwr), //brake
+            new TankTurnHdg(24.0, 0.5, -0.2), //turns
             new TurnNMove(24.0, 4.5, pwr),
-            new TurnNMove(24.0, 1.0, 0.2),
+            new TurnNMove(24.0, 1.2, 0.2),
             new TrajDelay(1.0),
             new ShootDrvAuto(false),
             // // new Waypt(-2, -5), // back in front of shoot area

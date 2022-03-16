@@ -5,6 +5,7 @@ import org.opencv.features2d.FlannBasedMatcher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.robot.subsystem.drive.trajFunk.*;
+import frc.util.PIDXController;
 
 public class Drv_Auto extends Drive {
 
@@ -21,7 +22,7 @@ public class Drv_Auto extends Drive {
      * <p>Reset Heading & Distance to 0.
      */
     public static void init() {
-        traj = Trajectories.getTraj(0.70);
+        traj = Trajectories.getTraj(0.80);
         autoStep = 0;
         idx = 0;
         allDone = false;
@@ -29,6 +30,8 @@ public class Drv_Auto extends Drive {
         distRst();
         IO.coorXY.reset();
         IO.coorXY.drvFeetRst();
+
+        // PIDXController.setExt(pidHdg, 0.0, (1.0/70), 2.0, 0.3, 1.0, 2.0, true);
 
         System.out.println("Auto - Init");
     }

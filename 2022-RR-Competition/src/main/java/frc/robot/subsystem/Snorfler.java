@@ -48,8 +48,10 @@ public class Snorfler {
     public static ColorMatchResult match;
     private static String teamColor;
     private static String enemyColor;
-    private static boolean csBallReject = false;  // ??
+    private static boolean csBallReject = false;  // Color Sensor Ball Reject
 
+    private static final double MTRSPD = 0.9;
+    private static final double ELVSPD = 1.0;
     public static enum dirSnorfler { OFF, FWD, REJ }
 
     /**
@@ -115,7 +117,7 @@ public class Snorfler {
                 }
                 break;
             case 2: // Start snorfler forward
-                cmdUpdate(true, 1.0, 1.0);
+                cmdUpdate(true, MTRSPD, ELVSPD);
                 break;
             //--------- Manual Reject -------------
             case 11: // Waiting a bit before going back
@@ -143,7 +145,7 @@ public class Snorfler {
                 break; 
 
             case 30: //Finish snorf but keep elv for 4 sec longer
-                cmdUpdate(false, 0.0, 1.0);
+                cmdUpdate(false, 0.0, ELVSPD);
                 if (snorfTimer.hasExpired(4.0, state)){
                     state = 0;
                     csBallReject = false;
