@@ -28,6 +28,7 @@ public class Shooter {
     private static boolean low_select = false; // Used to command the pressure SV. Default is hi press, switch.
     /** request from Drv_Auto to Shooter, resets itself */
     public static Boolean reqShootLowDrvAuto = null; // request from Drv_Auto to shoot 
+    public static Boolean reqShootR = false;
     //null: not shooting, false: shooting high, true: shooting low
 
     /**
@@ -40,6 +41,7 @@ public class Shooter {
         cmdUpdate(false, false, false); // select goal, left trigger, right trigger
         state = 0; // Start at state 0
         reqShootLowDrvAuto = null;      //null=no action, false= hi goal, true=lo goal
+        reqShootR = false;
     }
 
     /**
@@ -55,6 +57,9 @@ public class Shooter {
             state = 1;
             low_select = reqShootLowDrvAuto;
             // System.out.println("Shtr Auto" + reqShootLowDrvAuto);
+        }
+        if ((reqShootR == true) && state == 0) {
+            state = 33;
         }
         if ((btnFire.onButtonPressed()) && state == 0) state = 1;
 
@@ -90,7 +95,6 @@ public class Shooter {
                     state = 0;
                     reqShootLowDrvAuto = null;
                 }
-
                 break;
             //-----------Reject Balls ---------------
             case 11: // Reject left with low prs, wait for settle
@@ -108,6 +112,29 @@ public class Shooter {
             case 14: // trigger right, wait and return to 0
                 cmdUpdate(true, false, true);
                 if (stateTmr.hasExpired(1.0, state)) state = 0;
+                break;
+            //-----------Shoot one ---------------
+            // case 30: // Reject left with low prs, wait for settle
+            //     cmdUpdate(false, false, false);
+            //     state++;
+            //     // if (stateTmr.hasExpired(0.5, state)) state++;
+            //     break;
+            // case 31: // trigger left, wait and return to 0
+            //     cmdUpdate(false, true, false); //tbd
+            //     if (stateTmr.hasExpired(1.0, state)) state = 0;
+            //     break;
+            // case 32: // Reject right with low prs, wait for settle
+            //     cmdUpdate(false, false, false);
+            //     if (stateTmr.hasExpired(0.5, state)) state++;
+            //     break;
+            case 33: // trigger right, wait and return to 0
+                cmdUpdate(false, false, true);
+                state++;
+                // if (stateTmr.hasExpired(1.0, state)) state = 0;
+                break;
+            case 34:
+                reqShootR = false;
+                state = 0;
                 break;
             default: // all off
                 cmdUpdate(true, false, false);

@@ -153,12 +153,37 @@ public class Robot extends TimedRobot {
         Shooter.init();
         Climber.init();
     }
-
+    // private static boolean startAuto = false;
     /** This function is called periodically during operator control. */
+    private static int state = 0;
     @Override
     public void teleopPeriodic() {
+        //For Testing
+        if (JS_IO.btnAuto.isDown() && state == 0){
+            state = 1;
+        } else if (JS_IO.btnAuto.isUp() && (state != 0) && (state != 3)){
+            state = 3;
+        }
+        switch(state){
+            case 0:
+                Drv_Teleop.update();
+                break;
+            case 1:
+                Drv_Auto.init();
+                state++;
+                break;
+            case 2:
+                Drv_Auto.update();
+                break;
+            case 3:
+                Drv_Auto.disable();
+                Drv_Teleop.init();
+                state = 0;
+                break;
+        }
+
         Drive.update();
-        Drv_Teleop.update();
+        // Drv_Teleop.update();
 
         Climber.update();
         Snorfler.update();

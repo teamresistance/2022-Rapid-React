@@ -34,9 +34,9 @@ public class Drive {
     // /*                               */ { 0.0, 10.0, 0.7, 0.45, 1.0, 0.07 } };
     // public static Steer steer = new Steer(parms);  //Create steer instance for hdg & dist, use default parms
 
-    public static PIDXController pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
+    public static PIDXController pidHdg = new PIDXController(1.0/50, 0.0, 0.0);
     public static PIDXController pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
-    public static PIDXController pidHdgHold = new PIDXController(1.0/70, 0.0, 0.0);
+    public static PIDXController pidHdgHold = new PIDXController(1.0/30, 0.0, 0.0);
 
     public static double strCmd[] = new double[2]; //Storage for steer return
 
@@ -71,9 +71,9 @@ public class Drive {
         // pidHdgHold = new PIDXController(1.0/90, 0.0, 0.0);
         pidHdgHold.enableContinuousInput(-180.0, 180.0);
         pidHdgHold.setInDB(2.0);
-        pidHdgHold.setOutMn(0.30);
+        pidHdgHold.setOutMn(0.40);
         pidHdgHold.setOutMx(1.0);
-        pidHdgHold.setOutExp(2.0);
+        pidHdgHold.setOutExp(1.0);
     }
 
     /**

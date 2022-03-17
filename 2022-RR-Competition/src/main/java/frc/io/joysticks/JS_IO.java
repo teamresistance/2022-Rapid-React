@@ -72,6 +72,7 @@ public class JS_IO {
 
     // Misc
     public static Button btnRst = new Button();
+    public static Button btnAuto = new Button();
     // public static Button btnRstGyro = new Button();
     // public static Button btnRstFeet = new Button();
     // public static Button btnRstCoorXY = new Button();
@@ -180,6 +181,7 @@ public class JS_IO {
 
         // Misc
         btnRst = new Button(leftJoystick, 3);
+        btnAuto = new Button(coJoystick, 9);
         // btnRstGyro = new Button(leftJoystick, 7);
         // btnRstFeet = new Button(leftJoystick, 8);
         // btnRstCoorXY = new Button(leftJoystick, 9);

@@ -12,6 +12,8 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/Victor[0]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Victor[1]": "Motor Controller",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Drv/Auto/Choice": "String Chooser",
       "/SmartDashboard/Drv/Tele/Choice": "String Chooser",

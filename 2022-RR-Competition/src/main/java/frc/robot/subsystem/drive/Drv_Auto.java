@@ -22,7 +22,7 @@ public class Drv_Auto extends Drive {
      * <p>Reset Heading & Distance to 0.
      */
     public static void init() {
-        traj = Trajectories.getTraj(0.80);
+        traj = Trajectories.getTraj(1.0);
         autoStep = 0;
         idx = 0;
         allDone = false;
@@ -31,7 +31,9 @@ public class Drv_Auto extends Drive {
         IO.coorXY.reset();
         IO.coorXY.drvFeetRst();
 
-        // PIDXController.setExt(pidHdg, 0.0, (1.0/70), 2.0, 0.3, 1.0, 2.0, true);
+        //                     PIDX,   SP,     PB,      DB,  Mn,  Mx  Exp,  Clamp
+        PIDXController.setExt(pidDist, 0.0, (-1.0/5),  0.3, 0.35, 1.0, 2.0, true);
+        PIDXController.setExt(pidHdg,  0.0, (1.0/50),  2.0, 0.4, 1.0, 2.0, true);
 
         System.out.println("Auto - Init");
     }

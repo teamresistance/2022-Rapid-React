@@ -8,7 +8,7 @@ import frc.util.Timer;
 /**
  * This TrajFunction controls the Shooter.
  */
-public class ShootDrvAuto extends ATrajFunction {
+public class ShootDrvAutoR extends ATrajFunction {
     boolean low_select = true;
     Timer shootTimer = new Timer(2.0);
 
@@ -16,8 +16,8 @@ public class ShootDrvAuto extends ATrajFunction {
      * Constructor to control the Shooter
      * @param low_select false: shoots high, true: shoots low 
      */
-    public ShootDrvAuto(boolean low_select) {
-        this.low_select = low_select;
+    public ShootDrvAutoR() {
+        // this.low_select = low_select;
     }
 
     public void execute() {
@@ -25,8 +25,8 @@ public class ShootDrvAuto extends ATrajFunction {
         switch (state) {
         case 0: // set shooter lo/hi control and time delay to allow shot
             System.out.println("Shoot - 0:");
-            Shooter.reqShootLowDrvAuto = low_select; // shooter resets it
-            shootTimer.startTimer(1.0);
+            Shooter.reqShootR = true; // shooter resets it
+            // shootTimer.startTimer(0.0);
             state++;
             // System.out.println("Shoot - 0: ---------- Init -----------");
         case 1: // Wait for timer
