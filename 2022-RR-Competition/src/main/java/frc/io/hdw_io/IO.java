@@ -98,6 +98,7 @@ public class IO {
 
     public static void update() {
         if (JS_IO.btnRst.onButtonPressed()){
+            IO.navX.setAngleAdjustment(0.0);
             IO.navX.reset();
             IO.coorXY.drvFeetRst();
             IO.coorXY.reset();
