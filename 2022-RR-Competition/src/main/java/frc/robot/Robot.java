@@ -202,7 +202,7 @@ public class Robot extends TimedRobot {
     /** This function is called once when test mode is enabled. */
     @Override
     public void testInit() {
-        // ClimbTest.init();
+        ClimbTest.init();
         // SnorfTest.init();
         // TimerTest.init();
     }
@@ -214,7 +214,7 @@ public class Robot extends TimedRobot {
         // SnorfTest.update();
         // ShootTest.update();
         // DriveTest.update();
-        // ClimbTest.update();
+        ClimbTest.update();
         // TimerTest.update();
         CompressorTest.update();
 

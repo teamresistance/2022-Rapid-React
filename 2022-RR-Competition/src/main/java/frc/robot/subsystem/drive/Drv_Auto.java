@@ -32,8 +32,8 @@ public class Drv_Auto extends Drive {
         IO.coorXY.drvFeetRst();
 
         //                     PIDX,   SP,     PB,      DB,  Mn,  Mx  Exp,  Clamp
-        PIDXController.setExt(pidDist, 0.0, (-1.0/5),  0.3, 0.35, 1.0, 2.0, true);
-        PIDXController.setExt(pidHdg,  0.0, (1.0/50),  2.0, 0.4, 1.0, 2.0, true);
+        PIDXController.setExt(pidDist, 0.0, (-1.0/0.5),  0.3, 0.35, 1.0, 2.0, true);
+        PIDXController.setExt(pidHdg,  0.0, (1.0/40),  2.0, 0.4, 1.0, 2.0, true);
 
         System.out.println("Auto - Init");
     }

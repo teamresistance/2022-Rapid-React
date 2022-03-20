@@ -26,7 +26,7 @@ public class ShootDrvAutoR extends ATrajFunction {
         case 0: // set shooter lo/hi control and time delay to allow shot
             System.out.println("Shoot - 0:");
             Shooter.reqShootR = true; // shooter resets it
-            // shootTimer.startTimer(0.0);
+            // shootTimer.startTimer(0.5);
             state++;
             // System.out.println("Shoot - 0: ---------- Init -----------");
         case 1: // Wait for timer

@@ -36,12 +36,12 @@ public class TurnNMove extends ATrajFunction {
             // pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values          SP,        PB,  DB,   Mn,  Mx,   Exp,   Clmp
-            PIDXController.setExt(pidHdg, hdgSP, (1.0/70), 5.0, 0.35, pwrMx, 2.0, true);
-            // pidHdg.setP(1.0/70);
+            PIDXController.setExt(pidHdg, hdgSP, (1.0/60), 5.0, 0.35, pwrMx, 2.0, true);
+            // pidHdg.setP(1.0/70);z
 
             // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
             //Set extended values            SP,        PB,  DB,   Mn,  Mx,   Exp,   Clmp
-            PIDXController.setExt(pidDist, distSP, (-1.0/10), 1.0, 0.2, pwrMx, 1.0, true);
+            PIDXController.setExt(pidDist, distSP, (-1.0/3), 1.0, 0.2, pwrMx, 1.0, true);
             // pidDist.setP(-1.0/10);
 
             Drive.distRst();

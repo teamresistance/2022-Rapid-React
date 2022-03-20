@@ -110,36 +110,48 @@ public class Trajectories {
     }
 
     public static ATrajFunction[] getCargo1(double pwr) { //3 Ball Auto
+        pwr = 1.0;
         ATrajFunction traj[] = {
             new CoorOffset(-66.0, 4.0, -1.5),
             // new ShootDrvAuto(false),
             new ShootDrvAutoR(),
             new TurnNMove(-66.0, -4.0, pwr), // already at -66 degrees, go back 4 feet
             new TurnNMove(-66.0, 0.5, pwr),
-            new TankTurnHdg(90, 1.0, -1.0), //Turns
+            new TankTurnHdg(90, 0.6, -0.6), //Turns
             new SnorfDrvAuto(true), //Drop snorfler
-            new TurnNMove(90.0, 3.0, pwr), //Pick up first ball
-            new TurnNMove(90.0, -3.0, pwr), //Backs out
+            new TurnNMove(90.0, 2.0, 0.5), //Pick up first ball
+            new TurnNMove(90.0, -1.5, 0.5), //Backs out
             new SnorfDrvAuto(false), //Stops snorfler
-            new TankTurnHdg(190.0, 1.0, -1.0), //Turn towards next ball
+            new TankTurnHdg(182.0, 1.0, -1.0), //Turn towards next ball
             new SnorfDrvAuto(true), //Start snorfle
-            new TurnNMove(190.0, 5.5, pwr), //Move forward
-            new TurnNMove(190.0, -0.1, pwr), //Brake
+            new TurnNMove(182.0, 7.0, pwr), //Move forward
+            new TurnNMove(182.0, -0.2, pwr), //Brake
             new SnorfDrvAuto(false), //Stop snorfle
-            new TurnNMove(190.0, -4.5, pwr), //Move Back
-            new TurnNMove(190.0, 0.1, pwr), //Brake
+            new TurnNMove(182.0, -6.0, pwr), //Move Back
+            new TurnNMove(182.0, 0.1, pwr), //Brake
             new TankTurnHdg(-62.0, 1.0, -1.0), //Turns, with adjustment for 
-            new TurnNMove(-62.0, 4.5, pwr),
+            new TurnNMove(-62.0, 2.5, pwr),
             new ShootDrvAuto(false),
         };
         return traj;
     }
 
-    public static ATrajFunction[] getCargo2(double pwr) { //Forward 10 ft
+    public static ATrajFunction[] getCargo2(double pwr) { //3 Ball Auto Bu
         ATrajFunction traj[] = {
-            new CoorOffset(0.0, 0.0, 0.0),
-            new TurnNMove(0.0, 10.0, 0.4),
-            new TurnNMove(0.0, -0.1, 0.4),
+            new CoorOffset(-66.0, 4.0, -1.5),
+            // new ShootDrvAuto(false),
+            new ShootDrvAutoR(),
+            new TurnNMove(-66.0, -4.0, 1.0), // already at -66 degrees, go back 4 feet
+            new TurnNMove(-66.0, 0.5, 1.0),
+            new TankTurnHdg(90, 1.0, -1.0), //Turns
+            new SnorfDrvAuto(true), //Drop snorfler
+            new TurnNMove(90.0, 3.0, 1.0), //Pick up first ball
+            new TurnNMove(90.0, -2.5, 1.0), //Backs out
+            new SnorfDrvAuto(false), //Stops snorfler
+            new TankTurnHdg(-66.0, 1.0, -1.0), //Turn towards hub
+            new TurnNMove(-66.0, 5.0, 1.0), //Move forward
+            new TurnNMove(-66.0, -0.1, 1.0), //Brake
+            new ShootDrvAuto(false),
         };
         return traj;
     }
@@ -165,7 +177,7 @@ public class Trajectories {
     }
     
     public static ATrajFunction[] getCargo4(double pwr) { //3 Ball Auto v1
-        pwr = 0.7;
+        pwr = 0.5;
         ATrajFunction traj[] = {
             new CoorOffset(24.0, -1.5, -3.5),
             // new ShootDrvAuto(false),
@@ -173,13 +185,13 @@ public class Trajectories {
             // new TrajDelay(0.2),
             new TurnNMove(24.0, -7.0, pwr), // already at 24 degrees, go back 7.4 feet
             new TurnNMove(24.0, 0.5, pwr), // braking
-            new TankTurnHdg(-38, -1.0, 1.0), //Turns
+            new TankTurnHdg(-47, -1.0, 1.0), //Turns
             new SnorfDrvAuto(true),
-            new TurnNMove(-34, 5.9, pwr),
+            new TurnNMove(-47, 4.0, pwr),
             // // new Waypt(-7, -11, 0.3), // C Ball
             new SnorfDrvAuto(false), //Snorfler up
-            new TurnNMove(-34, -4.7, pwr),
-            new TurnNMove(-34, 0.2, pwr), //brake
+            new TurnNMove(-47, -2.0, pwr),
+            new TurnNMove(-47, 0.2, pwr), //brake
             new TankTurnHdg(24.0, 1.0, -1.0), //turns
             new TurnNMove(24.0, 8.0, pwr), //Goes back
             new TurnNMove(24.0, 1.2, 0.2),
@@ -194,7 +206,8 @@ public class Trajectories {
     public static ATrajFunction[] getCargo5(double pwr) { //RR: P6, Shoot Hi , C,( G,) P5, Shoot Hi.
         ATrajFunction traj[] = {
             new CoorOffset(24.0, -1.5, -3.5),
-            new TurnNMove(24.0, -0),
+            new ShootDrvAutoR(),
+            new TurnNMove(24.0, -3, 0.6),
         };
         return traj;
     }    

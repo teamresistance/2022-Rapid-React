@@ -35,7 +35,7 @@ public class Drive {
     // public static Steer steer = new Steer(parms);  //Create steer instance for hdg & dist, use default parms
 
     public static PIDXController pidHdg = new PIDXController(1.0/50, 0.0, 0.0);
-    public static PIDXController pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
+    public static PIDXController pidDist = new PIDXController(-1.0/2, 0.0, 0.0);
     public static PIDXController pidHdgHold = new PIDXController(1.0/30, 0.0, 0.0);
 
     public static double strCmd[] = new double[2]; //Storage for steer return

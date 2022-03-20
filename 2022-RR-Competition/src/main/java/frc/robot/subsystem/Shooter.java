@@ -59,7 +59,7 @@ public class Shooter {
             // System.out.println("Shtr Auto" + reqShootLowDrvAuto);
         }
         if ((reqShootR == true) && state == 0) {
-            state = 33;
+            state = 30;
         }
         if ((btnFire.onButtonPressed()) && state == 0) state = 1;
 
@@ -127,12 +127,17 @@ public class Shooter {
             //     cmdUpdate(false, false, false);
             //     if (stateTmr.hasExpired(0.5, state)) state++;
             //     break;
-            case 33: // trigger right, wait and return to 0
-                cmdUpdate(false, false, true);
+            case 30: // Shoot only L
                 state++;
-                // if (stateTmr.hasExpired(1.0, state)) state = 0;
+                // cmdUpdate(false, false, false);
+                // if (stateTmr.hasExpired(0.0, state)) state++;
                 break;
-            case 34:
+            case 31: 
+                cmdUpdate(false, true, false); //tbd
+                // state++;
+                if (stateTmr.hasExpired(1.0, state)) state++;
+                break;
+            case 32:
                 reqShootR = false;
                 state = 0;
                 break;

@@ -27,7 +27,7 @@ public class Climber {
     // Positive Feedback, FB, for extending the left & right locking pins & sliders
     private static boolean lockPinAExt_FB(){return IO.lockPinAExt_L_FB.get() && IO.lockPinAExt_R_FB.get();}  //Or of pin A left & right
     private static boolean lockPinBExt_FB(){return IO.lockPinBExt_L_FB.get() && IO.lockPinBExt_R_FB.get();}  //Or of pin A left & right
-    private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() && IO.sliderExt_R_FB.get();}  //Or of pin A left & right
+    private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() || IO.sliderExt_R_FB.get();}  //Or of pin A left & right
 
     // Joystick Buttons
     private static Button buttonClimb1 = JS_IO.btnClimb1;   //Both MUST be pressed tp
@@ -110,6 +110,7 @@ public class Climber {
                 //        drv, arm, pinA,  pinB,  Slide
                 cmdUpdate(0.0, 0.0, false, false, false);
                 IO.climbLdMtr_Enc.reset();
+                IO.climbMotor.setInverted(false);
                 stateTmr.clearTimer();
                 break;
             //----- Prep arm and move to low bar -----

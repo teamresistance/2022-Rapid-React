@@ -25,6 +25,12 @@ public class ClimbTest {
         sdbUpdate();
     }
 
+    private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() || IO.sliderExt_R_FB.get();}
+    
+    private static boolean lockPinAExt_FB(){return IO.lockPinAExt_L_FB.get() && IO.lockPinAExt_R_FB.get();}  //Or of pin A left & right
+    private static boolean lockPinBExt_FB(){return IO.lockPinBExt_L_FB.get() && IO.lockPinBExt_R_FB.get();}  //Or of pin A left & right
+    // private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() || IO.sliderExt_R_FB.get();}
+
     private static void sdbUpdate(){
         SmartDashboard.putBoolean("Test/Climb/AExt_L_FB", IO.lockPinAExt_L_FB.get());
         SmartDashboard.putBoolean("Test/Climb/AExt_R_FB", IO.lockPinAExt_R_FB.get());
@@ -32,6 +38,9 @@ public class ClimbTest {
         SmartDashboard.putBoolean("Test/Climb/BRet_R_FB", IO.lockPinBExt_R_FB.get());
         SmartDashboard.putBoolean("Test/Climb/SExt_L_FB", IO.sliderExt_L_FB.get());
         SmartDashboard.putBoolean("Test/Climb/SExt_R_FB", IO.sliderExt_R_FB.get());
+        SmartDashboard.putBoolean("Test/Climb/SExt_FB L && B", !sliderExt_FB());
+        SmartDashboard.putBoolean("Test/Climb/AExt_FB L && B", lockPinAExt_FB());
+        SmartDashboard.putBoolean("Test/Climb/BExt_FB L && B", lockPinBExt_FB());
 
         SmartDashboard.putNumber("Test/Climb/Motor6_cmd", IO.climbMotor.get());
         SmartDashboard.putNumber("Test/Climb/Motor6_axis", -JS_IO.axCoDrvY.get());
