@@ -18,6 +18,11 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 
+// Note: I don't think we need another class like this, to controll everything. Instead, we should make a 
+// new trajFunk class, and have those import into the auto functions. Things like the ramesete command structure
+// should be initally in the auto class, and then we can just call the trajFunk functions from there.
+// Also these initializations would work better in the auto class.
+
 public class PathWeaverTest extends Drive {
 
     private static int autoStep = 0;        //State for Drv_Auto
