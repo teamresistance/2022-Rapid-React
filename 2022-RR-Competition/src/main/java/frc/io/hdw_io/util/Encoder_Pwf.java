@@ -36,6 +36,11 @@ public class Encoder_Pwf {
         // venomCtlr.setPosition(0.0);
     }
 
+    /** Added by Victor - Needs to return double(?). */
+    public void getSpeed(){
+        venomCtlr.getSpeed();
+    }
+
     /**@return the existiing ticks per foot, tpf. */
     public double getTPF() { return tpf; }
 
