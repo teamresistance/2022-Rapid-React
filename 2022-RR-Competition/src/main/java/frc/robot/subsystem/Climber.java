@@ -25,9 +25,9 @@ public class Climber {
     private static ISolenoid sliderExt = IO.sliderExt_SV;       //Extend Arm end A slider
     private static ISolenoid brakeRel = IO.climbBrakeRel_SV;    //Release the climber brake
     // Positive Feedback, FB, for extending the left & right locking pins & sliders
-    private static boolean lockPinAExt_FB(){return IO.lockPinAExt_L_FB.get() && IO.lockPinAExt_R_FB.get();}  //Or of pin A left & right
-    private static boolean lockPinBExt_FB(){return IO.lockPinBExt_L_FB.get() && IO.lockPinBExt_R_FB.get();}  //Or of pin A left & right
-    private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() || IO.sliderExt_R_FB.get();}  //Or of pin A left & right
+    //private static boolean lockPinAExt_FB(){return IO.lockPinAExt_L_FB.get() && IO.lockPinAExt_R_FB.get();}  //Or of pin A left & right
+    //private static boolean lockPinBExt_FB(){return IO.lockPinBExt_L_FB.get() && IO.lockPinBExt_R_FB.get();}  //Or of pin A left & right
+    //private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() || IO.sliderExt_R_FB.get();}  //Or of pin A left & right
 
     // Joystick Buttons
     private static Button buttonClimb1 = JS_IO.btnClimb1;   //Both MUST be pressed tp
@@ -64,6 +64,52 @@ public class Climber {
     private static int prvState = 0;    // Used to return from state 90, eStop.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
     private static boolean brakeTest = false;
+
+    
+    /**
+     * RET - both retracted
+     * <p>LEFT - Left extended, Right retracted
+     * <p>RIGHT - Left retracted, Right extended
+     * <p>EXT - both extended
+     */
+    private static enum eStsFB {RET, LEFT, RIGHT, EXT};
+
+    /**
+     * 
+     * @param in1 - Left extended feedback
+     * @param in2 - Right extended feedback
+     * @return status of combined Left & Right extended feedbacks.
+     * <p>RET - both retracted
+     * <p>LEFT - Left extended, Right retracted
+     * <p>RIGHT - Left retracted, Right extended
+     * <p>EXT - both extended
+     */
+    private static eStsFB e2DIStatus(boolean in1, boolean in2){
+        int tmp = in1 ? 1 : 0;
+        tmp += in2 ? 2 : 0;
+        switch(tmp){
+            case 0: return eStsFB.RET;
+            case 3: return eStsFB.EXT;
+            case 1: return eStsFB.LEFT;
+            default: return eStsFB.RIGHT;
+        }
+    }
+
+    /**Combined status of left & right locking pins A. */
+    private static eStsFB lockPinA_Sts(){
+        return e2DIStatus(IO.lockPinAExt_L_FB.get(), IO.lockPinAExt_R_FB.get());
+    }
+
+    /**Combined status of left & right locking pins B. */
+    private static eStsFB lockPinB_Sts(){
+        return e2DIStatus(IO.lockPinBExt_L_FB.get(), IO.lockPinBExt_R_FB.get());
+    }
+
+    /**Combined status of left & right slider feedbacks. */
+    private static eStsFB slider_Sts(){
+        return e2DIStatus(IO.sliderExt_L_FB.get(), IO.sliderExt_R_FB.get());
+    }
+
 
     /**
      * Initialize Climber stuff. Called from telopInit (maybe robotInit(?)) in
@@ -150,7 +196,7 @@ public class Climber {
             //------ In contact with low arm, lock on and start climb. -----
             case 4: // Stop the driving and grab bar with LockPinA
                 cmdUpdate(0.0, 0.0, true, false, true);
-                if (lockPinAExt_FB() == true) state++;
+                if (lockPinA_Sts() == eStsFB.EXT) state++;
                 IO.coorXY.drvFeetRst();
                 break;
             case 5: // Robot moves forward (negative Y cmd) 3 feet and arm starts rotating forward
@@ -183,12 +229,12 @@ public class Climber {
             //----- Climb to transversal bar -----
             case 8: // Latch onto second bar with Pin B. Stop rotation.
                 cmdUpdate(0.0, ROT_SPD/1.75, true, true, true);
-                if (lockPinBExt_FB() == true) state++;
+                if (lockPinB_Sts() == eStsFB.EXT) state++;
                 break;
             case 9: // Retract Pin A in order to release the first bar
                 cmdUpdate(0.0, ROT_SPD/1.75, false, true, true);
                 if (stateTmr.hasExpired(0.25, state)){;
-                    if (!lockPinAExt_FB()) state++;
+                    if (lockPinA_Sts() == eStsFB.RET) state++;
                 }
                 break;
             case 10: // Rotating upward/REV to clear slider.  //Do we need this one?  Doesn't hurt.
@@ -209,7 +255,7 @@ public class Climber {
                 cmdUpdate(0.0, -ROT_SPD/2, false, true, false);
                 // System.out.println("Degrees @12: " + armDegrees());
                 // System.out.println("Amps @12 @12: " + IO.pdp.getCurrent(2) + " " + IO.pdp.getCurrent(3));
-                if (!sliderExt_FB()) state++;   //New
+                if (slider_Sts() == eStsFB.RET) state++;   //New
                 // if (stateTmr.hasExpired(0.5, state)) state++;   //Old
                 break;
             //=========== To here ==================    
@@ -220,7 +266,7 @@ public class Climber {
                 break;
             case 14: // Slider cleared low bar, extend the slider.  Keep going forward.
                 cmdUpdate(0.0, ROT_SPD, false, true, true);
-                if (sliderExt_FB())state++;
+                if (slider_Sts() == eStsFB.EXT)state++;
                 break;
             case 15: // Keep going till arm degrees GT 420 for 0.5 sec.
                 cmdUpdate(0.0, ROT_SPD * 1.25, false, true, true);
@@ -239,7 +285,7 @@ public class Climber {
             //----- Lift off Medium bar then hold.  Done. -----
             case 16: // latch the transversal with pin A.
                 cmdUpdate(0.0, ROT_SPD, true, true, true);
-                if (lockPinAExt_FB()) state++;
+                if (lockPinA_Sts() == eStsFB.EXT) state++;
                 break;
             case 17: // no more union break
                 cmdUpdate(0.0, ROT_SPD, true, true, true);
@@ -248,7 +294,7 @@ public class Climber {
                 break;
             case 18: // Release the B pin
                 cmdUpdate(0.0, ROT_SPD, true, false, true);
-                if (!lockPinBExt_FB()) state++;
+                if (lockPinB_Sts() == eStsFB.RET) state++;
                 break;
             case 19: // Rotating Reverse to give leeway
                 cmdUpdate(0.0, -ROT_SPD, true, false, true);
@@ -272,18 +318,18 @@ public class Climber {
                 cmdUpdate(0.0, 0.0, true, false, true);
                 slideReset = true;
                 if (stateTmr.hasExpired(0.5, state)){
-                    if (sliderExt_FB() && lockPinAExt_FB()) state++;
+                    if (slider_Sts() == eStsFB.EXT && lockPinA_Sts() == eStsFB.EXT) state++;
                 }
                 break;
             case 81: // Turn off pin A, wait then next.
                 cmdUpdate(0.0, 0.0, false, false, true);
                 if (stateTmr.hasExpired(0.5, state)){
-                    if (!lockPinAExt_FB()) state++;
+                    if (lockPinA_Sts() == eStsFB.RET) state++;
                 }
                 break;
             case 82: // Turn off slider, wait then return to state 0.
                 cmdUpdate(0.0, 0.0, false, false, false);
-                if (!sliderExt_FB() && !lockPinAExt_FB()){
+                if ((slider_Sts() == eStsFB.RET) && (lockPinA_Sts() == eStsFB.RET)){
                     state = 0;
                     slideReset = false;
                 }
@@ -384,10 +430,18 @@ public class Climber {
         SmartDashboard.putBoolean("Climber/SV/6. brakeRel", brakeRel.get());
         SmartDashboard.putBoolean("Climber/SV/7. brakeTest", brakeTest);
 
-        SmartDashboard.putBoolean("Climber/FB/1. lockPinAExt", lockPinAExt_FB());
-        SmartDashboard.putBoolean("Climber/FB/2. lockPinBExt", lockPinBExt_FB());
-        SmartDashboard.putBoolean("Climber/FB/3. sliderExt", sliderExt_FB());
         SmartDashboard.putNumber( "Climber/FB/4. Feet", IO.coorXY.drvFeet());
+
+        //SmartDashboard.putBoolean("Climber/Climb/AExt_L_FB", IO.lockPinAExt_L_FB.get());
+        //SmartDashboard.putBoolean("Climber/Climb/AExt_R_FB", IO.lockPinAExt_R_FB.get());
+        //SmartDashboard.putBoolean("Climber/Climb/BExt_L_FB", IO.lockPinBExt_L_FB.get());
+        //SmartDashboard.putBoolean("Climber/Climb/BRet_R_FB", IO.lockPinBExt_R_FB.get());
+        //SmartDashboard.putBoolean("Climber/Climb/SExt_L_FB", IO.sliderExt_L_FB.get());
+        //SmartDashboard.putBoolean("Climber/Climb/SExt_R_FB", IO.sliderExt_R_FB.get());
+        SmartDashboard.putString("Climber/Climb/lockPinA Sts, L && B", lockPinA_Sts().toString());
+        SmartDashboard.putString("Climber/Climb/lockPinB Sts, L && B", lockPinB_Sts().toString());
+        SmartDashboard.putString("Climber/Climb/SExt Sts, L && B", slider_Sts().toString());
+
 
         // ROT_SPD = SmartDashboard.getNumber("Climber/Mtr/1. ROT_SPD", 0.3);
         SmartDashboard.putNumber("Climber/Mtr/2. climbMotor", climberMotor.get());
@@ -398,25 +452,6 @@ public class Climber {
         SmartDashboard.putNumber( "Climber/Mtr/7. Arm Fl Mtr Amps", IO.climbMotorFollow.getOutputCurrent());
     }
 
-    // ----------------- Shooter statuses and misc. ---------------
-
-    private static Timer safePinTmr = new Timer(0.2);   // Debounce Timer for checkLockPinsOK
-    /**
-     * @return true if lockingPins and slider are all matching for minimum time
-     * <p> false if not matching for minimum time.
-     */
-    private static boolean pin_state = true;
-    private static boolean prv_pin_state = true;
-    
-    private static boolean checkLockPinsOK(){
-      // TODO: Fix logic 
-        pin_state = (!(lockPinAExt.get() ^ lockPinAExt_FB() ||
-                 lockPinARet.get() ^ !lockPinAExt_FB() ||
-                 lockPinBExt.get() ^ (lockPinBExt_FB()) ||
-                 sliderExt.get() ^ (sliderExt_FB())));
-        if (safePinTmr.hasExpired(0.2,pin_state) == true) prv_pin_state = pin_state;
-        return prv_pin_state;
-    }
     /**
      * Probably shouldn't use this bc the states can change. Use statuses.
      * 

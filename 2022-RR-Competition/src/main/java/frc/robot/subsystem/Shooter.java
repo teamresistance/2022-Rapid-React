@@ -52,7 +52,7 @@ public class Shooter {
      */
     public static void update() {
         if (reqShootLowDrvAuto == null) {
-            low_select = -axSelLow.get() < 0.10;
+            low_select = axSelLow.get() > 0.10;
         } else if (state == 0) {
             state = 1;
             low_select = reqShootLowDrvAuto;

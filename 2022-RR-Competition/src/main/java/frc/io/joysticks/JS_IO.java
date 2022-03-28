@@ -91,11 +91,11 @@ public class JS_IO {
     private static final String[] chsrDesc = {"3-Joysticks", "2-Joysticks", "Gamepad"};
 
     public static void chsrInit(){
-        prvJSAssign = chsrDesc[0];
+        prvJSAssign = chsrDesc[2];
         for(int i = 0; i < chsrDesc.length; i++){
             chsr.addOption(chsrDesc[i], chsrDesc[i]);
         }
-        chsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
+        chsr.setDefaultOption(chsrDesc[2] + " (Default)", chsrDesc[2]);   //Default MUST have a different name
         SmartDashboard.putData("JS/Choice", chsr);
         sdbUpdChsr();
     }
@@ -105,7 +105,7 @@ public class JS_IO {
     }
 
     public static void update() { // Chk for Joystick configuration
-        if (prvJSAssign != (chsr.getSelected() == null ? chsrDesc[0] : chsr.getSelected())) {
+        if (prvJSAssign != (chsr.getSelected() == null ? chsrDesc[2] : chsr.getSelected())) {
             sdbUpdChsr();
             caseDefault();      //Clear exisitng jsConfig
             System.out.println("JS Chsn: " + chsr.getSelected());
@@ -202,7 +202,7 @@ public class JS_IO {
         // axCoDrvY.setAxis(gamePad, 3);
 
         // Drive buttons
-        btnScaledDrive.setButton(gamePad, 3);       //8 (Back)
+        btnScaledDrive.setButton(gamePad, 7);       //7 (Back)
         // btnInvOrientation.setButton(gamePad, 1);    //??
         btnHoldZero.setButton(gamePad, 10);     //10 (RJB) Rotate to 0 hdg and only apply fwd/rev
         btnHold180.setButton(gamePad, 9);       //9  (LJB) Rotate to 180 hdg and only apply fwd/rev
@@ -218,8 +218,8 @@ public class JS_IO {
         btnRejectRight.setButton(gamePad, 2);   //2 (B)
 
         // climbing buttons
-        btnClimb1.setButton(gamePad, 7);        //7 (Start)
-        btnClimb2.setButton(gamePad, 7);        //7 (Start) one button, not 2
+        btnClimb1.setButton(gamePad, 8);        //8 (Start)
+        btnClimb2.setButton(gamePad, 8);        //8 (Start) one button, not 2
         btnClimbSlideRst.setButton(gamePad, 4); //4 (Y)
 
         // Misc
@@ -238,7 +238,7 @@ public class JS_IO {
 
     // ----------- Case Default -----------------
     private static void caseDefault() {
-        // All stick axisesssss
+        // All stick axises
         axLeftDrive.setAxis(null, 0);
         axRightDrive.setAxis(null, 0);
 
