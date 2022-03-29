@@ -91,6 +91,7 @@ public class IO {
     public static void init() {
         drvsInit();
         motorsInit();
+        climberMtrsInit();  //Called here and Climber case 1, due to CAN issues.
         coorXY.reset();
         coorXY.drvFeetRst();
         // sdbInit();
@@ -149,7 +150,14 @@ public class IO {
     private static void motorsInit() {
         snorfFeed_Mtr.setInverted(true);
         snorfElv_Mtrs.setInverted(true);
+    }
 
+    /**
+     * Initialize climber motors for rotation.
+     * --- Due to issues with the CAN buss ---
+     * <p>This is called from here & Climber case 1, to reinitialize again. ---
+     */
+    public static void climberMtrsInit() {
         climbMotor.restoreFactoryDefaults();
         climbMotor.setInverted(false);
         climbMotor.setIdleMode(IdleMode.kBrake);
