@@ -71,6 +71,7 @@ public class Shooter {
         sdbUpdate();
     }
 
+    /** State Machine update for shooter  */    
     private static void smUpdate() { // State Machine Update
         switch (state) {
             case 0: // Everything is off, no pressure, pressure default high, Ltrig and Rtrig off.
@@ -145,12 +146,11 @@ public class Shooter {
                 cmdUpdate(true, false, false);
                 System.out.println("Bad Shooter state: " + state);
                 break;
-
         }
     }
 
     /**
-     * Issue spd setting as rpmSP if isVelCmd true else as percent cmd.
+     * Issue all cmds for shooter.  Include any safeties here.
      * 
      * @param select_low    - select the low goal, other wise the high goal
      * @param left_trigger  - triggers the left catapult
@@ -164,17 +164,23 @@ public class Shooter {
     }
     
     /*-------------------------  SDB Stuff --------------------------------------
-    /**Initialize sdb */
+    /**Initialize sdb
+     * <p>--- Note: due to CAN buss issues, any CAN object is commented out
+     * unless troubleshooting. ---
+     */
     private static void sdbInit() {
 
     }
 
-    /**Update sdb */
+    /**Update sdb
+     * <p>--- Note: due to CAN buss issues, any CAN object is commented out
+     * unless troubleshooting. ---
+     */
     private static void sdbUpdate() {
         SmartDashboard.putNumber("Shooter/state", state);
-        SmartDashboard.putBoolean("Shooter/select_low_SV", select_low_SV.get());
-        SmartDashboard.putBoolean("Shooter/left_catapult_SV", left_catapult_SV.get());
-        SmartDashboard.putBoolean("Shooter/right_catapult_SV", right_catapult_SV.get());
+        // SmartDashboard.putBoolean("Shooter/select_low_SV", select_low_SV.get());            //CAN
+        // SmartDashboard.putBoolean("Shooter/left_catapult_SV", left_catapult_SV.get());      //CAN
+        // SmartDashboard.putBoolean("Shooter/right_catapult_SV", right_catapult_SV.get());    //CAN
         SmartDashboard.putBoolean("Shooter/low_select", low_select);
         SmartDashboard.putNumber("Shooter/level_select_input", -axSelLow.get());
     }

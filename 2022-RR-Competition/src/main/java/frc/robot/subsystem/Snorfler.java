@@ -71,7 +71,7 @@ public class Snorfler {
     }
 
     /**
-     * Update Shooter. Called from teleopPeriodic in robot.java.
+     * Update Snorfler. Called from teleopPeriodic in robot.java.
      * <p>
      * Determine any state that needs to interupt the present state, usually by way
      * of a JS button but can be caused by other events.
@@ -163,6 +163,12 @@ public class Snorfler {
      * @param snorfEna - drops the snorfler arm, turns on all motors
      * 
      */
+    /**
+     * 
+     * @param snorfEna - drops the snorfler arm, turns on all motors
+     * @param mtrSpd
+     * @param elvSpd
+     */
     private static void cmdUpdate(boolean snorfEna, double mtrSpd, double elvSpd) {
         snorflerExt_SV.set(snorfEna);
         snorfFeed_Mtr.set(mtrSpd);
@@ -212,9 +218,9 @@ public class Snorfler {
         // SmartDashboard.putString("Snorfler/AC/team color", teamColor);
         // SmartDashboard.putString("Snorfler/AC/enemy color", enemyColor);
         //Motor & SV
-        SmartDashboard.putBoolean("Snorfler/AC/Snorfler", IO.snorflerExt_SV.get());
-        SmartDashboard.putNumber("Snorfler/AC/SnorfMotor", IO.snorfFeed_Mtr.get());
-        SmartDashboard.putNumber("Snorfler/AC/ElevatorMotor", IO.snorfElv_Mtrs.get());
+        SmartDashboard.putBoolean("Snorfler/AC/Snorfler", IO.snorflerExt_SV.get());     //CAN
+        SmartDashboard.putNumber("Snorfler/AC/SnorfMotor", IO.snorfFeed_Mtr.get());     //CAN
+        SmartDashboard.putNumber("Snorfler/AC/ElevatorMotor", IO.snorfElv_Mtrs.get());  //CAN
 
         // SmartDashboard.putNumber("Snorfler/Clr/Red", detectedColor.red);
         // SmartDashboard.putNumber("Snorfler/Clr/Green", detectedColor.green);
