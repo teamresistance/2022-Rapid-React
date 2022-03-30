@@ -54,8 +54,7 @@ public class JS_IO {
 
     // Snorfler
     public static Button btnSnorfle = new Button();    //Toggle snorfling
-    public static Button 
-    btnRejectSnorfle = new Button();
+    public static Button btnRejectSnorfle = new Button();
     public static Button btnBadColor = new Button(); 
 
     // Shooter
@@ -73,6 +72,7 @@ public class JS_IO {
     // Misc
     public static Button btnRst = new Button();
     public static Button btnAuto = new Button();
+
     // public static Button btnRstGyro = new Button();
     // public static Button btnRstFeet = new Button();
     // public static Button btnRstCoorXY = new Button();
@@ -230,9 +230,12 @@ public class JS_IO {
         axLeftY.setAxis(null, 0);
         axRightX.setAxis(null, 0);
         axRightY.setAxis(null, 0);
-
+        axCoDrvY.setAxis(null, 0);      // Co Drvr JS Y
+        axCoDrvX.setAxis(null, 0);      // Co Drvr JS X
+    
         btnScaledDrive.setButton(null, 0); // scale the drive
         btnInvOrientation.setButton(null, 0); // invert the orientation of the robot (joystick: forwards becomes
+
         btnHoldZero.setButton(null, 0);
         btnHold180.setButton(null, 0);
 
@@ -244,12 +247,14 @@ public class JS_IO {
         // shooting buttons
         axGoalSel.setAxis(null, 0);
         btnFire.setButton(null, 0);
-        
-
+        btnRejectLeft.setButton(null, 0);
+        btnRejectRight.setButton(null, 0);
 
         // climbing buttons
         btnClimb1.setButton(null, 0);
         btnClimb2.setButton(null, 0);
+        btnClimbSlideRst.setButton(null, 0);
+        btnClimbStep.setButton(null, 0);
 
     // Misc
         btnRst = new Button(null, 3);
