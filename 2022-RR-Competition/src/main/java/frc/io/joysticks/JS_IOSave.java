@@ -106,7 +106,7 @@ public class JS_IOSave {
 
     public static void update() { // Chk for Joystick configuration
         String tmp = chsr.getSelected();
-        if (prvJSAssign != (chsr.getSelected())){ // == null ? chsrDesc[2] : chsr.getSelected())) {
+        if (prvJSAssign != (chsr.getSelected() == null ? chsrDesc[2] : chsr.getSelected())) {
             prvJSAssign = chsr.getSelected();
             sdbUpdChsr();
             caseDefault();      //Clear exisitng jsConfig

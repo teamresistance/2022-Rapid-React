@@ -259,9 +259,12 @@ public class JS_IO {
         axLeftY.setAxis(null, 0);
         axRightX.setAxis(null, 0);
         axRightY.setAxis(null, 0);
+        axCoDrvY.setAxis(null, 0);
+        axCoDrvX.setAxis(null, 0);
 
         btnScaledDrive.setButton(null, 0);
         btnInvOrientation.setButton(null, 0);
+
         btnHoldZero.setButton(null, 0);
         btnHold180.setButton(null, 0);
 
@@ -280,8 +283,10 @@ public class JS_IO {
         btnClimb1.setButton(null, 0);
         btnClimb2.setButton(null, 0);
         btnClimbSlideRst.setButton(null, 0);
+        btnClimbStep.setButton(null, 0);
 
     // Misc
+        btnAuto = new Button(null, 0);
         btnAuto = new Button(null, 0);
 
         // btnRstGyro = new Button(null, 0);
