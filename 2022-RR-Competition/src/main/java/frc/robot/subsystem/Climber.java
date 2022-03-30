@@ -15,7 +15,7 @@ import com.revrobotics.CANSparkMax;
  * limited to 4.33’, except when the robot is touching the 
  * Hanger zone, then it is 5.5’.  SO, only the low bar and 
  * the first of the 3-bar combination, medium bar, can be reached 
- * from the floor,  Upper bars must be “swung” to.  
+ * from the floor,  Upper bars must be "swung" to.  
  * Significant points are awarded for upper bars.
  */
 public class Climber {
