@@ -83,58 +83,71 @@ public class JS_IO {
     }
 
     public static void init() {
-        chsrInit();
-        configJS();
+        chsrInit(); //Setup JS chooser and set JS assignments to default.
     }
 
+    //---- Joystick controller chooser ----
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static final String[] chsrDesc = {"3-Joysticks", "2-Joysticks", "Gamepad"};
 
+    /** Setup the JS Chooser */
     public static void chsrInit(){
-        prvJSAssign = chsrDesc[2];
         for(int i = 0; i < chsrDesc.length; i++){
             chsr.addOption(chsrDesc[i], chsrDesc[i]);
         }
-        chsr.setDefaultOption(chsrDesc[2] + " (Default)", chsrDesc[2]);   //Default MUST have a different name
+        chsr.setDefaultOption(chsrDesc[2], chsrDesc[2]);    //Chg index to select chsrDesc[] for default
         SmartDashboard.putData("JS/Choice", chsr);
-        sdbUpdChsr();
+        update();   //Update the JS assignments
     }
 
-    public static void sdbUpdChsr(){
-        SmartDashboard.putString("JS/Choosen", chsr.getSelected());   //Put selected on sdb
-    }
-
-    public static void update() { // Chk for Joystick configuration
-        if (prvJSAssign != (chsr.getSelected() == null ? chsrDesc[2] : chsr.getSelected())) {
-            sdbUpdChsr();
-            caseDefault();      //Clear exisitng jsConfig
-            System.out.println("JS Chsn: " + chsr.getSelected());
-            configJS();         //then assign new jsConfig
+    /** Chk if chsr changed, update Joystick configuration */
+    public static void update() {
+        String tmp = chsr.getSelected();
+        if (prvJSAssign != (chsr.getSelected())){   //If chsr chgd update JS assignments
             prvJSAssign = chsr.getSelected();
+            configJS();         //Assign new jsConfig
+            SmartDashboard.putString("JS/Choosen", chsr.getSelected());   //Put selected on sdb
+            System.out.println("JS Chsn: " + chsr.getSelected());
         }
     }
 
-    public static void configJS() { // Default Joystick else as gamepad
-        for(jsConfig = 0; jsConfig < chsrDesc.length; jsConfig++){
-            if(prvJSAssign == chsrDesc[jsConfig]) break;
-        }
-        switch (jsConfig) {
-            // case chsrDesc[0]: // Normal 3 joystick config
-            // case "3-Joysticks": // Normal 3 joystick config
-            case 0: // Normal 3 joystick config
-            norm3JS();
+    /**Configure a new JS assignment */
+    public static void configJS() { // Configure JS controller assignments
+        caseDefault();          //Clear exisitng jsConfig
+
+        // // Convert selected to a integer, index
+        // for(jsConfig = 0; jsConfig < chsrDesc.length; jsConfig++){
+        //     if(prvJSAssign == chsrDesc[jsConfig]) break;
+        // }
+
+        // switch (jsConfig) { //then assign new assignments
+        //     case 0: // Normal 3 joystick config
+        //         norm3JS();
+        //         break;
+        //     case 1: // Normal 2 joystick config No CoDrvr
+        //         norm2JS();
+        //         break;
+        //     case 2: // Gamepad only
+        //         a_GP();
+        //         break;
+        //     default: // Bad assignment
+        //         System.out.println("Bad JS choice - " + prvJSAssign);
+        //         break;
+        // }
+
+        switch (prvJSAssign) {  //then assign new assignments
+            case "3-Joysticks": // Normal 3 joystick config
+                norm3JS();
                 break;
-            case 1: // Normal 2 joystick config No CoDrvr
+            case "2-Joysticks": // Normal 2 joystick config No CoDrvr
                 norm2JS();
                 break;
-            case 2: // Gamepad only
+            case "Gamepad":     // Gamepad only
                 a_GP();
                 break;
-            default: // Bad assignment
+            default:            // Bad assignment
                 System.out.println("Bad JS choice - " + prvJSAssign);
-                caseDefault();
                 break;
-
         }
     }
 

@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
         ad_ChsrInit();
 
         IO.init();
-        JS_IO.init();
+        JS_IO.init();   //Init JS chooser & JS assignments.
 
         Snorfler.teamColorchsrInit();
 
