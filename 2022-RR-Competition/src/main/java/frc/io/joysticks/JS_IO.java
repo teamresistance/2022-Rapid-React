@@ -105,12 +105,13 @@ public class JS_IO {
     }
 
     public static void update() { // Chk for Joystick configuration
+        // System.out.println("Prv JS Assn: " + prvJSAssign + " =? "+ chsr.getSelected());
         if (prvJSAssign != (chsr.getSelected() == null ? chsrDesc[0] : chsr.getSelected())) {
+            prvJSAssign = chsr.getSelected();
             sdbUpdChsr();
             caseDefault();      //Clear exisitng jsConfig
             System.out.println("JS Chsn: " + chsr.getSelected());
             configJS();         //then assign new jsConfig
-            prvJSAssign = chsr.getSelected();
         }
     }
 
@@ -251,6 +252,9 @@ public class JS_IO {
         btnClimb2.setButton(null, 0);
 
     // Misc
+        btnRst = new Button(null, 3);
+        btnAuto = new Button(null, 9);
+
         // btnRstGyro = new Button(null, 0);
         // btnRstFeet = new Button(null, 0);
         // btnRstCoorXY = new Button(null, 0);
