@@ -108,7 +108,7 @@ public class IO {
         // if (JS_IO.btnRstFeet.onButtonPressed())  IO.coorXY.drvFeetRst();    //LJS btn 8
         // if (JS_IO.btnRstCoorXY.onButtonPressed())  IO.coorXY.reset();       //LJS btn 9
            
-        // sdbUpdate();
+        sdbUpdate();
     }
 
     /**

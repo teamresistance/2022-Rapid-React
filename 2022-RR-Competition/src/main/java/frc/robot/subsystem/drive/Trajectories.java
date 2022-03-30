@@ -9,7 +9,7 @@ public class Trajectories {
     private static double dfltPwr = 0.4;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty", "getCargo1", "getCargo2", "getCargo3", "getCargo4", "getCargo5", "getCargo6", "SnorfShootTest",
+        "getEmpty", "getCargo1", "getCargo2", "getCargo3", "getCargo4", "getCargo5", "getCargo6", "SnorfShootTest", "wayPtTest"
     };
 
     /**Initialize Traj chooser */
@@ -50,9 +50,11 @@ public class Trajectories {
             return getCargo5(pwr);
             case "getCargo6":
             return getCargo6(pwr);
+            case "wayPtTest":
+            return wayPtTest(pwr);
             default:
             System.out.println("Traj/Bad Traj Desc - " + chsr.getSelected());
-            return getEmpty(0);
+            return getEmpty(pwr);
         }
     }
 
@@ -78,7 +80,7 @@ public class Trajectories {
     public static ATrajFunction[] getEmpty(double pwr) {
         ATrajFunction[] traj = { 
             // new CoorOffset(24.0, -1.5, -3.5),
-            // new TurnNMove(0.0, 0.0, 0.0),
+            new TurnNMove(0.0, 0.0, 0.0),
         };
         return traj;
     }
@@ -224,6 +226,18 @@ public class Trajectories {
         };
         return traj;
     }
+
+    public static ATrajFunction[] wayPtTest(double pwr) { //RL: P4, Shoot Hi , C,( G,) P5, Shoot Hi.
+        pwr = 0.3;
+        ATrajFunction traj[] = {
+            new CoorOffset(0.0, 0.0, 0.0),
+            new Waypt(0.0, 5.0, pwr),
+            // new TurnNMove(0.0,-0.7, 0.6) 
+            new Waypt(5.0, 5.0, pwr),
+        };
+        return traj;
+    }
+
     /*
 
     public static ATrajFunction[] blue1(double pwr) {
