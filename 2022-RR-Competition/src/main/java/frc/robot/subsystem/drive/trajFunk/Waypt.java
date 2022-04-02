@@ -44,17 +44,20 @@ public class Waypt extends ATrajFunction {
         // update();
         switch (state) {
         case 0: // Init Trajectory
+            // //Set extended values            P,   I,   D
             // pidHdg = new PIDXController(1.0/50, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values pidCtlr, SP, DB, Mn, Mx, Exp, Cmp
-            PIDXController.setExt(pidHdg, 0.0, (-1.0/15), 10.0, 0.4, pwrMx, 2.0, true);
+            //Set extended values pidRef,  SP,       PB,   DB,  Mn,  Mx,   Exp, Clmp
+            PIDXController.setExt(pidHdg, 0.0, (1.0/15), 10.0, 0.4, pwrMx, 2.0, true);
 
+            // //Set extended values            P,   I,   D
             // pidDist = new PIDXController(-1.0/3, 0.0, 0.0);
-            //Set ext vals pidCtlr, SP, DB, Mn, Mx, Exp, Cmp
-            PIDXController.setExt(pidDist, 0.0, (-1.0/3), 0.3, pwrMx, 2.0, true);
+            //Set extended values  pidRef,  SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
+            PIDXController.setExt(pidDist, 0.0, (-1.0/3), 0.5, 0.3, pwrMx, 2.0, true);
 
-            trajCmd = wpCalcHdgDistSP(wpX, wpY); //Get present XY Loc and calc hdg & distSP's (static)
-            pidHdg.setSetpoint(trajCmd[0]);  //Used strCmd as tmp holder
+            trajCmd = wpCalcHdgDistSP(wpX, wpY);//Get present XY Loc and calc hdg & distSP's (static)
+            pidHdg.setSetpoint(trajCmd[0]);     //Used trajCmd as tmp holder
             pidDist.setSetpoint(trajCmd[1]);
 
             Drive.distRst();
@@ -75,8 +78,7 @@ public class Waypt extends ATrajFunction {
             trajCmd = wpCalcHdgDistSP(wpX, wpY); //Get present XY Loc and calc hdg & distSP's (static)
             pidHdg.setSetpoint(trajCmd[0]);  //Used strCmd as tmp holder
             pidDist.setSetpoint(trajCmd[1]);
-            Drive.distRst();
-
+    
         case 2: // Move forward, steer Auto Heading and Dist
             trajCmd[0] = pidHdg.calculateX(hdgFB()); //cmd[0]=rotate(JSX)
             trajCmd[1] = pidDist.calculateX(distFB()); //cmd[1]=fwd(JSY)

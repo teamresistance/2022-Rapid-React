@@ -55,6 +55,7 @@ public class MoveOnHdg extends ATrajFunction {
             // pidHdg = new PIDXController(1.0/45, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values SP, PB, DB, Mn, Mx, Exp, Clmp
+            //Set extended values pidRef,    SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
             PIDXController.setExt(pidHdg, hdgSP, (1.0/70), 5.0, 0.3, pwrMx, 1.0, true);
             // pidHdg.setSetpoint(hdgSP);
             // pidHdg.setInDB(5.0);
@@ -65,6 +66,7 @@ public class MoveOnHdg extends ATrajFunction {
 
             // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
             //Set extended values SP, PB, DB, Mn, Mx, Exp, Clmp
+            //Set extended values  pidRef,     SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
             PIDXController.setExt(pidDist, distSP, (-1.0/10), 0.5, 0.2, pwrMx, 1.0, true);
             // pidDist.setSetpoint(distSP);
             // pidDist.setInDB(0.5);
