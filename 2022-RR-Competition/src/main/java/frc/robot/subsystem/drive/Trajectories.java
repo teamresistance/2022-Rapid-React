@@ -87,26 +87,33 @@ public class Trajectories {
 
     public static ATrajFunction[] snorfShootTest(double pwr) {
         ATrajFunction[] traj = {
-            new MoveOnHdg(0.0, 5.0, 0.5),
-            new TankTimed(0.3, -0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
-            new TankTurnHdg(80.0, 0.5, -0.5),   //-pwr is bkwd, +pwr fwd
-            new SnorfDrvAuto(true),
-            new TurnNMove(90.0, 5.0, 0.5),
-            new SnorfDrvAuto(false),
-            new MoveOnHdg(90.0, -1.5),
-            new TankTimed(0.3, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            new TankTurnHdg(20.0, -0.5, 0.2),   //-pwr is bkwd, +pwr fwd
-            new TurnNMove(20.0, 3.0, 0.5),
-            new ShootDrvAuto(false), //Shoots high setting
-            // new TurnNMove(90.0, -5.0, 0.5),
-            // new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            // new MoveOnHdg(180.0, 5.0, 0.5),
+            new ShootDrvAuto(null, true),
+            new TurnNMove(0.0, -2.0, 0.5),
+            new ShootDrvAuto(true, null),
+            // new TurnNMove(-45.0, 4.0, 0.5),
+            new Waypt(-3.0, 0.0, 0.5),
+            new TurnNMove(0.0, 0.0, 0.5)
 
-            // new TrajDelay(3.0),
+            // new MoveOnHdg(0.0, 5.0, 0.5),
+            // new TankTimed(0.3, -0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
+            // new TankTurnHdg(80.0, 0.5, -0.5),   //-pwr is bkwd, +pwr fwd
             // new SnorfDrvAuto(true),
-            // new TrajDelay(3.0),
+            // new TurnNMove(90.0, 5.0, 0.5),
             // new SnorfDrvAuto(false),
+            // new MoveOnHdg(90.0, -1.5),
+            // new TankTimed(0.3, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
+            // new TankTurnHdg(20.0, -0.5, 0.2),   //-pwr is bkwd, +pwr fwd
+            // new TurnNMove(20.0, 3.0, 0.5),
             // new ShootDrvAuto(false), //Shoots high setting
+            // // new TurnNMove(90.0, -5.0, 0.5),
+            // // new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
+            // // new MoveOnHdg(180.0, 5.0, 0.5),
+
+            // // new TrajDelay(3.0),
+            // // new SnorfDrvAuto(true),
+            // // new TrajDelay(3.0),
+            // // new SnorfDrvAuto(false),
+            // // new ShootDrvAuto(false), //Shoots high setting
         };
         return traj;
     }
