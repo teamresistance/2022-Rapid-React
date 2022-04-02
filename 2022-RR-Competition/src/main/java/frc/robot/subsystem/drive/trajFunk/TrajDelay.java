@@ -9,7 +9,7 @@ import frc.util.Timer;
  */
 
 /**
- * This TrajFunction delays executionof the trajectory.
+ * This TrajFunction delays execution of the trajectory.
  */
 public class TrajDelay extends ATrajFunction {
 

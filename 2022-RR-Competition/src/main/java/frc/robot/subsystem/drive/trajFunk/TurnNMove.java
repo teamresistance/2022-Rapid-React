@@ -32,16 +32,14 @@ public class TurnNMove extends ATrajFunction {
         // update();
         switch (state) {
         case 0: // Init Trajectory, (1)turn to hdg then (2)moveto dist ...
-            runTm = System.currentTimeMillis();
             // pidHdg = new PIDXController(1.0/70, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
-            //Set extended values          SP,        PB,  DB,   Mn,  Mx,   Exp,   Clmp
+            //Set extended values pidRef,    SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
             PIDXController.setExt(pidHdg, hdgSP, (1.0/60), 5.0, 0.35, pwrMx, 2.0, true);
-            // pidHdg.setP(1.0/70);z
-
+            // pidHdg.setP(1.0/70);
             // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
-            //Set extended values            SP,        PB,  DB,   Mn,  Mx,   Exp,   Clmp
-            PIDXController.setExt(pidDist, distSP, (-1.0/3), 1.0, 0.2, pwrMx, 1.0, true);
+            //Set extended values  pidRef,     SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
+            PIDXController.setExt(pidDist, distSP, (-1.0/3), 0.5, 0.2, pwrMx, 1.0, true);
             // pidDist.setP(-1.0/10);
 
             Drive.distRst();
@@ -49,33 +47,28 @@ public class TurnNMove extends ATrajFunction {
             // sendDriveCmds(0.0, 0.0, false, 2);
             state++;
             // System.out.println("TNM - 0  -----  PB:" + pidHdg.getP());
-            System.out.println("TNM 0, runtm: " + ((System.currentTimeMillis() - runTm) / 1000.0));
+            System.out.println("TNM 0, Dist: " + Drive.distFB());
             // break;
         case 1: // Turn to heading.  Do not move forward, yet.
-            runTm = System.currentTimeMillis();
             // System.out.println("TNM - 1: Pre");
             trajCmd[0] = pidHdg.calculateX(hdgFB());
             sendDriveCmds(0.0, trajCmd[0], false, 2);
-            System.out.println("TNM - 1: Post DrvCmdXY:  " + trajCmd[0]);
+            // System.out.println("TNM - 1: Post DrvCmdXY:  " + trajCmd[0]);
             // Chk if hdg is done
-            if (pidHdg.atSetpoint()) {
-                state++;    // Chk hdg only
+            if (pidHdg.atSetpoint()) {  //Check hdg only
+                state++;    // then do dist & hdg
                 Drive.distRst();
             }
-            // prtShtuff("TNM");
-            System.out.println("TNM 1, runtm: " + ((System.currentTimeMillis() - runTm) / 1000.0));
+            prtShtuff("TNM-1");
             break;
         case 2: // Move forward, steer Auto Heading and Dist
-            // runTm = System.currentTimeMillis();
             trajCmd[0] = pidHdg.calculateX(hdgFB());
             trajCmd[1] = pidDist.calculateX(distFB());
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);
             // Chk if distance is done
             if (pidDist.atSetpoint()) state++; // Chk distance only
-            // System.out.println("TNM - 2  -----  hdgFB: " + hdgFB() +" " + IO.navX.getNormalizedTo180());
-            System.out.println("TNM - 2  -----  distFB: " + distFB() + "cmd: " + trajCmd[1]);
-            // prtShtuff("TNM");
-            // System.out.println("TNM 2, runtm: " + ((System.currentTimeMillis() - runTm) ));
+             System.out.println("TNM - 2  -----  distCmd: " + trajCmd[1] + "\thdgCmd: " + trajCmd[0]);
+            prtShtuff("TNM-2");
             break;
         case 3:
             // System.out.println("Distance gone in TNM: " + distFB() + " SetPoint: " + pidDist.getSetpoint());
