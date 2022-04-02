@@ -82,7 +82,7 @@ public class PIDXController extends PIDController{
     }
 
     /**Set extended values for a PIDXController
-     * <p> SP, P, DB, Mn, Mx, Exp, Clmp
+     * <p> SP, P (opt), DB, Mn, Mx, Exp, Clmp
      */
     public static void setExt(PIDXController aPidX, double sp, double pb, double db, 
     /*                      */double mn, double mx,double exp, Boolean clmp){
