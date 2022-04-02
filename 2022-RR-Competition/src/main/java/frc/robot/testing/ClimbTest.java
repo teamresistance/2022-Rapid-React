@@ -15,21 +15,14 @@ public class ClimbTest {
         IO.climbMotor.set(-JS_IO.axCoDrvY.get());
          //IO.climbMotorFollow.set(-JS_IO.axCoDrvY.get()); //!!! Disable follower for 1st test !!!
 
-        IO.lockPinAExt_SV.set(JS_IO.btnClimb1.isDown());    //CB 11
-        IO.lockPinARet_SV.set(JS_IO.btnClimb2.isDown());    //CB 12
-        IO.lockPinBExt_SV.set(JS_IO.btnRejectLeft.isDown());//CB 4
-        IO.sliderExt_SV.set(JS_IO.btnRejectRight.isDown()); //CB 6
-        IO.climbBrakeRel_SV.set(JS_IO.btnRejectSnorfle.isDown()); //CB 5
-
+        IO.lockPinAExt_SV.set(JS_IO.btnFire.isDown());      //CB 1 / GP 6
+        IO.lockPinARet_SV.set(JS_IO.btnSnorfle.isDown());   //CB 3 / GP 5
+        IO.lockPinBExt_SV.set(JS_IO.btnRejectLeft.isDown());//CB 4 / GP 3
+        IO.sliderExt_SV.set(JS_IO.btnRejectRight.isDown()); //CB 6 / GP 4
+        IO.climbBrakeRel_SV.set(JS_IO.btnRst.isDown());     //LD 7 / GP 1
     
         sdbUpdate();
     }
-
-    // private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() || IO.sliderExt_R_FB.get();}
-    
-    // private static boolean lockPinAExt_FB(){return IO.lockPinAExt_L_FB.get() && IO.lockPinAExt_R_FB.get();}  //Or of pin A left & right
-    // private static boolean lockPinBExt_FB(){return IO.lockPinBExt_L_FB.get() && IO.lockPinBExt_R_FB.get();}  //Or of pin A left & right
-    // private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() || IO.sliderExt_R_FB.get();}
 
     /**
      * RET - both retracted
