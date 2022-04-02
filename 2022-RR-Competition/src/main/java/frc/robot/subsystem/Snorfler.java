@@ -50,7 +50,7 @@ public class Snorfler {
     private static String enemyColor;
     private static boolean csBallReject = false;  // Color Sensor Ball Reject
 
-    private static final double MTRSPD = 0.9;
+    private static double MTRSPD = 0.3;
     private static final double ELVSPD = 1.0;
     public static enum dirSnorfler { OFF, FWD, REJ }
 
@@ -204,16 +204,13 @@ public class Snorfler {
 
 
     private static void sdbInit() {
-        // Put stuff here on the sdb to be retrieved from the sdb later
-        // SmartDashboard.putBoolean("ZZ_Template/Sumpthin", sumpthin.get());
+        SmartDashboard.putNumber("Snorfler/Mtr Spd%", MTRSPD);
     }
 
     /** Update the Smartdashboard. */
     private static void sdbUpdate() {
-        // Put stuff to retrieve from sdb here. Must have been initialized in sdbInit().
-        // sumpthin = SmartDashboard.getBoolean("ZZ_Template/Sumpthin", sumpthin.get());
+        MTRSPD = SmartDashboard.getNumber("Snorfler/Mtr Spd%", MTRSPD);
 
-        // Put other stuff to be displayed here
         SmartDashboard.putNumber("Snorfler/AC/state", state);
         // SmartDashboard.putString("Snorfler/AC/team color", teamColor);
         // SmartDashboard.putString("Snorfler/AC/enemy color", enemyColor);
