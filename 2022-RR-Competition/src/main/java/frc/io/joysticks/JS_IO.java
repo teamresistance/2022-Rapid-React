@@ -95,7 +95,7 @@ public class JS_IO {
         for(int i = 0; i < chsrDesc.length; i++){
             chsr.addOption(chsrDesc[i], chsrDesc[i]);
         }
-        chsr.setDefaultOption(chsrDesc[2], chsrDesc[2]);    //Chg index to select chsrDesc[] for default
+        chsr.setDefaultOption(chsrDesc[0], chsrDesc[0]);    //Chg index to select chsrDesc[] for default
         SmartDashboard.putData("JS/Choice", chsr);
         update();   //Update the JS assignments
     }
