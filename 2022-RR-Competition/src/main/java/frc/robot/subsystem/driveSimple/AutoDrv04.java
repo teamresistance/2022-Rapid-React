@@ -48,7 +48,7 @@ public class AutoDrv04 {
                 state++;
                 break;
             case 1:    // Shoot
-                Shooter.reqShootLowDrvAuto = false;
+                Shooter.reqLowDA_L = false;
                 state++;
                 break;
             case 2:

@@ -48,7 +48,7 @@ public class AutoDrv03 {
                 state++;
                 break;
             case 1:// Shoots exhisting ball
-                Shooter.reqShootLowDrvAuto = false;
+                Shooter.reqLowDA_L = false;
                 if (stateTmr.hasExpired(1.0, state))state++;
                 break;
             case 2: //Backs out
@@ -104,7 +104,7 @@ public class AutoDrv03 {
                 if (stateTmr.hasExpired(1, state)) state++;
                 break;
             case 15:    // Shoot
-                Shooter.reqShootLowDrvAuto = false;
+                Shooter.reqLowDA_L = false;
                 state = 20;
             case 20: // Stop, send 0, 0 cmds and stay here until end of auto.
                 cmdUpdate(0.0, 0.0);
