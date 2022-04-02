@@ -49,10 +49,10 @@ public abstract class ATrajFunction {
 
     /**issue commands to the Drive system.
      * 
-     * @param lSpdY
-     * @param rSpdRot_XY
-     * @param isSqOrQT
-     * @param diffType
+     * @param lSpdY - tank(1)-left JS | arcade(2)-fwd | curvature(3)-fwd
+     * @param rSpdRot_XY - tank(1)-right JS | arcade(2)-rotation | curvature(3)-rotation
+     * @param isSqOrQT - tank(1)/arcade(2)-apply sqrt | curvature(3)-quick turn
+     * @param diffType - 0-Off | 1=tank | 2=arcade | 3=curvature
      */
     public void sendDriveCmds(double lSpdY, double rSpdRot_XY, boolean isSqOrQT, int diffType){
         Drive.setDriveCmds(lSpdY, rSpdRot_XY, isSqOrQT, diffType);
