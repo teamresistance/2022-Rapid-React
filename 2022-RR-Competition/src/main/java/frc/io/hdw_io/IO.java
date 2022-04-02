@@ -42,7 +42,7 @@ public class IO {
     //As of 2022 DifferentialDrive no longer inverts the right motor.  Do this in the motor controller.
     // public static DifferentialDrive diffDrv_M = new DifferentialDrive(IO.drvLead_L, IO.drvLead_R);
                                         // 3.191
-    public static double tpfAll = 4.15;
+    public static double tpfAll = 4.17;
     public static double drvLeadTPF_L = -tpfAll;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
     public static double drvFollowerTPF_L = -tpfAll; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
     public static double drvLeadTPF_R = tpfAll;  // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
@@ -94,7 +94,7 @@ public class IO {
         climberMtrsInit();  //Called here and Climber case 1, due to CAN issues.
         coorXY.reset();
         coorXY.drvFeetRst();
-        // sdbInit();
+        sdbInit();
     }
 
     public static void update() {
@@ -189,9 +189,11 @@ public class IO {
         SmartDashboard.putNumber("Robot/15. Ld Enc Feet R", drvLdEnc_R.feet());
         SmartDashboard.putNumber("Robot/16. Fl Enc Feet L", drvFlEnc_L.feet());
         SmartDashboard.putNumber("Robot/17. FL Enc Feet R", drvFlEnc_R.feet());
-        tpfAll = SmartDashboard.getNumber("Robot/18. Enc TPF All", 3.91);
+        tpfAll = SmartDashboard.getNumber("Robot/18. Enc TPF All", tpfAll);
         if(tpfAll != drvLdEnc_L.getTPF()) tpfUpdate();
         SmartDashboard.putNumber("Robot/19. Ld Enc R tpf chk", drvLdEnc_R.getTPF());
+        SmartDashboard.putNumber("Robot/20. Ld Enc L tpf chk", drvLdEnc_L.getTPF());
+        
         SmartDashboard.putNumber("Robot/20. Heading", navX.getAngle());
         SmartDashboard.putNumber("Robot/21. Hdg 180", navX.getNormalizedTo180());
 
@@ -203,7 +205,7 @@ public class IO {
     public static void tpfUpdate(){
         drvLdEnc_L.setTPF(-tpfAll);
         drvFlEnc_L.setTPF(-tpfAll);
-        drvLdEnc_R.setTPF(tpfAll);
-        drvFlEnc_R.setTPF(-tpfAll);
+        drvLdEnc_R.setTPF(tpfAll * 0.87);
+        drvFlEnc_R.setTPF(-tpfAll * 0.87);
     }
 }

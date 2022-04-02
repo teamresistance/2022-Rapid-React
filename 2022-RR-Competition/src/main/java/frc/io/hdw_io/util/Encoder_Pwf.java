@@ -9,7 +9,7 @@ public class Encoder_Pwf {
     private double tpf;
     private CANVenom venomCtlr;
 
-    /**Interface to Spark Max controller with NEO motor encoders */
+    /**Interface to Venom motors with built-in encoders */
     public Encoder_Pwf(CANVenom escPort, double _tpf){
         tpf = _tpf;
         venomCtlr = escPort;
@@ -22,6 +22,7 @@ public class Encoder_Pwf {
 
     /**@return calculated feet from ticks. */
     public double feet(){
+        // System.out.println(tpf);
         return tpf == 0.0 ? 0.0 : venomCtlr.getPosition() / tpf;
     }
 

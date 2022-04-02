@@ -50,7 +50,7 @@ public class Snorfler {
     private static String enemyColor;
     private static boolean csBallReject = false;  // Color Sensor Ball Reject
 
-    private static double MTRSPD = 0.3;
+    private static double MTRSPD = 0.5;
     private static final double ELVSPD = 1.0;
     public static enum dirSnorfler { OFF, FWD, REJ }
 

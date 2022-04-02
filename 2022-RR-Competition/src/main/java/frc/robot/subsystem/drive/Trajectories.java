@@ -1,5 +1,7 @@
 package frc.robot.subsystem.drive;
 
+import java.io.PrintWriter;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.vision.RPI;
@@ -9,7 +11,7 @@ public class Trajectories {
     private static double dfltPwr = 0.4;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty", "getCargo1", "getCargo2", "getCargo3", "getCargo4", "getCargo5", "getCargo6", "SnorfShootTest", "wayPtTest"
+        "getEmpty", "getCargo1", "getCargo2", "getCargo3", "getCargo4", "getCargo5", "getCargo6", "SnorfShootTest", "wayPtTest", "oneCargo", "twoBallAuto", "threeBallAuto"
     };
 
     /**Initialize Traj chooser */
@@ -52,6 +54,12 @@ public class Trajectories {
             return getCargo6(pwr);
             case "wayPtTest":
             return wayPtTest(pwr);
+            case "oneCargo":
+            return oneBallAuto(pwr);
+            case "twoBallAuto":
+            return twoBallAuto(pwr);
+            case "threeBallAuto":
+            return threeBallAuto(pwr);
             default:
             System.out.println("Traj/Bad Traj Desc - " + chsr.getSelected());
             return getEmpty(pwr);
@@ -87,12 +95,22 @@ public class Trajectories {
 
     public static ATrajFunction[] snorfShootTest(double pwr) {
         ATrajFunction[] traj = {
-            new ShootDrvAuto(null, true),
-            new TurnNMove(0.0, -2.0, 0.5),
+            // new CoorOffset(0.0, 0.0, 0.0),
+            // new SnorfDrvAuto(true),
+            // new Waypt(5.0, 5.0, 0.4),
+            // new TankTurnHdg(90.0, 0.3, -0.5),
+            // new SnorfDrvAuto(false),
+
+            // new TurnNMove(0.0, 0.0, 0.3),
+            // new TurnNMove(0.0, 10.0, 0.3),
+            // new TankTimed(0.2, -0.2, -0.2)
+
             new ShootDrvAuto(true, null),
-            // new TurnNMove(-45.0, 4.0, 0.5),
+            new TurnNMove(0.0, -2.0, 0.5),
+            // new ShootDrvAuto(true, null),
+            // new TurnNMove(-45.0,74.0, 0.5),
             new Waypt(-3.0, 0.0, 0.5),
-            new TurnNMove(0.0, 0.0, 0.5)
+            new TankTurnHdg(0.0, 0.5, -0.2)
 
             // new MoveOnHdg(0.0, 5.0, 0.5),
             // new TankTimed(0.3, -0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
@@ -244,6 +262,56 @@ public class Trajectories {
         };
         return traj;
     }
+
+    public static ATrajFunction[] oneBallAuto(double pwr){
+        pwr = 0.3;
+        ATrajFunction traj[] = {
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(false, null),
+            new TurnNMove(24.0, -4.0, pwr),
+        };
+        return traj;
+    }
+
+    public static ATrajFunction[] twoBallAuto(double pwr){
+        pwr = 0.3;
+        ATrajFunction traj[] = {
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(null, false),
+            new TurnNMove(24.0, -2.5),
+            new TankTurnHdg(-80, -0.5, -0.3),
+            new TrajDelay(0.3),
+            new SnorfDrvAuto(true),
+            new Waypt(-7.0, -11.0, 0.3),
+            new TurnNMove(-135, 1.0, pwr),
+            new TrajDelay(0.5),
+            new SnorfDrvAuto(false),
+            new TurnNMove(-110, -6.0, pwr),
+            new TankTurnHdg(24.0, pwr, -pwr),
+            new TrajDelay(0.5),
+            new Waypt(-1.5, -3.5, 0.3),
+            new TankTurnHdg(24.0, pwr, -pwr),
+            new TankTimed(0.5, 0.2, 0.2),
+            new TrajDelay(0.5),
+            new ShootDrvAuto(null, false),
+        };
+        return traj;
+    }
+
+    public static ATrajFunction[] threeBallAuto(double pwr){
+        pwr = 0.3;
+        ATrajFunction traj[] = {
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(false, null),
+            new TankTurnHdg(-90, -0.3, -0.2),
+            new SnorfDrvAuto(true),
+            new Waypt(-7.0, -11.0, 0.3),
+            new SnorfDrvAuto(false),
+            
+        };
+        return traj;
+    }
+
 
     /*
 

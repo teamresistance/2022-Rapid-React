@@ -49,7 +49,7 @@ public class Waypt extends ATrajFunction {
             // pidHdg.enableContinuousInput(-180.0, 180.0);
             //Set extended values pidCtlr, SP, DB, Mn, Mx, Exp, Cmp
             //Set extended values pidRef,  SP,       PB,   DB,  Mn,  Mx,   Exp, Clmp
-            PIDXController.setExt(pidHdg, 0.0, (1.0/15), 10.0, 0.4, pwrMx, 2.0, true);
+            PIDXController.setExt(pidHdg, 0.0, (1.0/60), 10.0, 0.4, pwrMx, 2.0, true);
 
             // //Set extended values            P,   I,   D
             // pidDist = new PIDXController(-1.0/3, 0.0, 0.0);

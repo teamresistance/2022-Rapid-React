@@ -25,10 +25,10 @@ public class TankTurnHdg extends ATrajFunction {
         case 0: // Init Trajectory, turn to hdg then (1) ...
             // pidHdg = new PIDXController(-1.0/90, 0.0, 0.0);
             // pidHdg.enableContinuousInput(-180.0, 180.0);
-            pidHdg.setP(-1.0/70);
+            pidHdg.setP(-1.0/90);
             pidHdg.setSetpoint(hdgSP);
-            pidHdg.setInDB(5.0);
-            pidHdg.setOutMn(0.3);
+            pidHdg.setInDB(10.0);
+            pidHdg.setOutMn(0.2);
             pidHdg.setOutMx(Math.abs(lPwr));
             pidHdg.setOutExp(2.0);
 
