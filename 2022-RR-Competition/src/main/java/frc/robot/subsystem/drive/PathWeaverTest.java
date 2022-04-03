@@ -99,7 +99,7 @@ public class PathWeaverTest extends Drive {
     }
 
     public static void disable() {
-        cmdUpdate();
+        // cmdUpdate();
     }
 
     public static void sdbInit() {
