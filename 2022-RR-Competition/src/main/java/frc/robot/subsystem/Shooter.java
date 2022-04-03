@@ -27,7 +27,7 @@ public class Shooter {
     // Variables:
     private static int state; // Shooter state machine. 0=Off by pct, 1=On by velocity, RPM.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
-    private static double loSelTm = 0.2;  //Settle time for Lo/Hi switch
+    private static double loSelTm = 0.0;  //Settle time for Lo/Hi switch
     private static double fireTm = 0.6;   //Recharge time after a fire
     private static boolean low_select = false; // Used to command the pressure SV. Default is hi press, switch.
 
