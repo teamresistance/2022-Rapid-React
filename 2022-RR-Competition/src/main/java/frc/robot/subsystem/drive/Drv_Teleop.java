@@ -71,7 +71,9 @@ public class Drv_Teleop extends Drive {
         }
 
         if(tglFrontBtn()) setSwapFront(!isSwappedFront());  //Switch the direction of the front
+
         if(tglScaleBtn()) setScaled(!isScaled());           //Apply scale limiting
+        
         if(holdZeroBtn()){          //Hold 0 heading
             setHdgHold(0.0);
             setScaled(true);
@@ -80,7 +82,7 @@ public class Drv_Teleop extends Drive {
             setScaled(true);            
         }else{
             relHdgHold();           //else release
-            setScaled(false);
+            // setScaled(false);    //???????????????????????????
         }
 
         smUpdate();
@@ -99,7 +101,7 @@ public class Drv_Teleop extends Drive {
             break;
             case 1: // Tank mode.
             // cmdUpdate(tnkLeft(), tnkRight(), false, 1); // Apply Hold, swap & scaling then send
-            setDriveCmds(tnkLeft(), tnkRight(), false, 1);
+            setDriveCmds(tnkLeft(), tnkRight(), true, 1);
            // System.out.println("Here teleop " + state +" "+ tnkLeft() + " " + tnkRight());
             break;
             case 2: // Arcade mode.
@@ -146,12 +148,7 @@ public class Drv_Teleop extends Drive {
         SmartDashboard.putNumber("Drv/Tele/Motor Ld R", IO.drvLead_R.get());
         SmartDashboard.putNumber("Drv/Tele/Motor Fl L", IO.drvFollower_L.get());
         SmartDashboard.putNumber("Drv/Tele/Motor Fl R", IO.drvFollower_R.get());
-        IO.drvLeadTPF_L = SmartDashboard.getNumber("Drv/Tele/Drv Enc TPF L", IO.drvLeadTPF_L);
-        IO.drvFollowerTPF_R = SmartDashboard.getNumber("Drv/Tele/Drv Enc TPF R", IO.drvFollowerTPF_R);
-        SmartDashboard.putNumber("Drv/Tele/Drv Ld Enc Feet L", IO.drvLdEnc_L.feet());
-        SmartDashboard.putNumber("Drv/Tele/Drv Ld Enc Feet R", IO.drvLdEnc_R.feet());
-        SmartDashboard.putNumber("Drv/Tele/Drv Fl Enc Feet L", IO.drvFlEnc_L.feet());
-        SmartDashboard.putNumber("Drv/Tele/Drv Fl Enc Feet R", IO.drvFlEnc_R.feet());
+        SmartDashboard.putBoolean("Drv/Tele/Scale Btn", JS_IO.btnScaledDrive.isDown());
     }
 
     /**
