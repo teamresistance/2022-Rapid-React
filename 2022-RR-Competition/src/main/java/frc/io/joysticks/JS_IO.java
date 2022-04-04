@@ -256,13 +256,13 @@ public class JS_IO {
     // ----------- Nintendo gamepad -------------
     private static void a_NP() {
         // Drive buttons
-        btnScaledDrive.setButton(neoPad, 2);    //2 (A)
+        btnScaledDrive.setButton(neoPad, 2);    //(A)
         // btnInvOrientation.setButton(gamePad, 1);    //??
-        // btnHoldZero.setButton(gamePad, 10);     //10 (RJB) Rotate to 0 hdg and only apply fwd/rev
-        // btnHold180.setButton(gamePad, 9);       //9  (LJB) Rotate to 180 hdg and only apply fwd/rev
+        btnHoldZero.setButton(neoPad, 3);       //(B)
+        btnHold180.setButton(neoPad, 4);        //(Y)
 
         // Misc
-        btnRst = new Button(neoPad, 1);        //1 (X)
+        btnRst = new Button(neoPad, 1);        //(X)
         // btnAuto = new Button(gamePad, 9);
 
     }

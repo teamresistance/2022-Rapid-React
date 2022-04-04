@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
+import frc.io.joysticks.util.Button;
 import frc.util.PIDXController;
 
 /**
@@ -20,8 +21,8 @@ public class Drv_Teleop extends Drive {
 
     private static boolean tglFrontBtn() {return JS_IO.btnInvOrientation.onButtonPressed();}//Toggle orientation
     private static boolean tglScaleBtn() {return JS_IO.btnScaledDrive.onButtonPressed();}   //Toggle appling scaling
-    private static boolean holdZeroBtn() {return JS_IO.btnHoldZero.isDown();}               //Hold zero hdg when held down
-    private static boolean hold180Btn() {return JS_IO.btnHold180.isDown();}                 //Hold 180 hdg when held down
+    private static Button holdZeroBtn = JS_IO.btnHoldZero;               //Hold zero hdg when held down
+    private static Button hold180Btn = JS_IO.btnHold180;                 //Hold 180 hdg when held down
 
     private static int state = 1;   //Can be set by btn or sdb chooser
     private static String[] teleDrvType = {"Off", "Tank", "Arcade", "Curvature"};       //All drive type choices
@@ -74,16 +75,11 @@ public class Drv_Teleop extends Drive {
 
         if(tglScaleBtn()) setScaled(!isScaled());           //Apply scale limiting
         
-        if(holdZeroBtn()){          //Hold 0 heading
-            setHdgHold(0.0);
-            // setScaled(true);
-        }else if(hold180Btn()){     //else gold 180 heading
-            setHdgHold(180.0);
-            // setScaled(true);            
-        }else{
-            relHdgHold();           //else release
-            // setScaled(false);    //???????????????????????????
-        }
+        if(holdZeroBtn.isDown()) setHdgHold(0.0);           //Hold 0 heading
+        if(holdZeroBtn.onButtonReleased()) relHdgHold();    //sets to null
+
+        if(hold180Btn.isDown()) setHdgHold(180.0);          //Hold 180 heading
+        if(hold180Btn.onButtonReleased()) relHdgHold();     //sets to null
 
         smUpdate();
         sdbUpdate();
@@ -137,8 +133,8 @@ public class Drv_Teleop extends Drive {
         setScaledOut(SmartDashboard.getNumber("Drv/Tele/Drive Scale", getScaledOut()));
         SmartDashboard.putBoolean("Drv/Tele/scaled", isScaled());
         SmartDashboard.putBoolean("Drv/Tele/Front Swap", isSwappedFront());
-        SmartDashboard.putBoolean("Drv/Tele/Btn Hold 0", holdZeroBtn());
-        SmartDashboard.putBoolean("Drv/Tele/Btn Hold 180", hold180Btn());
+        SmartDashboard.putBoolean("Drv/Tele/Btn Hold 0", holdZeroBtn.isDown());
+        SmartDashboard.putBoolean("Drv/Tele/Btn Hold 180", hold180Btn.isDown());
         SmartDashboard.putNumber("Drv/Tele/HdgFB", hdgFB());
         SmartDashboard.putNumber("Drv/Tele/HdgHoldSP", pidHdgHold.getSetpoint());
         SmartDashboard.putNumber("Drv/Tele/HdgHoldOut", pidHdgHold.getAdj());
