@@ -159,10 +159,11 @@ public class Robot extends TimedRobot {
     private static int state = 0;
     @Override
     public void teleopPeriodic() {
-        //For Testing
-        if (JS_IO.btnAuto.isDown() && state == 0){
+        
+        //For Testing various autonomous selections from teleop button
+        if (JS_IO.btnAuto.isDown() && state == 0){  //Execute selected Trajectory.  CoD 9
             state = 1;
-        } else if (JS_IO.btnAuto.isUp() && (state != 0) && (state != 3)){
+        } else if (JS_IO.btnAuto.isUp() && (state != 0) && (state != 3)){   //return to teleop
             state = 3;
         }
         switch(state){
