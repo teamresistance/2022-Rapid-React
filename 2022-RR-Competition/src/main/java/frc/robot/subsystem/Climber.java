@@ -344,6 +344,7 @@ public class Climber {
         SmartDashboard.putBoolean("Climber/AC/5. climbEnabled", climbEnabled);
         SmartDashboard.putNumber( "Climber/AC/6. Drive Cmd", drvSpdSaved);
         SmartDashboard.putNumber( "Climber/AC/7. Arm Cmd", armSpdSaved);
+        SmartDashboard.putBoolean("Climber/AC/8. btnRst ", JS_IO.btnRst.isDown());
 
         // SmartDashboard.putBoolean("Climber/SV/1. brake", brakeRel.get());           //CAN
         // SmartDashboard.putBoolean("Climber/SV/2. lockPinAExt", lockPinAExt.get());  //CAN

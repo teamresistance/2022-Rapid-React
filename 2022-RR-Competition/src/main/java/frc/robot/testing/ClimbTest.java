@@ -15,11 +15,11 @@ public class ClimbTest {
         IO.climbMotor.set(-JS_IO.axCoDrvY.get());
          //IO.climbMotorFollow.set(-JS_IO.axCoDrvY.get()); //!!! Disable follower for 1st test !!!
 
-        IO.lockPinAExt_SV.set(JS_IO.btnFire.isDown());      //CB 1 / GP 6
-        IO.lockPinARet_SV.set(JS_IO.btnSnorfle.isDown());   //CB 3 / GP 5
-        IO.lockPinBExt_SV.set(JS_IO.btnRejectLeft.isDown());//CB 4 / GP 3
-        IO.sliderExt_SV.set(JS_IO.btnRejectRight.isDown()); //CB 6 / GP 4
-        IO.climbBrakeRel_SV.set(JS_IO.btnRst.isDown());     //LD 7 / GP 1
+        IO.lockPinAExt_SV.set(JS_IO.btnFire.isDown());              //CB 1 / GP 6
+        IO.lockPinARet_SV.set(JS_IO.btnSnorfle.isDown());           //CB 3 / GP 5
+        IO.lockPinBExt_SV.set(JS_IO.btnRejectLeft.isDown());        //CB 4 / GP 3
+        IO.sliderExt_SV.set(JS_IO.btnRejectRight.isDown());         //CB 6 / GP 4
+        IO.climbBrakeRel_SV.set(JS_IO.btnRejectSnorfle.isDown());   //CB 5 / GP 1
     
         sdbUpdate();
     }
@@ -84,12 +84,17 @@ public class ClimbTest {
         SmartDashboard.putNumber("Test/Climb/Motor7_cmd", IO.climbMotorFollow.get());
         SmartDashboard.putNumber("Test/Climb/Motor7_volt", IO.climbMotorFollow.getBusVoltage());
         SmartDashboard.putNumber("Test/Climb/Motor6_volt", IO.climbMotor.getBusVoltage());
+        SmartDashboard.putBoolean("Test/Climb/Mtr Brake Rel", IO.climbBrakeRel_SV.get());
 
         SmartDashboard.putNumber("Test/Climb/JS/Feet",   Drive.distFB());
-        SmartDashboard.putNumber("Test/Climb/JS/Lead Mtr",   JS_IO.axLeftY.get());
-        SmartDashboard.putNumber("Test/Climb/JS/Follow Mtr", JS_IO.axRightY.get());
-        SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ext", JS_IO.btnClimb1.isDown());
-        SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ret", JS_IO.btnClimb2.isDown());
+        SmartDashboard.putNumber("Test/Climb/JS/Lead Mtr",   JS_IO.axLeftY.get());      //CAUTION: left only do not use with right
+        SmartDashboard.putNumber("Test/Climb/JS/Follow Mtr", JS_IO.axRightY.get());     //CAUTION: only if set as not follower
+        SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ext", JS_IO.btnFire.isDown());           //CB 1 / GP 6
+        SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ret", JS_IO.btnSnorfle.isDown());        //CB 3 / GP 5
+        SmartDashboard.putBoolean("Test/Climb/JS/Pin B Ext", JS_IO.btnRejectLeft.isDown());     //CB 4 / GP 3
+        SmartDashboard.putBoolean("Test/Climb/JS/Slider Ext", JS_IO.btnRejectRight.isDown());   //CB 6 / GP 4
+        SmartDashboard.putBoolean("Test/Climb/JS/Brake Rel", JS_IO.btnRejectSnorfle.isDown());  //CB 5 / GP 1
+
     }
     
 }

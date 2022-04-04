@@ -34,6 +34,7 @@ public class JS_IO {
     public static Joystick rightJoystick = new Joystick(1); // Right JS
     public static Joystick coJoystick = new Joystick(2);    // Co-Dvr JS
     public static Joystick gamePad = new Joystick(3);       // Normal mode only (not Dual Trigger mode)
+    public static Joystick neoPad = new Joystick(4);        // Nintendo pamepad
 
     // Drive
     public static Axis axLeftDrive = new Axis();    // Left Drive
@@ -88,7 +89,7 @@ public class JS_IO {
 
     //---- Joystick controller chooser ----
     private static SendableChooser<String> chsr = new SendableChooser<String>();
-    private static final String[] chsrDesc = {"3-Joysticks", "2-Joysticks", "Gamepad"};
+    private static final String[] chsrDesc = {"3-Joysticks", "2-Joysticks", "Gamepad", "Nintendo"};
 
     /** Setup the JS Chooser */
     public static void chsrInit(){
@@ -102,7 +103,6 @@ public class JS_IO {
 
     /** Chk if chsr changed, update Joystick configuration */
     public static void update() {
-        String tmp = chsr.getSelected();
         if (prvJSAssign != (chsr.getSelected())){   //If chsr chgd update JS assignments
             prvJSAssign = chsr.getSelected();
             configJS();         //Assign new jsConfig
@@ -144,6 +144,9 @@ public class JS_IO {
                 break;
             case "Gamepad":     // Gamepad only
                 a_GP();
+                break;
+            case "Nintendo":    // Nintendo only
+                a_NP();
                 break;
             default:            // Bad assignment
                 System.out.println("Bad JS choice - " + prvJSAssign);
@@ -187,7 +190,8 @@ public class JS_IO {
 
         // climbing buttons
         btnClimb1.setButton(coJoystick, 11);
-        btnClimb2.setButton(coJoystick, 12);
+        btnClimb2.setButton(coJoystick, 11);    //----------- Temporary one button ----------
+        // btnClimb2.setButton(coJoystick, 12);
         btnClimbSlideRst.setButton(coJoystick, 7);
 
         // Misc
@@ -247,6 +251,20 @@ public class JS_IO {
 
     // ----------- Normal 2 Joysticks -------------
     private static void norm2JS() {
+    }
+
+    // ----------- Nintendo gamepad -------------
+    private static void a_NP() {
+        // Drive buttons
+        btnScaledDrive.setButton(neoPad, 2);    //2 (A)
+        // btnInvOrientation.setButton(gamePad, 1);    //??
+        // btnHoldZero.setButton(gamePad, 10);     //10 (RJB) Rotate to 0 hdg and only apply fwd/rev
+        // btnHold180.setButton(gamePad, 9);       //9  (LJB) Rotate to 180 hdg and only apply fwd/rev
+
+        // Misc
+        btnRst = new Button(neoPad, 1);        //1 (X)
+        // btnAuto = new Button(gamePad, 9);
+
     }
 
     // ----------- Case Default -----------------

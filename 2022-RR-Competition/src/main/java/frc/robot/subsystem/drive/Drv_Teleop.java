@@ -76,10 +76,10 @@ public class Drv_Teleop extends Drive {
         
         if(holdZeroBtn()){          //Hold 0 heading
             setHdgHold(0.0);
-            setScaled(true);
+            // setScaled(true);
         }else if(hold180Btn()){     //else gold 180 heading
             setHdgHold(180.0);
-            setScaled(true);            
+            // setScaled(true);            
         }else{
             relHdgHold();           //else release
             // setScaled(false);    //???????????????????????????

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.util.*;
 import frc.io.joysticks.JS_IO;
+import frc.robot.subsystem.drive.Drive;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 import com.playingwithfusion.CANVenom;
@@ -98,11 +99,17 @@ public class IO {
     }
 
     public static void update() {
-        if (JS_IO.btnRst.onButtonPressed()){
+        //Resets navX, angle offset, coorXY & offsets to zero.  
+        //Also set scaled driving for climbing
+        if (JS_IO.btnRst.onButtonPressed()){    //LB 3 / GP 1(A) / NP1(X)
             IO.navX.setAngleAdjustment(0.0);
             IO.navX.reset();
+            IO.coorXY.setXY_OS(0.0, 0.0);
             IO.coorXY.drvFeetRst();
             IO.coorXY.reset();
+            // Drive.setScaledOut(0.3);
+            SmartDashboard.putNumber("Drv/Tele/Drive Scale", 0.3);
+            Drive.setScaled(true);
         }
         // if (JS_IO.btnRstGyro.onButtonPressed())  IO.navX.reset();           //LJS btn 7
         // if (JS_IO.btnRstFeet.onButtonPressed())  IO.coorXY.drvFeetRst();    //LJS btn 8
@@ -114,7 +121,7 @@ public class IO {
     /**
      * Initialize drive configuration setup.
      */
-    private static void drvsInit() {
+    public static void drvsInit() {
         // -------- Configure Lead drive motors ---------
         // drvLead_L.configFactoryDefault();    //No equivalent
         drvLead_L.setInverted(false); // Inverts motor direction and encoder if attached
