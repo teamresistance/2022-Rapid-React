@@ -200,15 +200,39 @@ public class IO {
         SmartDashboard.putNumber("Robot/15. Ld Enc Feet R", drvLdEnc_R.feet());
         SmartDashboard.putNumber("Robot/16. Fl Enc Feet L", drvFlEnc_L.feet());
         SmartDashboard.putNumber("Robot/17. FL Enc Feet R", drvFlEnc_R.feet());     //CAN to here
-        drvLeadTPF_L =     SmartDashboard.getNumber("Robot/18. Enc drvLeadTPF_L", drvLeadTPF_L);
-        drvLeadTPF_R =     SmartDashboard.getNumber("Robot/19. Enc drvLeadTPF_R", drvLeadTPF_R);
-        drvFollowerTPF_L = SmartDashboard.getNumber("Robot/20. Enc drvFollowerTPF_L", drvFollowerTPF_L);
-        drvFollowerTPF_R = SmartDashboard.getNumber("Robot/21. Enc drvFollowerTPF_R", drvFollowerTPF_R);
+        updTPF();
         
         SmartDashboard.putNumber("Robot/22. Heading", navX.getAngle());
         SmartDashboard.putNumber("Robot/23. Hdg 180", navX.getNormalizedTo180());
 
         SmartDashboard.putNumber("Climber/leadMtrEnc", climbLdMtr_Enc.ticks());     //CAN
         SmartDashboard.putBoolean("Climber/brakeState_SV", climbBrakeRel_SV.get()); //CAN
+    }
+
+    private static void updTPF(){
+        double tmp = SmartDashboard.getNumber("Robot/18. Enc drvLeadTPF_L", drvLeadTPF_L);
+        if(drvLeadTPF_L != tmp){
+            drvLeadTPF_L = tmp;
+            drvLdEnc_L.setTPF(tmp);
+        }
+
+        tmp = SmartDashboard.getNumber("Robot/19. Enc drvLeadTPF_R", drvLeadTPF_R);
+        if(drvLeadTPF_R != tmp){
+            drvLeadTPF_R = tmp;
+            drvLdEnc_R.setTPF(tmp);
+        }
+
+        tmp = SmartDashboard.getNumber("Robot/20. Enc drvFollowerTPF_L", drvFollowerTPF_L);
+        if(drvFollowerTPF_L != tmp){
+            drvFollowerTPF_L = tmp;
+            drvFlEnc_L.setTPF(tmp);
+        }
+
+        tmp = SmartDashboard.getNumber("Robot/21. Enc drvFollowerTPF_R", drvFollowerTPF_R);
+        if(drvFollowerTPF_R != tmp){
+            drvFollowerTPF_R = tmp;
+            drvFlEnc_R.setTPF(tmp);
+        }
+
     }
 }
