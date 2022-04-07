@@ -3,46 +3,64 @@ package frc.robot.testing;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
+import frc.io.joysticks.util.Axis;
 import frc.io.joysticks.util.Button;
-import frc.robot.subsystem.drive.Drive;
 
 public class ClimbTest {
-    private static Button tglPinA_Btn = JS_IO.btnSnorfle;          //CB 3 / GP 5
-    private static Button tglPinB_Btn = JS_IO.btnRejectLeft;       //CB 4 / GP 3
-    private static Button tglSlider_Btn = JS_IO.btnRejectSnorfle;  //CB 5 / GP 1
-    private static Button tglBrake_Btn = JS_IO.btnRejectRight;     //CB 6 / GP 4
+    private static Button tglPinA_Btn = JS_IO.btnSnorfle;           //CB 3 / GP 5
+    private static Button tglPinB_Btn = JS_IO.btnRejectLeft;        //CB 4 / GP 3
+    private static Button tglSlider_Btn = JS_IO.btnRejectSnorfle;   //CB 5 / GP 1
+    private static Button manBrake_Btn = JS_IO.btnClimb1;           //CB 11 / GP 4
+
+    private static Axis armRotLead_Axis = JS_IO.axCoDrvY;               //Co-Driver Y Axis, Don't use with Right
+    // private static Axis armRotFoll_Axis = JS_IO.axLeftY;                //Driver Left Y Axis, Don't use with Right
+    private static Axis armRotFoll_Axis = JS_IO.axRightY;               //Driver Right Y Axis, Don't use with Left
 
     private static boolean pinAExt = true;          //Control pin A extend
     private static boolean pinBExt = true;          //Control pin B extend
     private static boolean sliderExt = true;        //Control slider extend
-    private static boolean manBrakeRel = false;     //Control manual brake release
-    private static boolean mtrBrakeRel = false;     //Control motor brake release
+    private static double armRotCmd = 0.0;
 
     public static void init(){
         pinAExt = true;
         pinBExt = true;
         sliderExt = true;
-        manBrakeRel = false;
-        mtrBrakeRel = false;
+        armRotCmd = 0.0;
+
+        IO.climbLdMtr_Enc.reset();  //CAUTION: Arm needs to be in horizontal start position, 0.0, to begin
     }
 
     public static void update(){
         if(tglPinA_Btn.onButtonPressed()) {pinAExt = !pinAExt;}
         if(tglPinB_Btn.onButtonPressed()) {pinBExt = !pinBExt;}
         if(tglSlider_Btn.onButtonPressed()) {sliderExt = !sliderExt;}
-        if(tglBrake_Btn.onButtonPressed()) {manBrakeRel = !manBrakeRel;}
 
-        //IO.climbBrakeRel_SV.set(JS_IO.btnFire.isDown());  //TEST BRAKE FIRST.
         // KEEP BRAKE RELEASED WHEN TESTING MOTORS.  NO SEQUENCING HERE.
-        IO.climbMotor.set(-JS_IO.axCoDrvY.get());
-        mtrBrakeRel = Math.abs(IO.climbMotor.get()) > 0.0;  //CAUTION: Simple brake release
-         //IO.climbMotorFollow.set(-JS_IO.axCoDrvY.get()); //!!! Disable follower for 1st test !!!
+        // IO.climbBrakeRel_SV.set(manBrake_Btn.isDown());  //TEST BRAKE FIRST.
+        // IO.climbMotorFollow.set(-JS_IO.axCoDrvY.get()); //!!! Disable follower for 1st test !!!
+
+        // Simple brake / arm motor sequencer.  Use with CAUTION!!!
+        //CAUTION: Arm needs to be in horizontal start position, 0.0, to begin
+        if(manBrake_Btn.isDown()){          //CB 11 / GP 4 (man)  //CAUTION: Simple brake release
+            IO.climbBrakeRel_SV.set(true);  //Release brake
+
+            armRotCmd = -armRotLead_Axis.get();              //coDrvr Y reading
+            if(Math.abs(armRotCmd) > 0.1){                  //Greater than Deadband
+                armRotCmd = 0.0;  
+            }else{
+                if(IO.climbLdMtr_Enc.degrees() < -10.0 &&   //SAFETY!!! DON't turn arm pass this! 
+                    armRotCmd < 0.0) armRotCmd = 0.0;       //Things break!
+            }
+            IO.climbMotor.set(armRotCmd);                   //Send arm rotation cmd
+        }else{
+            IO.climbBrakeRel_SV.set(false); //Set brake
+            IO.climbMotor.set(0.0);         //and stop arm rotation
+        }
 
         IO.lockPinAExt_SV.set(pinAExt);     //CB 3 / GP 5
         IO.lockPinARet_SV.set(!pinAExt);    //CB 3 / GP 5
         IO.lockPinBExt_SV.set(pinBExt);     //CB 4 / GP 3
         IO.sliderExt_SV.set(sliderExt);     //CB 5 / GP 1
-        IO.climbBrakeRel_SV.set(manBrakeRel || mtrBrakeRel);  //CB 6 / GP 4 (man)
     
         sdbUpdate();
     }
@@ -109,13 +127,13 @@ public class ClimbTest {
         SmartDashboard.putNumber("Test/Climb/Motor6_volt", IO.climbMotor.getBusVoltage());
         SmartDashboard.putBoolean("Test/Climb/Mtr Brake Rel", IO.climbBrakeRel_SV.get());
 
-        SmartDashboard.putNumber("Test/Climb/JS/Lead Mtr",   JS_IO.axLeftY.get());      //CAUTION: left only do not use with right
-        SmartDashboard.putNumber("Test/Climb/JS/Follow Mtr", JS_IO.axRightY.get());     //CAUTION: only if set as not follower
+        SmartDashboard.putNumber("Test/Climb/JS/Lead Mtr",   armRotLead_Axis.get());        //CAUTION: Lead only do not use with right
+        SmartDashboard.putNumber("Test/Climb/JS/Follow Mtr", armRotFoll_Axis.get());        //CAUTION: only if set as not follower
         SmartDashboard.putBoolean("Test/Climb/JS/Toggle Pin A Ext", JS_IO.btnSnorfle.isDown());             //CB 3 / GP 5
         SmartDashboard.putBoolean("Test/Climb/JS/Toggle Pin B Ext", JS_IO.btnRejectLeft.isDown());          //CB 4 / GP 3
         SmartDashboard.putBoolean("Test/Climb/JS/Toggle Slider Ext", JS_IO.btnRejectSnorfle.isDown());      //CB 5 / GP 1
         SmartDashboard.putBoolean("Test/Climb/JS/Toggle Manual Brake Rel", JS_IO.btnRejectRight.isDown());  //CB 6 / GP 4
-        SmartDashboard.putBoolean("Test/Climb/JS/Motor Brake Rel", JS_IO.btnRejectRight.isDown());  //CB 6 / GP 4
+        SmartDashboard.putBoolean("Test/Climb/JS/Motor Brake Rel", JS_IO.btnClimb1.isDown());  //CB 11 / GP 4
 
     }
     
