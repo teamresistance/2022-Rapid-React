@@ -3,23 +3,46 @@ package frc.robot.testing;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
+import frc.io.joysticks.util.Button;
 import frc.robot.subsystem.drive.Drive;
 
 public class ClimbTest {
+    private static Button tglPinA_Btn = JS_IO.btnSnorfle;          //CB 3 / GP 5
+    private static Button tglPinB_Btn = JS_IO.btnRejectLeft;       //CB 4 / GP 3
+    private static Button tglSlider_Btn = JS_IO.btnRejectSnorfle;  //CB 5 / GP 1
+    private static Button tglBrake_Btn = JS_IO.btnRejectRight;     //CB 6 / GP 4
+
+    private static boolean pinAExt = true;          //Control pin A extend
+    private static boolean pinBExt = true;          //Control pin B extend
+    private static boolean sliderExt = true;        //Control slider extend
+    private static boolean manBrakeRel = false;     //Control manual brake release
+    private static boolean mtrBrakeRel = false;     //Control motor brake release
+
     public static void init(){
+        pinAExt = true;
+        pinBExt = true;
+        sliderExt = true;
+        manBrakeRel = false;
+        mtrBrakeRel = false;
     }
 
     public static void update(){
+        if(tglPinA_Btn.onButtonPressed()) {pinAExt = !pinAExt;}
+        if(tglPinB_Btn.onButtonPressed()) {pinBExt = !pinBExt;}
+        if(tglSlider_Btn.onButtonPressed()) {sliderExt = !sliderExt;}
+        if(tglBrake_Btn.onButtonPressed()) {manBrakeRel = !manBrakeRel;}
+
         //IO.climbBrakeRel_SV.set(JS_IO.btnFire.isDown());  //TEST BRAKE FIRST.
         // KEEP BRAKE RELEASED WHEN TESTING MOTORS.  NO SEQUENCING HERE.
         IO.climbMotor.set(-JS_IO.axCoDrvY.get());
+        mtrBrakeRel = Math.abs(IO.climbMotor.get()) > 0.0;  //CAUTION: Simple brake release
          //IO.climbMotorFollow.set(-JS_IO.axCoDrvY.get()); //!!! Disable follower for 1st test !!!
 
-        IO.lockPinAExt_SV.set(JS_IO.btnFire.isDown());              //CB 1 / GP 6
-        IO.lockPinARet_SV.set(JS_IO.btnSnorfle.isDown());           //CB 3 / GP 5
-        IO.lockPinBExt_SV.set(JS_IO.btnRejectLeft.isDown());        //CB 4 / GP 3
-        IO.sliderExt_SV.set(JS_IO.btnRejectRight.isDown());         //CB 6 / GP 4
-        IO.climbBrakeRel_SV.set(JS_IO.btnRejectSnorfle.isDown());   //CB 5 / GP 1
+        IO.lockPinAExt_SV.set(pinAExt);     //CB 3 / GP 5
+        IO.lockPinARet_SV.set(!pinAExt);    //CB 3 / GP 5
+        IO.lockPinBExt_SV.set(pinBExt);     //CB 4 / GP 3
+        IO.sliderExt_SV.set(sliderExt);     //CB 5 / GP 1
+        IO.climbBrakeRel_SV.set(manBrakeRel || mtrBrakeRel);  //CB 6 / GP 4 (man)
     
         sdbUpdate();
     }
@@ -86,14 +109,13 @@ public class ClimbTest {
         SmartDashboard.putNumber("Test/Climb/Motor6_volt", IO.climbMotor.getBusVoltage());
         SmartDashboard.putBoolean("Test/Climb/Mtr Brake Rel", IO.climbBrakeRel_SV.get());
 
-        SmartDashboard.putNumber("Test/Climb/JS/Feet",   Drive.distFB());
         SmartDashboard.putNumber("Test/Climb/JS/Lead Mtr",   JS_IO.axLeftY.get());      //CAUTION: left only do not use with right
         SmartDashboard.putNumber("Test/Climb/JS/Follow Mtr", JS_IO.axRightY.get());     //CAUTION: only if set as not follower
-        SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ext", JS_IO.btnFire.isDown());           //CB 1 / GP 6
-        SmartDashboard.putBoolean("Test/Climb/JS/Pin A Ret", JS_IO.btnSnorfle.isDown());        //CB 3 / GP 5
-        SmartDashboard.putBoolean("Test/Climb/JS/Pin B Ext", JS_IO.btnRejectLeft.isDown());     //CB 4 / GP 3
-        SmartDashboard.putBoolean("Test/Climb/JS/Slider Ext", JS_IO.btnRejectRight.isDown());   //CB 6 / GP 4
-        SmartDashboard.putBoolean("Test/Climb/JS/Brake Rel", JS_IO.btnRejectSnorfle.isDown());  //CB 5 / GP 1
+        SmartDashboard.putBoolean("Test/Climb/JS/Toggle Pin A Ext", JS_IO.btnSnorfle.isDown());             //CB 3 / GP 5
+        SmartDashboard.putBoolean("Test/Climb/JS/Toggle Pin B Ext", JS_IO.btnRejectLeft.isDown());          //CB 4 / GP 3
+        SmartDashboard.putBoolean("Test/Climb/JS/Toggle Slider Ext", JS_IO.btnRejectSnorfle.isDown());      //CB 5 / GP 1
+        SmartDashboard.putBoolean("Test/Climb/JS/Toggle Manual Brake Rel", JS_IO.btnRejectRight.isDown());  //CB 6 / GP 4
+        SmartDashboard.putBoolean("Test/Climb/JS/Motor Brake Rel", JS_IO.btnRejectRight.isDown());  //CB 6 / GP 4
 
     }
     

@@ -108,8 +108,9 @@ public class IO {
             IO.coorXY.drvFeetRst();
             IO.coorXY.reset();
             // Drive.setScaledOut(0.3);
-            SmartDashboard.putNumber("Drv/Tele/Drive Scale", 0.3);
+            SmartDashboard.putNumber("Drv/Tele/Drive Scale", 0.5);
             Drive.setScaled(true);
+            // Drive.setHdgHold(0.0);  //To release press and release btnHoldZero
         }
         // if (JS_IO.btnRstGyro.onButtonPressed())  IO.navX.reset();           //LJS btn 7
         // if (JS_IO.btnRstFeet.onButtonPressed())  IO.coorXY.drvFeetRst();    //LJS btn 8
