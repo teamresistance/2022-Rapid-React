@@ -352,19 +352,18 @@ public class Climber {
         // SmartDashboard.putBoolean("Climber/SV/4. lockPinBExt", lockPinBExt.get());  //CAN
         // SmartDashboard.putBoolean("Climber/SV/5. sliderExt", sliderExt.get());      //CAN
         // SmartDashboard.putBoolean("Climber/SV/6. brakeRel", brakeRel.get());        //CAN
-        SmartDashboard.putBoolean("Climber/SV/7. brakeTest", brakeTest);
+        // SmartDashboard.putBoolean("Climber/SV/7. climbBrakeRel_SV", climbBrakeRel_SV.get()); //CAN
+        SmartDashboard.putBoolean("Climber/SV/8. brakeTest", brakeTest);
 
-        // SmartDashboard.putNumber( "Climber/FB/4. Feet", IO.coorXY.drvFeet());       //CAN
-
-        SmartDashboard.putBoolean("Climber/Climb/AExt_L_FB", IO.lockPinAExt_L_FB.get());
-        SmartDashboard.putBoolean("Climber/Climb/AExt_R_FB", IO.lockPinAExt_R_FB.get());
-        SmartDashboard.putBoolean("Climber/Climb/BExt_L_FB", IO.lockPinBExt_L_FB.get());
-        SmartDashboard.putBoolean("Climber/Climb/BRet_R_FB", IO.lockPinBExt_R_FB.get());
-        SmartDashboard.putBoolean("Climber/Climb/SExt_L_FB", IO.sliderExt_L_FB.get());
-        SmartDashboard.putBoolean("Climber/Climb/SExt_R_FB", IO.sliderExt_R_FB.get());
-        SmartDashboard.putString("Climber/Climb/lockPinA Sts, L && B", lockPinA_Sts().toString());
-        SmartDashboard.putString("Climber/Climb/lockPinB Sts, L && B", lockPinB_Sts().toString());
-        SmartDashboard.putString("Climber/Climb/SExt Sts, L && B", slider_Sts().toString());
+        SmartDashboard.putBoolean("Climber/FB/1. AExt_L_FB", IO.lockPinAExt_L_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/2. AExt_R_FB", IO.lockPinAExt_R_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/3. BExt_L_FB", IO.lockPinBExt_L_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/4. BRet_R_FB", IO.lockPinBExt_R_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/5. SExt_L_FB", IO.sliderExt_L_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/6. SExt_R_FB", IO.sliderExt_R_FB.get());
+        SmartDashboard.putString("Climber/FB/7. lockPinA Sts, L && B", lockPinA_Sts().toString());
+        SmartDashboard.putString("Climber/FB/8. lockPinB Sts, L && B", lockPinB_Sts().toString());
+        SmartDashboard.putString("Climber/FB/9. SExt Sts, L && B", slider_Sts().toString());
 
 
         ROT_SPD = SmartDashboard.getNumber("Climber/Mtr/1. ROT_SPD", 0.45);          
@@ -374,6 +373,8 @@ public class Climber {
         // SmartDashboard.putNumber("Climber/Mtr/5. climb Deg", IO.climbLdMtr_Enc.degrees());      //CAN
         // SmartDashboard.putNumber( "Climber/Mtr/6. Arm Ld Mtr Amps", climberMotor.getOutputCurrent());   //CAN
         // SmartDashboard.putNumber( "Climber/Mtr/7. Arm Fl Mtr Amps", IO.climbMotorFollow.getOutputCurrent());    //CAN
+
+
     }
 
     /**
