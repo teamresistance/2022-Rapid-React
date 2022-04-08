@@ -338,7 +338,7 @@ public class Climber {
      */
     private static void sdbUpdate() {
         SmartDashboard.putNumber( "Climber/AC/1. State", state);
-        // SmartDashboard.putNumber( "Climber/AC/2. Pitch", pitch());  //CAN
+        SmartDashboard.putNumber( "Climber/AC/2. Pitch", pitch());  //CAN
         SmartDashboard.putBoolean("Climber/AC/3. buttonClimb1", buttonClimb1.isDown());
         SmartDashboard.putBoolean("Climber/AC/4. buttonClimb2", buttonClimb2.isDown());
         SmartDashboard.putBoolean("Climber/AC/5. climbEnabled", climbEnabled);
@@ -364,11 +364,13 @@ public class Climber {
         SmartDashboard.putString("Climber/FB/7. lockPinA Sts, L && B", lockPinA_Sts().toString());
         SmartDashboard.putString("Climber/FB/8. lockPinB Sts, L && B", lockPinB_Sts().toString());
         SmartDashboard.putString("Climber/FB/9. SExt Sts, L && B", slider_Sts().toString());
+        SmartDashboard.putNumber("Climber/FB/10. Climber arm ddegrees", IO.climbLdMtr_Enc.degrees());
+
 
 
         ROT_SPD = SmartDashboard.getNumber("Climber/Mtr/1. ROT_SPD", 0.45);          
         // SmartDashboard.putNumber("Climber/Mtr/2. climbMotor", climberMotor.get());              //CAN
-        // SmartDashboard.putNumber("Climber/Mtr/3. Ld enc Ticks", IO.climbLdMtr_Enc.ticks());     //CAN
+        SmartDashboard.putNumber("Climber/Mtr/3. Ld enc Ticks", IO.climbLdMtr_Enc.ticks());     //CAN
         IO.climbLdMtr_Enc.setTPF(SmartDashboard.getNumber("Climber/Mtr/4. climb TPD", 0.504));
         // SmartDashboard.putNumber("Climber/Mtr/5. climb Deg", IO.climbLdMtr_Enc.degrees());      //CAN
         // SmartDashboard.putNumber( "Climber/Mtr/6. Arm Ld Mtr Amps", climberMotor.getOutputCurrent());   //CAN
