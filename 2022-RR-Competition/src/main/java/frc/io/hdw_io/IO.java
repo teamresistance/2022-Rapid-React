@@ -197,10 +197,10 @@ public class IO {
         // SmartDashboard.putNumber("Robot/11. Ld Mtr11 Cmd R", drvLead_L.get());
         // SmartDashboard.putNumber("Robot/12. Fl Mtr16 Cmd L", drvFollower_L.get());
         // SmartDashboard.putNumber("Robot/13. Fl Mtr12 Cmd R", drvFollower_R.get());
-        // SmartDashboard.putNumber("Robot/14. Ld Enc Feet L", drvLdEnc_L.feet());
-        // SmartDashboard.putNumber("Robot/15. Ld Enc Feet R", drvLdEnc_R.feet());
-        // SmartDashboard.putNumber("Robot/16. Fl Enc Feet L", drvFlEnc_L.feet());
-        // SmartDashboard.putNumber("Robot/17. FL Enc Feet R", drvFlEnc_R.feet());     //CAN to here
+        SmartDashboard.putNumber("Robot/14. Ld Enc Feet L", drvLdEnc_L.feet());
+        SmartDashboard.putNumber("Robot/15. Ld Enc Feet R", drvLdEnc_R.feet());
+        SmartDashboard.putNumber("Robot/16. Fl Enc Feet L", drvFlEnc_L.feet());
+        SmartDashboard.putNumber("Robot/17. FL Enc Feet R", drvFlEnc_R.feet());     //CAN to here
         updTPF();
         
         SmartDashboard.putNumber("Robot/22. Heading", navX.getAngle());

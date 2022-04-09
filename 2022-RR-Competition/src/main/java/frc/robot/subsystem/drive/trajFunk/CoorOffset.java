@@ -22,6 +22,8 @@ public class CoorOffset extends ATrajFunction {
     public void execute() {
         switch (state) {
         case 0: 
+            IO.coorXY.reset();
+            IO.coorXY.drvFeetRst();
             IO.navX.setAngleAdjustment(hdg_OS);
             IO.coorXY.setXY_OS(coorX_OS, coorY_OS);
             state++;
