@@ -277,7 +277,7 @@ public class Trajectories {
         pwr = 0.3;
         ATrajFunction traj[] = {
             new CoorOffset(24.0, -1.5, -3.5),
-            new ShootDrvAuto(null, false),
+            new ShootDrvAuto(false, null),
             new TurnNMove(24.0, -2.5),
             new TankTurnHdg(-80, -0.5, -0.3),
             new TrajDelay(0.3),
@@ -301,13 +301,17 @@ public class Trajectories {
     public static ATrajFunction[] threeBallAuto(double pwr){
         pwr = 0.3;
         ATrajFunction traj[] = {
-            new CoorOffset(24.0, -1.5, -3.5),
+            new CoorOffset(-66.0, 4.0, -1.5),
             new ShootDrvAuto(false, null),
-            new TankTurnHdg(-90, -0.3, -0.2),
-            new SnorfDrvAuto(true),
-            new Waypt(-7.0, -11.0, 0.3),
-            new SnorfDrvAuto(false),
-            
+            new TurnNMove(-66.0, -2.5, pwr),
+            new TankTurnHdg(-200, -0.5, -0.3),
+            new Waypt(7, -10),
+            new TankTurnHdg(-200, 0.5, -0.5),
+            new TurnNMove(-200, 5.0, pwr),
+            new Waypt(-10.0, 0.0, pwr),
+            new TankTurnHdg(-66.0, 0.5, 0.3),
+            new TurnNMove(-66.0, 2.5, pwr),
+            new ShootDrvAuto(false, false),
         };
         return traj;
     }
