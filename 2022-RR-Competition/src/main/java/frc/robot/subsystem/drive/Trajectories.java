@@ -11,16 +11,17 @@ public class Trajectories {
     private static double dfltPwr = 0.4;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty", "ball3_A_B", "ball2_C","getCargo2", "getCargo3", "getCargo4", "getCargo5", 
-        "getCargo6", "SnorfShootTest", "wayPtTest", "oneCargo", "twoBallAuto", "threeBall_BC_Auto"
+        "getEmpty",  "oneCargo", "twoBall_C", "threeBall_BG_Auto", "threeBall_BC_Auto"
     };
+    // "ball3_A_B", "ball2_C","getCargo2", "getCargo3", "getCargo4", "getCargo5", 
+    //     "getCargo6", "SnorfShootTest", "wayPtTest",
 
     /**Initialize Traj chooser */
     public static void chsrInit(){
         for(int i = 0; i < chsrDesc.length; i++){
             chsr.addOption(chsrDesc[i], chsrDesc[i]);
         }
-        chsr.setDefaultOption(chsrDesc[4] + " (Default)", chsrDesc[4]);   //Default MUST have a different name
+        chsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
         SmartDashboard.putData("Drv/Traj/Choice", chsr);
         
     }
@@ -61,8 +62,10 @@ public class Trajectories {
             return wayPtTest(pwr);
             case "oneCargo":
             return oneBallAuto(pwr);
-            case "twoBallAuto":
-            return twoBallAuto(pwr);
+            case "twoBall_C":
+            return twoBall_C(pwr);
+            case "threeBall_BG_Auto":
+            return threeBall_BG_Auto(pwr);
             case "threeBall_BC_Auto":
             return threeBall_BC_Auto(pwr);
             default:
@@ -70,6 +73,7 @@ public class Trajectories {
             return getEmpty(pwr);
         }
     }
+    
 
     /**
      * Get the trajectory array that is selected in the chooser Traj/Choice.
@@ -97,6 +101,113 @@ public class Trajectories {
         };
         return traj;
     }
+    public static ATrajFunction[] oneBallAuto(double pwr){
+        pwr = 0.3;
+        ATrajFunction traj[] = {
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(false, null),
+            new TurnNMove(24.0, -4.0, pwr),
+        };
+        return traj;
+    }
+
+    public static ATrajFunction[] twoBall_C(double pwr){
+        pwr = 0.5;
+        ATrajFunction traj[] = {
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(false, null), // first shot
+            new TurnNMove(24.0, -2.5), // backing up
+            new TankTurnHdg(-135, -0.7, -0.5), // rotate to the right
+            new TrajDelay(0.3), // give it a sec
+            new SnorfDrvAuto(true), // snorf
+            new MoveOnHdg(-135, 6.0, pwr),
+            new TurnNMove(-135, 0.5, pwr), // move and drift towards ball
+            new TrajDelay(0.3), // wait for ball pickup
+            new SnorfDrvAuto(false), // unsnorf
+            new TurnNMove(-135, -6.5, pwr), // go back
+            new TankTurnHdg(24.0, 0.6, -0.3),
+            new MoveOnHdg(24.0, 1.0, pwr),
+            new TrajDelay(0.5),
+            new ShootDrvAuto(null, false),
+        };
+        return traj;
+    }
+
+    public static ATrajFunction[] threeBall_BG_Auto(double pwr){
+        pwr = 0.5;
+        ATrajFunction traj[] = {
+            new CoorOffset(-66.0, 4.0, -1.5),
+            new ShootDrvAuto(false, null), //Shoots
+            new TrajDelay(0.3),
+            // new TurnNMove(-66.0, -1.5, pwr),
+            new SnorfDrvAuto(true), //Snorfler Down
+            new TankTurnHdg(-200.0, -0.7, -0.5), //Turns
+            new TurnNMove(-204.0, 18.0, pwr), //Goes forward
+            new TurnNMove(-205.0, 1.0, 0.3), //Change heading drop speed
+            new TrajDelay(0.7),             //Coast
+            new TurnNMove(-193.0, -18.1, pwr), //Goes back
+            new SnorfDrvAuto(false), //Snorf off
+            new TankTimed(0.2, pwr, pwr), //Brake
+            // new TankTurnHdg(270.0, 0.2, -0.6),
+            new TankTurnHdg(-66, 0.5, -0.2), //Turns
+            new TurnNMove(-66.0, 1.0, pwr), //Forward
+            new TankTimed(0.5, 0.3, 0.3),
+            new TrajDelay(0.2),
+            new ShootDrvAuto(false, false), //Shoot
+            new TrajDelay(0.2),
+            new TurnNMove(-66.0, -1.5),
+            new TankTurnHdg(90, pwr, -pwr),
+            // new TankTurnHdg(0.0, -0.4, -0.6), //Turn
+            // new TankTurnHdg(90.0, 0.4,-0.6),
+
+
+            // new Waypt(-10.0, 0.0, pwr),
+            // new TankTurnHdg(-66.0, 0.5, 0.3),
+            // new TurnNMove(-66.0, 2.5, pwr),
+            // new ShootDrvAuto(false, false),
+        };
+        return traj;
+    }
+
+    public static ATrajFunction[] threeBall_BC_Auto(double pwr){
+        pwr = 0.5;
+        ATrajFunction traj[] = {
+            new CoorOffset(-66.0, 4.0, -1.5),
+            new ShootDrvAuto(false, null), //Shoots
+            new TrajDelay(0.3), //Delay
+            new TurnNMove(-66.0, -2.0, pwr), //Backs up
+            new TankTurnHdg(15.0, -0.3, -0.7), //Turns
+            new TurnNMove(15.0, -8.0, pwr),
+            new SnorfDrvAuto(true),
+            new TurnNMove(45.0, 5.0, pwr),
+            new TurnNMove(25.0, 9.5, pwr),
+            new TurnNMove(26.0, -3.3, pwr),
+            new SnorfDrvAuto(false),
+            new TankTurnHdg(-66.0, -0.9, 0.4),
+            new TurnNMove(-66.0, 5.0),
+            new TankTimed(0.4, 0.3, 0.3),
+            new TrajDelay(0.6),
+            new ShootDrvAuto(false, false),
+
+        };
+        return traj;
+    }
+
+    
+    public static ATrajFunction[] oneBallReject_F(double pwr){
+        pwr = 0.5;
+        ATrajFunction traj[] = {
+            new CoorOffset(-156.0, -1.5, -3.5),
+            new SnorfDrvAuto(true),
+            new TurnNMove(-156.0, 3.0, pwr),
+            new TankTurnHdg(-120.0, 0.7, -0.3),
+            new SnorfDrvAuto(false),
+            new TurnNMove(-120.0, 4.0, pwr),
+            new TankTurnHdg(150.0, pwr, -pwr),
+        };
+        return traj;
+    }
+
 
     public static ATrajFunction[] snorfShootTest(double pwr) {
         ATrajFunction[] traj = {
@@ -315,95 +426,6 @@ public class Trajectories {
         return traj;
     }
 
-    public static ATrajFunction[] oneBallAuto(double pwr){
-        pwr = 0.3;
-        ATrajFunction traj[] = {
-            new CoorOffset(24.0, -1.5, -3.5),
-            new ShootDrvAuto(false, null),
-            new TurnNMove(24.0, -4.0, pwr),
-        };
-        return traj;
-    }
-
-    public static ATrajFunction[] twoBallAuto(double pwr){
-        pwr = 0.5;
-        ATrajFunction traj[] = {
-            new CoorOffset(24.0, -1.5, -3.5),
-            new ShootDrvAuto(false, null), // first shot
-            new TurnNMove(24.0, -2.5), // backing up
-            new TankTurnHdg(-135, -0.7, -0.5), // rotate to the right
-            new TrajDelay(0.3), // give it a sec
-            new SnorfDrvAuto(true), // snorf
-            new MoveOnHdg(-135, 6.0, pwr),
-            new TurnNMove(-135, 0.5, pwr), // move and drift towards ball
-            new TrajDelay(0.3), // wait for ball pickup
-            new SnorfDrvAuto(false), // unsnorf
-            new TurnNMove(-135, -6.5, pwr), // go back
-            new TankTurnHdg(24.0, 0.6, -0.3),
-            new MoveOnHdg(24.0, 1.0, pwr),
-            new TrajDelay(0.5),
-            new ShootDrvAuto(null, false),
-        };
-        return traj;
-    }
-
-    public static ATrajFunction[] twoBallAutoSaved(double pwr){
-        pwr = 0.5;
-        ATrajFunction traj[] = {
-            new CoorOffset(24.0, -1.5, -3.5),
-            new ShootDrvAuto(false, null), // first shot
-            new TurnNMove(24.0, -2.5), // backing up
-            new TankTurnHdg(-135, -0.7, -0.5), // rotate to the right
-            new TrajDelay(0.3), // give it a sec
-            new SnorfDrvAuto(true), // snorf
-            new Waypt(-7.0, -11.0, 0.3), // move towards ball
-            new TurnNMove(-135, 0.5, pwr), // move and drift towards ball
-            new TrajDelay(0.3), // wait for ball pickup
-            new SnorfDrvAuto(false), // unsnorf
-            new TurnNMove(-135, -4.0, pwr), // go back
-            new TankTurnHdg(24.0, pwr, -pwr),
-            new TrajDelay(0.5),
-            new Waypt(-3.5, -3.5, 0.5),
-            new TankTurnHdg(24.0, pwr, -pwr),
-            new TankTimed(0.5, 0.2, 0.2),
-            new TrajDelay(0.5),
-            new ShootDrvAuto(null, false),
-        };
-        return traj;
-    }
-
-    public static ATrajFunction[] threeBall_BC_Auto(double pwr){
-        pwr = 0.5;
-        ATrajFunction traj[] = {
-            new CoorOffset(-66.0, 4.0, -1.5),
-            new ShootDrvAuto(false, null),
-            new TrajDelay(0.3),
-            // new TurnNMove(-66.0, -1.5, pwr),
-            new SnorfDrvAuto(true),
-            new TankTurnHdg(-200.0, -0.7, -0.5),
-            new TurnNMove(-204.0, 18.0, pwr),
-            new TurnNMove(-205.0, 1.0, 0.3),
-            new TrajDelay(0.7),            
-            new TurnNMove(-190.0, -17.1, pwr),
-            new SnorfDrvAuto(false),
-            new TankTimed(0.2, pwr, pwr),
-            // new TankTurnHdg(270.0, 0.2, -0.6),
-            new TankTurnHdg(-66, 0.5, -0.2),
-            new TurnNMove(-66.0, 1.0, pwr),
-            new TankTimed(0.5, 0.3, 0.3),
-            new TrajDelay(0.2),
-            new ShootDrvAuto(false, false),
-            new TurnNMove(-66.0, -1.5),
-            new TankTurnHdg(0.0, -0.4, -0.6),
-            new TankTurnHdg(90.0, 0.4,-0.6),
-
-
-            // new Waypt(-10.0, 0.0, pwr),
-            // new TankTurnHdg(-66.0, 0.5, 0.3),
-            // new TurnNMove(-66.0, 2.5, pwr),
-            // new ShootDrvAuto(false, false),
-        };
-        return traj;
-    }
+    
 
 }

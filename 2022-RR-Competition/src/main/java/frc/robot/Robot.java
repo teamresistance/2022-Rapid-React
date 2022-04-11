@@ -160,29 +160,29 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         
-        // //For Testing various autonomous selections from teleop button
-        // if (JS_IO.btnAuto.isDown() && state == 0){  //Execute selected Trajectory.  CoD 9
-        //     state = 1;
-        // } else if (JS_IO.btnAuto.isUp() && (state != 0) && (state != 3)){   //return to teleop
-        //     state = 3;
-        // }
-        // switch(state){
-        //     case 0:
-        //         Drv_Teleop.update();
-        //         break;
-        //     case 1:
-        //         Drv_Auto.init();
-        //         state++;
-        //         break;
-        //     case 2:
-        //         Drv_Auto.update();
-        //         break;
-        //     case 3:
-        //         Drv_Auto.disable();
-        //         Drv_Teleop.init();
-        //         state = 0;
-        //         break;
-        // }
+        //For Testing various autonomous selections from teleop button
+        if (JS_IO.btnAuto.isDown() && state == 0){  //Execute selected Trajectory.  CoD 9
+            state = 1;
+        } else if (JS_IO.btnAuto.isUp() && (state != 0) && (state != 3)){   //return to teleop
+            state = 3;
+        }
+        switch(state){
+            case 0:
+                Drv_Teleop.update();
+                break;
+            case 1:
+                Drv_Auto.init();
+                state++;
+                break;
+            case 2:
+                Drv_Auto.update();
+                break;
+            case 3:
+                Drv_Auto.disable();
+                Drv_Teleop.init();
+                state = 0;
+                break;
+        }
 
         Drive.update();
         Drv_Teleop.update();
