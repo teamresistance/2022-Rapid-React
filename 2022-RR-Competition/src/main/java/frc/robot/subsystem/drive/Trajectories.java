@@ -262,6 +262,11 @@ public class Trajectories {
 
     public static ATrajFunction[] snorfShootTest(double pwr) {
         ATrajFunction[] traj = {
+            //MOH_Shoot test
+            new CoorOffset(0.0, 0.0, 0.0),          //No offsets
+            new MOH_Shoot(0.0, 10.0, 8.0, 0.7),     //0.0 hdg for 10', shoot at 8'
+            new TankTimed(0.2, -0.2, -0.2)          //brake
+
             // new CoorOffset(0.0, 0.0, 0.0),
             // new SnorfDrvAuto(true),
             // new Waypt(5.0, 5.0, 0.4),
@@ -272,12 +277,12 @@ public class Trajectories {
             // new TurnNMove(0.0, 10.0, 0.3),
             // new TankTimed(0.2, -0.2, -0.2)
 
-            new ShootDrvAuto(true, null),
-            new TurnNMove(0.0, -2.0, 0.5),
+            // new ShootDrvAuto(true, null),
+            // new TurnNMove(0.0, -2.0, 0.5),
             // new ShootDrvAuto(true, null),
             // new TurnNMove(-45.0,74.0, 0.5),
-            new Waypt(-3.0, 0.0, 0.5),
-            new TankTurnHdg(0.0, 0.5, -0.2)
+            // new Waypt(-3.0, 0.0, 0.5),
+            // new TankTurnHdg(0.0, 0.5, -0.2)
 
             // new MoveOnHdg(0.0, 5.0, 0.5),
             // new TankTimed(0.3, -0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
