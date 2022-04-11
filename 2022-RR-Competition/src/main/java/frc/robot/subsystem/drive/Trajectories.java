@@ -38,30 +38,6 @@ public class Trajectories {
         switch(chsr.getSelected()){
             case "getEmpty":
             return getEmpty(pwr);
-            case "oneBall_X":       //Start at P1 - 6, Shoot then back up.
-            return oneBall_X(pwr);
-            case "twoBall_C":       //Start at P5, shoot, swing around to C, return to P5 & shoot right.
-            return twoBall_C(pwr);
-            case "twoBall_XC":      //Start at P7, get C, return to P5 & shoot 2.
-            return twoBall_C(pwr);
-            case "threeBall_BG":    //Start at P2, shoot, swing around to B then G, return to P2 & shoot 2.
-            return threeBall_BG(pwr);
-            case "threeBall_AB":    //Start at P2, shoot, swing around to A then B, return to P2 & shoot 2.
-            return threeBall_AB(pwr);
-            case "SnorfShootTest":
-            return snorfShootTest(pwr);
-            case "getCargo2":
-            return getCargo2(pwr);
-            case "getCargo3":
-            return getCargo3(pwr);
-            case "getCargo4":
-            return getCargo4(pwr);
-            case "getCargo5":
-            return getCargo5(pwr);
-            case "getCargo6":
-            return getCargo6(pwr);
-            case "wayPtTest":
-            return wayPtTest(pwr);
             case "oneCargo":
             return oneBallAuto(pwr);
             case "twoBall_C":
@@ -232,32 +208,32 @@ public class Trajectories {
         return traj;
     }
 
-    /**
-     * 2 Ball Auto.  Start at P5, shoot, swing around to C, return to P5 & shoot right (single ball fills right first).
-     * @param pwr
-     * @return
-     */
-    public static ATrajFunction[] twoBall_C(double pwr){
-        pwr = 0.5;
-        ATrajFunction traj[] = {
-            new CoorOffset(24.0, -1.5, -3.5),   // Adj offsets for P7 position
-            new ShootDrvAuto(false, null),      // first shot
-            new TurnNMove(24.0, -2.5),          // backing up
-            new TankTurnHdg(-135, -0.7, -0.5),  // rotate to the right
-            new TrajDelay(0.3),                 // give it a sec
-            new SnorfDrvAuto(true),             // snorf
-            new MoveOnHdg(-135, 6.0, pwr),
-            new TurnNMove(-135, 0.5, pwr),      // move and drift towards ball
-            new TrajDelay(0.3),                 // wait for ball pickup
-            new SnorfDrvAuto(false),            // unsnorf
-            new TurnNMove(-135, -6.5, pwr),     // go back
-            new TankTurnHdg(24.0, 0.6, -0.3),
-            new MoveOnHdg(24.0, 1.0, pwr),
-            new TrajDelay(0.5),
-            new ShootDrvAuto(null, false),
-        };
-        return traj;
-    }
+    // /**
+    //  * 2 Ball Auto.  Start at P5, shoot, swing around to C, return to P5 & shoot right (single ball fills right first).
+    //  * @param pwr
+    //  * @return
+    //  */
+    // public static ATrajFunction[] twoBall_C(double pwr){
+    //     pwr = 0.5;
+    //     ATrajFunction traj[] = {
+    //         new CoorOffset(24.0, -1.5, -3.5),   // Adj offsets for P7 position
+    //         new ShootDrvAuto(false, null),      // first shot
+    //         new TurnNMove(24.0, -2.5),          // backing up
+    //         new TankTurnHdg(-135, -0.7, -0.5),  // rotate to the right
+    //         new TrajDelay(0.3),                 // give it a sec
+    //         new SnorfDrvAuto(true),             // snorf
+    //         new MoveOnHdg(-135, 6.0, pwr),
+    //         new TurnNMove(-135, 0.5, pwr),      // move and drift towards ball
+    //         new TrajDelay(0.3),                 // wait for ball pickup
+    //         new SnorfDrvAuto(false),            // unsnorf
+    //         new TurnNMove(-135, -6.5, pwr),     // go back
+    //         new TankTurnHdg(24.0, 0.6, -0.3),
+    //         new MoveOnHdg(24.0, 1.0, pwr),
+    //         new TrajDelay(0.5),
+    //         new ShootDrvAuto(null, false),
+    //     };
+    //     return traj;
+    // }
 
     /**
      * 2 ball auto.  Start at P7, get C, return to P5 and Shoot 2.
