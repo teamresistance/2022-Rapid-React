@@ -40,7 +40,7 @@ import frc.robot.testing.ShootTest;
 import frc.robot.testing.SnorfTest;
 import frc.robot.testing.TimerTest;
 //TODO: check class placement
-// import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -89,7 +89,7 @@ public class Robot extends TimedRobot {
         Snorfler.teamColorchsrInit();
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
-        // CameraServer.startAutomaticCapture();
+        CameraServer.startAutomaticCapture();
     }
 
     /**
