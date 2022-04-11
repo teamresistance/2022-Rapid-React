@@ -4,7 +4,7 @@ import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
 
 /**
- * This ATrajFunction holds heading while it moves distance.
+ * This ATrajFunction uses Acrade Drive to hold heading while it moves distance.
  */
 public class MoveOnHdg extends ATrajFunction {
 
@@ -18,10 +18,10 @@ public class MoveOnHdg extends ATrajFunction {
 
     /**
      * Constructor
-     * @param eHdg
-     * @param eDist
-     * @param ePwr
-     * @param errHdgLT
+     * @param eHdg - Hold this heading
+     * @param eDist - Distance to move forward
+     * @param ePwr = Max power to apply from DB proportionally down to min.
+     * @param errHdgLT - Rotate first until heading less then this, than move forward on hdg
      */
     public MoveOnHdg(double eHdg, double eDist, double ePwr, int eErrHdgLT) {
         hdgSP = eHdg;
@@ -32,9 +32,9 @@ public class MoveOnHdg extends ATrajFunction {
 
     /**
      * Constructor - errHdgLT defaults to 180
-     * @param eHdg
-     * @param eDist
-     * @param ePwr
+     * @param eHdg - Hold this heading
+     * @param eDist - Distance to move forward
+     * @param ePwr = Max power to apply from DB proportionally down to min.
      */
     public MoveOnHdg(double eHdg, double eDist, double ePwr) {
         this(eHdg, eDist, ePwr, 180);
@@ -42,8 +42,8 @@ public class MoveOnHdg extends ATrajFunction {
 
     /**
      * Constructor - ePwr defaults to 1.0 & errHdgLT to 180
-     * @param eHdg
-     * @param eDist
+     * @param eHdg - Hold this heading
+     * @param eDist - Distance to move forward
      */
     public MoveOnHdg(double eHdg, double eDist) {
         this(eHdg, eDist, 1.0, 180);
@@ -52,28 +52,10 @@ public class MoveOnHdg extends ATrajFunction {
     public void execute() {
         switch (state) {
         case 0: // Init Trajectory, turn to hdg then (1) ...
-            // pidHdg = new PIDXController(1.0/45, 0.0, 0.0);
-            // pidHdg.enableContinuousInput(-180.0, 180.0);
-            //Set extended values SP, PB, DB, Mn, Mx, Exp, Clmp
             //Set extended values pidRef,    SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
             PIDXController.setExt(pidHdg, hdgSP, (1.0/70), 5.0, 0.3, pwrMx, 1.0, true);
-            // pidHdg.setSetpoint(hdgSP);
-            // pidHdg.setInDB(5.0);
-            // pidHdg.setOutMn(0.3);
-            // pidHdg.setOutMx(pwrMx);
-            // pidHdg.setOutExp(1.0);
-            // pidDist.setClamp(true);
-
-            // pidDist = new PIDXController(-1.0/10, 0.0, 0.0);
-            //Set extended values SP, PB, DB, Mn, Mx, Exp, Clmp
             //Set extended values  pidRef,     SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
             PIDXController.setExt(pidDist, distSP, (-1.0/10), 0.5, 0.2, pwrMx, 1.0, true);
-            // pidDist.setSetpoint(distSP);
-            // pidDist.setInDB(0.5);
-            // pidDist.setOutMn(0.2);
-            // pidDist.setOutMx(pwrMx);
-            // pidDist.setOutExp(1.0);
-            // pidDist.setClamp(true);
 
             sqOrQT = false; //tank(1)/arcade(2)-apply sqrt | curvature(3)-quick turn
             diffType = 2;   //0-Off | 1=tank | 2=arcade | 3=curvature
@@ -87,17 +69,17 @@ public class MoveOnHdg extends ATrajFunction {
             trajCmd[0] = pidHdg.calculateX(hdgFB());   //cmd[0]=rotate(X), [1]=fwd(Y)
             trajCmd[1] = 0.0;
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);    //Send to Drive system
-            prtShtuff("MOH");
-            if (Math.abs(pidHdg.getPositionError()) > errHdgLT ) break;   // Chk hdg error
-            state++;
+            // prtShtuff("MOH");
+            if (Math.abs(pidHdg.getPositionError()) < errHdgLT ) state++;   // Chk hdg error
+            break;
         case 2: // Move forward, steer Auto Heading and Dist
             System.out.println("MOH - 2");
             trajCmd[0] = pidHdg.calculateX(hdgFB());   //cmd[0]=rotate(X), [1]=fwd(Y)
             trajCmd[1] = pidDist.calculateX(distFB()); //cmd[0]=rotate(X), [1]=fwd(Y)
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);
             // prtShtuff("MOH");
-            if (!pidDist.atSetpoint() || !pidHdg.atSetpoint()) break;   // Chk both done
-            state++;
+            if (pidDist.atSetpoint() && pidHdg.atSetpoint()) state++;   // Chk both done
+            break;
         case 3: // Done
             setDone();  //Flag done and stop motors
             System.out.println("MOH - 3: ---------- Done -----------");

@@ -87,10 +87,10 @@ public class Snorfler {
         // if not rejecting ball and done with rejecting, normal
 
         if (/*!colorString.equals(enemyColor)*/ true && !csBallReject) {
-            if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && (state == 0 || state == 22 || state == 30))  state = 1; // Starts the snorfling
+            if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && (state == 0 || state == 22 || state == 31))  state = 1; // Starts the snorfling
             if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) &&
-                (state != 0 && state != 12 && state != 30)) state = 30;//Stop snorf but elv for 2 sec.
-            if (btnRejectSnorfle.isDown() && (state < 11 || state == 22 || state == 30))  state = 11; // Start Manual Rejection
+                (state != 0 && state != 12 && state != 31)) state = 30;//Stop snorf but elv for 2 sec.
+            if (btnRejectSnorfle.isDown() && (state < 11 || state == 22 || state == 31))  state = 11; // Start Manual Rejection
             if (btnRejectSnorfle.isUp() && state == 12) state = 0;   // Stop Manual Rejection
         } else if (!csBallReject) {
             System.out.println("State 21");
@@ -144,7 +144,13 @@ public class Snorfler {
                 }
                 break; 
 
-            case 30: //Finish snorf but keep elv for 4 sec longer
+            case 30: //Finish snorf but keep snorfe mtr on for 2 & elv for 6 sec longer
+                cmdUpdate(false, MTRSPD, ELVSPD);
+                if (snorfTimer.hasExpired(2.0, state)){
+                    state++;
+                }
+                break;           
+            case 31:
                 cmdUpdate(false, 0.0, ELVSPD);
                 if (snorfTimer.hasExpired(4.0, state)){
                     state = 0;

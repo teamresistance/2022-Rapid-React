@@ -1,10 +1,8 @@
 package frc.robot.subsystem.drive;
 
-import java.io.PrintWriter;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.io.vision.RPI;
+// import frc.io.vision.RPI;
 import frc.robot.subsystem.drive.trajFunk.*;
 
 public class Trajectories {
@@ -40,14 +38,18 @@ public class Trajectories {
         switch(chsr.getSelected()){
             case "getEmpty":
             return getEmpty(pwr);
+            case "oneBall_X":       //Start at P1 - 6, Shoot then back up.
+            return oneBall_X(pwr);
+            case "twoBall_C":       //Start at P5, shoot, swing around to C, return to P5 & shoot right.
+            return twoBall_C(pwr);
+            case "twoBall_XC":      //Start at P7, get C, return to P5 & shoot 2.
+            return twoBall_C(pwr);
+            case "threeBall_BG":    //Start at P2, shoot, swing around to B then G, return to P2 & shoot 2.
+            return threeBall_BG(pwr);
+            case "threeBall_AB":    //Start at P2, shoot, swing around to A then B, return to P2 & shoot 2.
+            return threeBall_AB(pwr);
             case "SnorfShootTest":
             return snorfShootTest(pwr);
-            case "ball3_A_B":   //Start at P2, shoot, backup & swing around to A then B, return to P2 & shoot 2.
-            return ball3_A_B(pwr);
-            case "ball2_C":     //Start at P7, get C, return to P5 and Shoot 2
-            return ball2_C(pwr);
-            case "ball1_X":     //Start at P?, Shoot 1, backup
-            return ball1_X(pwr);
             case "getCargo2":
             return getCargo2(pwr);
             case "getCargo3":
@@ -209,45 +211,136 @@ public class Trajectories {
     }
 
 
-    public static ATrajFunction[] snorfShootTest(double pwr) {
-        ATrajFunction[] traj = {
-            // new CoorOffset(0.0, 0.0, 0.0),
-            // new SnorfDrvAuto(true),
-            // new Waypt(5.0, 5.0, 0.4),
-            // new TankTurnHdg(90.0, 0.3, -0.5),
-            // new SnorfDrvAuto(false),
+    /**
+     * 1 ball auto.  Start at P1 - 6, Shoot right then back up passed line.
+     * @param pwr
+     * @return
+     */
+    public static ATrajFunction[] oneBall_X(double pwr){
+        pwr = 0.3;
+        ATrajFunction traj[] = {
+            // new CoorOffset(-66.0, 4.5, -0.5),   //Adj offsets for P1 position
+            new CoorOffset(-66.0, 4.0, -1.5),   //Adj offsets for P2 position
+            // new CoorOffset(-66.0, 3.5, -2.0),   //Adj offsets for P3 position
+            // new CoorOffset(24.0, -2.8, -3.4),   //Adj offsets for P4 position
+            // new CoorOffset(24.0, -1.8, -3.8),   //Adj offsets for P5 position
+            // new CoorOffset(24.0, -0.8, -4.2),   //Adj offsets for P6 position
+            new ShootDrvAuto(false, null),      //Shoot left
+            new TankTimed(1.5, -pwr, -pwr)      //Backup ~10'
+            // new TurnNMove(24.0, -4.0, pwr),
+        };
+        return traj;
+    }
 
-            // new TurnNMove(0.0, 0.0, 0.3),
-            // new TurnNMove(0.0, 10.0, 0.3),
-            // new TankTimed(0.2, -0.2, -0.2)
+    /**
+     * 2 Ball Auto.  Start at P5, shoot, swing around to C, return to P5 & shoot right (single ball fills right first).
+     * @param pwr
+     * @return
+     */
+    public static ATrajFunction[] twoBall_C(double pwr){
+        pwr = 0.5;
+        ATrajFunction traj[] = {
+            new CoorOffset(24.0, -1.5, -3.5),   // Adj offsets for P7 position
+            new ShootDrvAuto(false, null),      // first shot
+            new TurnNMove(24.0, -2.5),          // backing up
+            new TankTurnHdg(-135, -0.7, -0.5),  // rotate to the right
+            new TrajDelay(0.3),                 // give it a sec
+            new SnorfDrvAuto(true),             // snorf
+            new MoveOnHdg(-135, 6.0, pwr),
+            new TurnNMove(-135, 0.5, pwr),      // move and drift towards ball
+            new TrajDelay(0.3),                 // wait for ball pickup
+            new SnorfDrvAuto(false),            // unsnorf
+            new TurnNMove(-135, -6.5, pwr),     // go back
+            new TankTurnHdg(24.0, 0.6, -0.3),
+            new MoveOnHdg(24.0, 1.0, pwr),
+            new TrajDelay(0.5),
+            new ShootDrvAuto(null, false),
+        };
+        return traj;
+    }
 
-            new ShootDrvAuto(true, null),
-            new TurnNMove(0.0, -2.0, 0.5),
-            // new ShootDrvAuto(true, null),
-            // new TurnNMove(-45.0,74.0, 0.5),
-            new Waypt(-3.0, 0.0, 0.5),
-            new TankTurnHdg(0.0, 0.5, -0.2)
+    /**
+     * 2 ball auto.  Start at P7, get C, return to P5 and Shoot 2.
+     * @param pwr
+     * @return
+     */
+    public static ATrajFunction[] twoBall_XC(double pwr) {
+        pwr = 1.0;
+        ATrajFunction traj[] = {
+            new CoorOffset(-165.0, -5.0, -5.0), //Adj offsets for P7 position
+            new SnorfDrvAuto(true),             //Drop snorfler
+            new TrajDelay(0.5),                 //Wait 0.5 sec for Snorfe to settle.
+            new TurnNMove(-165.0, 7.0, pwr),    //already at -165 degrees, go fwd 7 feet
+            new TurnNMove(-165.0, -0.5, -0.5),  //brake
+            new SnorfDrvAuto(false),            //Stops snorfler
+            new TankTurnHdg(24, 0.8, -0.2),     //Pivot right to 24 deg hdg, towards P5
+            new TurnNMove(24.0, 10.0, pwr),     //Fwd 10' back to P5
+            new TrajDelay(0.5),                 //Wait 0.5 sec for bot to settle.
+            new ShootDrvAuto(false),            //Shoot both
+        };
+        return traj;
+    }
 
-            // new MoveOnHdg(0.0, 5.0, 0.5),
-            // new TankTimed(0.3, -0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
-            // new TankTurnHdg(80.0, 0.5, -0.5),   //-pwr is bkwd, +pwr fwd
-            // new SnorfDrvAuto(true),
-            // new TurnNMove(90.0, 5.0, 0.5),
-            // new SnorfDrvAuto(false),
-            // new MoveOnHdg(90.0, -1.5),
-            // new TankTimed(0.3, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            // new TankTurnHdg(20.0, -0.5, 0.2),   //-pwr is bkwd, +pwr fwd
-            // new TurnNMove(20.0, 3.0, 0.5),
-            // new ShootDrvAuto(false), //Shoots high setting
-            // // new TurnNMove(90.0, -5.0, 0.5),
-            // // new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
-            // // new MoveOnHdg(180.0, 5.0, 0.5),
+    public static ATrajFunction[] twoBallAutoSaved(double pwr){
+        pwr = 0.5;
+        ATrajFunction traj[] = {
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(false, null), // first shot
+            new TurnNMove(24.0, -2.5), // backing up
+            new TankTurnHdg(-135, -0.7, -0.5), // rotate to the right
+            new TrajDelay(0.3), // give it a sec
+            new SnorfDrvAuto(true), // snorf
+            new Waypt(-7.0, -11.0, 0.3), // move towards ball
+            new TurnNMove(-135, 0.5, pwr), // move and drift towards ball
+            new TrajDelay(0.3), // wait for ball pickup
+            new SnorfDrvAuto(false), // unsnorf
+            new TurnNMove(-135, -4.0, pwr), // go back
+            new TankTurnHdg(24.0, pwr, -pwr),
+            new TrajDelay(0.5),
+            new Waypt(-3.5, -3.5, 0.5),
+            new TankTurnHdg(24.0, pwr, -pwr),
+            new TankTimed(0.5, 0.2, 0.2),
+            new TrajDelay(0.5),
+            new ShootDrvAuto(null, false),
+        };
+        return traj;
+    }
 
-            // // new TrajDelay(3.0),
-            // // new SnorfDrvAuto(true),
-            // // new TrajDelay(3.0),
-            // // new SnorfDrvAuto(false),
-            // // new ShootDrvAuto(false), //Shoots high setting
+    /**
+     * Start at P2, shoot, swing around to B then G, return to P2 & shoot 2 both.
+     * @param pwr
+     * @return
+     */
+    public static ATrajFunction[] threeBall_BG(double pwr){
+        pwr = 0.5;
+        ATrajFunction traj[] = {
+            new CoorOffset(-66.0, 4.0, -1.5),
+            new ShootDrvAuto(false, null),
+            new TrajDelay(0.3),
+            // new TurnNMove(-66.0, -1.5, pwr),
+            new SnorfDrvAuto(true),
+            new TankTurnHdg(-200.0, -0.7, -0.5),
+            new TurnNMove(-204.0, 18.0, pwr),
+            new TurnNMove(-205.0, 1.0, 0.3),
+            new TrajDelay(0.7),            
+            new TurnNMove(-190.0, -17.1, pwr),
+            new SnorfDrvAuto(false),
+            new TankTimed(0.2, pwr, pwr),
+            // new TankTurnHdg(270.0, 0.2, -0.6),
+            new TankTurnHdg(-66, 0.5, -0.2),
+            new TurnNMove(-66.0, 1.0, pwr),
+            new TankTimed(0.5, 0.3, 0.3),
+            new TrajDelay(0.2),
+            new ShootDrvAuto(false, false),
+            new TurnNMove(-66.0, -1.5),
+            new TankTurnHdg(0.0, -0.4, -0.6),
+            new TankTurnHdg(90.0, 0.4,-0.6),
+
+
+            // new Waypt(-10.0, 0.0, pwr),
+            // new TankTurnHdg(-66.0, 0.5, 0.3),
+            // new TurnNMove(-66.0, 2.5, pwr),
+            // new ShootDrvAuto(false, false),
         };
         return traj;
     }
@@ -257,7 +350,7 @@ public class Trajectories {
      * @param pwr
      * @return
      */
-    public static ATrajFunction[] ball3_A_B(double pwr) { //was getCargo1
+    public static ATrajFunction[] threeBall_AB(double pwr) { //was getCargo1
         pwr = 1.0;
         ATrajFunction traj[] = {
             new CoorOffset(-66.0, 4.0, -1.5),   //Adj offsets for P2 position
@@ -284,44 +377,50 @@ public class Trajectories {
         return traj;
     }
 
-    /**
-     * 2 ball auto.  Start at P7, get C, return to P5 and Shoot 2.
-     * @param pwr
-     * @return
-     */
-    public static ATrajFunction[] ball2_C(double pwr) {
-        pwr = 1.0;
-        ATrajFunction traj[] = {
-            new CoorOffset(-165.0, -5.0, -5.0), //Adj offsets for P7 position
-            new SnorfDrvAuto(true),             //Drop snorfler
-            new TrajDelay(0.5),                 //Wait 0.5 sec for Snorfe to settle.
-            new TurnNMove(-165.0, 7.0, pwr),    //already at -165 degrees, go fwd 7 feet
-            new TurnNMove(-165.0, -0.5, -0.5),  //brake
-            new SnorfDrvAuto(false),            //Stops snorfler
-            new TankTurnHdg(24, 0.8, -0.2),     //Pivot right to 24 deg hdg, towards P5
-            new TurnNMove(24.0, 10.0, pwr),     //Fwd 10' back to P5
-            new TrajDelay(0.5),                 //Wait 0.5 sec for bot to settle.
-            new ShootDrvAuto(false),            //Shoot both
-        };
-        return traj;
-    }
+    public static ATrajFunction[] snorfShootTest(double pwr) {
+        ATrajFunction[] traj = {
+            //MOH_Shoot test
+            new CoorOffset(0.0, 0.0, 0.0),          //No offsets
+            new MOH_Shoot(0.0, 10.0, 8.0, 0.7),     //0.0 hdg for 10', shoot at 8'
+            new TankTimed(0.2, -0.2, -0.2)          //brake
 
-    /**
-     * 1 ball auto.  Start at P1-6, Shoot right, backup passed line.
-     * @param pwr
-     * @return
-     */
-    public static ATrajFunction[] ball1_X(double pwr) {
-        pwr = 1.0;
-        ATrajFunction traj[] = {
-            // new CoorOffset(-66.0, 4.5, -0.5),   //Adj offsets for P1 position
-            new CoorOffset(-66.0, 4.0, -1.5),   //Adj offsets for P2 position
-            // new CoorOffset(-66.0, 3.5, -2.0),   //Adj offsets for P3 position
-            // new CoorOffset(24.0, -2.8, -3.4),   //Adj offsets for P4 position
-            // new CoorOffset(24.0, -1.8, -3.8),   //Adj offsets for P5 position
-            // new CoorOffset(24.0, -0.8, -4.2),   //Adj offsets for P6 position
-            new ShootDrvAuto(null, false),      //Shoot right
-            new TankTimed(1.5, -pwr, -pwr)      //Backup ~10'
+            // new CoorOffset(0.0, 0.0, 0.0),
+            // new SnorfDrvAuto(true),
+            // new Waypt(5.0, 5.0, 0.4),
+            // new TankTurnHdg(90.0, 0.3, -0.5),
+            // new SnorfDrvAuto(false),
+
+            // new TurnNMove(0.0, 0.0, 0.3),
+            // new TurnNMove(0.0, 10.0, 0.3),
+            // new TankTimed(0.2, -0.2, -0.2)
+
+            // new ShootDrvAuto(true, null),
+            // new TurnNMove(0.0, -2.0, 0.5),
+            // new ShootDrvAuto(true, null),
+            // new TurnNMove(-45.0,74.0, 0.5),
+            // new Waypt(-3.0, 0.0, 0.5),
+            // new TankTurnHdg(0.0, 0.5, -0.2)
+
+            // new MoveOnHdg(0.0, 5.0, 0.5),
+            // new TankTimed(0.3, -0.3, -0.3), //brake, -pwr is bkwd, +pwr fwd
+            // new TankTurnHdg(80.0, 0.5, -0.5),   //-pwr is bkwd, +pwr fwd
+            // new SnorfDrvAuto(true),
+            // new TurnNMove(90.0, 5.0, 0.5),
+            // new SnorfDrvAuto(false),
+            // new MoveOnHdg(90.0, -1.5),
+            // new TankTimed(0.3, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
+            // new TankTurnHdg(20.0, -0.5, 0.2),   //-pwr is bkwd, +pwr fwd
+            // new TurnNMove(20.0, 3.0, 0.5),
+            // new ShootDrvAuto(false), //Shoots high setting
+            // // new TurnNMove(90.0, -5.0, 0.5),
+            // // new TankTimed(0.2, 0.3, 0.3), //brake, +pwr is bkwd, -pwr fwd
+            // // new MoveOnHdg(180.0, 5.0, 0.5),
+
+            // // new TrajDelay(3.0),
+            // // new SnorfDrvAuto(true),
+            // // new TrajDelay(3.0),
+            // // new SnorfDrvAuto(false),
+            // // new ShootDrvAuto(false), //Shoots high setting
         };
         return traj;
     }
@@ -425,7 +524,5 @@ public class Trajectories {
         };
         return traj;
     }
-
-    
 
 }

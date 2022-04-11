@@ -156,7 +156,9 @@ public class Shooter {
      * 
      */
     private static void cmdUpdate(boolean select_low, boolean left_trigger, boolean right_trigger) {
-        select_low_SV.set(select_low);
+        //NOTE: Low regulator was removed but not the SV.  Default ALWAYS off.
+        // select_low_SV.set(select_low);
+        select_low_SV.set(false);
         left_catapult_SV.set(left_trigger);
         right_catapult_SV.set(right_trigger);
     }

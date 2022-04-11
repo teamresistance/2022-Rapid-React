@@ -52,6 +52,7 @@ public class Climber {
     private static boolean slideReset = false;
     private static int prvState = 0;            // Used to return from state 90, eStop.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
+    private static boolean climbDone = false;
     private static boolean brakeTest = false;
 
     //---- Combined status of left & right extended feedbacks. ----
@@ -136,6 +137,7 @@ public class Climber {
             case 0: // Turns everything off
                 //        arm, pinA,  pinB,  Slide
                 cmdUpdate(0.0, false, false, false);
+                climbDone = false;
                 stateTmr.clearTimer();
                 break;
             //----- Prep arm and move to low bar -----
@@ -247,6 +249,7 @@ public class Climber {
                 break;
             case 20: // Turn arm motor off.  --- DONE! ---
                 cmdUpdate(0.0, true, false, true);
+                climbDone = true;
                 break;
 
             //------ Resync Slider after DS shutdown when sliders are extended.
@@ -307,6 +310,11 @@ public class Climber {
                 eStop = false;
                 armStartTmr.clearTimer();
             }
+        }
+
+        if(climbDone){              //If climber is done (20), to set brake, regardless of passed cmds,
+            rotSpd = 0.0;           //set rotation to 0.0 and 
+            climbEnabled = false;   //climbEnable false.
         }
 
         climberMotor.set(rotSpd);   //Issue rotation cmd.
