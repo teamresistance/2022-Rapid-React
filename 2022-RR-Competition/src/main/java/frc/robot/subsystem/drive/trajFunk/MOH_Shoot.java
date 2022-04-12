@@ -16,8 +16,8 @@ public class MOH_Shoot extends ATrajFunction {
     private double pwrMx = 0.0;         //Max power to apply to pidDist. 
     private int errHdgLT = 180;         //Hdg DB when doing just turn to hdg, case 1.
     private boolean hasShot = false;    //Have requested Shot by Shooter
-    private static double hdgFB = 0.0;  //For testing
-    private static double distFB = 0.0; //For testing
+    // private static double hdgFB = 0.0;  //For testing
+    // private static double distFB = 0.0; //For testing
 
     // dont use negative power - why?
 
@@ -59,7 +59,7 @@ public class MOH_Shoot extends ATrajFunction {
     }
 
     public void execute() {
-        distFB += 0.5;
+        // distFB += 0.5;
         switch (state) {
         case 0: // Init Trajectory, turn to hdg then (1) ...
             //Set extended values pidRef,    SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
@@ -76,7 +76,7 @@ public class MOH_Shoot extends ATrajFunction {
             System.out.println("MOHS - 0");
         case 1: // IF position error (hdg) GT errHdgLT turn first the MOH
             System.out.println("MOHS - 1");
-            trajCmd[0] = pidHdg.calculateX(hdgFB);   //cmd[0]=rotate(X), [1]=fwd(Y)
+            trajCmd[0] = pidHdg.calculateX(hdgFB());   //cmd[0]=rotate(X), [1]=fwd(Y)
             trajCmd[1] = 0.0;
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);    //Send to Drive system
             // prtShtuff("MOHS");
@@ -85,8 +85,8 @@ public class MOH_Shoot extends ATrajFunction {
             break;
         case 2: // Move forward, steer Auto Heading and Dist
             System.out.println("MOHS - 2");
-            trajCmd[0] = pidHdg.calculateX(hdgFB);   //cmd[0]=rotate(X), [1]=fwd(Y)
-            trajCmd[1] = pidDist.calculateX(distFB); //cmd[0]=rotate(X), [1]=fwd(Y)
+            trajCmd[0] = pidHdg.calculateX(hdgFB());   //cmd[0]=rotate(X), [1]=fwd(Y)
+            trajCmd[1] = pidDist.calculateX(distFB()); //cmd[0]=rotate(X), [1]=fwd(Y)
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);
             // prtShtuff("MOH");
             if(chkHasShot(hasShot, distShtSP)) hasShot = true;          // Chk to shoot
@@ -114,7 +114,7 @@ public class MOH_Shoot extends ATrajFunction {
     }
 
     private static boolean chkHasShot(boolean _hasShot, double _distShtSP){
-        if(!_hasShot && (distFB > _distShtSP)){
+        if(!_hasShot && (distFB() > _distShtSP)){
             Shooter.reqLowDA_L = false;
             Shooter.reqLowDA_R = false;
             return true;
