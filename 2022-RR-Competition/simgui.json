@@ -25,6 +25,12 @@
       "/SmartDashboard/Drv/Auto/Choice": "String Chooser",
       "/SmartDashboard/Drv/Tele/Choice": "String Chooser",
       "/SmartDashboard/Drv/Traj/Choice": "String Chooser",
+      "/SmartDashboard/Drv/Traj/Choice/Position": "String Chooser",
+      "/SmartDashboard/Drv/Traj/Choice/Traj": "String Chooser",
+      "/SmartDashboard/Drv/Traj/Pos/Choice": "String Chooser",
+      "/SmartDashboard/Drv/Traj/Position Choice": "String Chooser",
+      "/SmartDashboard/Drv/Traj/Traj Choice": "String Chooser",
+      "/SmartDashboard/Drv/Traj/Traj/Choice": "String Chooser",
       "/SmartDashboard/JS/Choice": "String Chooser",
       "/SmartDashboard/Robot/TeamColor": "String Chooser"
     }
