@@ -8,7 +8,7 @@ public class Trajectories {
     private static double dfltPwr = 0.4;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty",  "oneBall_X", "twoBall_C", "threeBall_BG", "threeBall_AB", "oneBall_X_Test"
+        "getEmpty",  "oneBall_X", "twoBall_C", "threeBall_BG", "threeBall_AB", "snorfShootTest", "oneBall_X_Test"
     };
     // "ball3_A_B", "ball2_C","getCargo2", "getCargo3", "getCargo4", "getCargo5", 
     //     "getCargo6", "SnorfShootTest", "wayPtTest",
@@ -59,6 +59,8 @@ public class Trajectories {
             return threeBall_BG(pwr);
             case "threeBall_AB":
             return threeBall_AB(pwr);
+            case "snorfShootTest":
+            return snorfShootTest(pwr);
             case "oneBall_X_Test":
             // return oneBall_X_Test(pwr, chsrAutoPos.getSelected());       //As a choser
             return oneBall_X_Test(pwr, 
@@ -218,6 +220,18 @@ public class Trajectories {
             new ShootDrvAuto(false),            // shoot both
             // new ShootDrvAuto(false, false),     // shoot both
 
+        };
+        return traj;
+    }
+
+    /** Sonorflw Test */
+    public static ATrajFunction[] snorfShootTest(double pwr) {
+        ATrajFunction[] traj = {
+            //MOH_Shoot test
+            new CoorOffset(0.0, 0.0, 0.0),          //No offsets
+            new MOH_Shoot(0.0, 8.0, 9.0, 0.7),     //0.0 hdg for 10', shoot at 8'
+            new TrajDelay(1.0),
+            new TankTimed(0.2, -0.2, -0.2)          //brake
         };
         return traj;
     }

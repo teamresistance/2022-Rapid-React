@@ -6,6 +6,8 @@ import frc.util.PIDXController;
 
 /**
  * This ATrajFunction holds heading while it moves distance.
+ * Then shoots while moving or while drifting.  But only allowed to
+ * drift for 2 seconds.
  */
 public class MOH_Shoot extends ATrajFunction {
 
@@ -65,7 +67,7 @@ public class MOH_Shoot extends ATrajFunction {
             //Set extended values pidRef,    SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
             PIDXController.setExt(pidHdg, hdgSP, (1.0/70), 5.0, 0.3, pwrMx, 1.0, true);
             //Set extended values  pidRef,     SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
-            PIDXController.setExt(pidDist, distDrvSP, (-1.0/10), 0.5, 0.2, pwrMx, 1.0, true);
+            PIDXController.setExt(pidDist, distDrvSP, (-1.0/7), 0.3, 0.3, pwrMx, 1.0, true);
 
             sqOrQT = false; //tank(1)/arcade(2)-apply sqrt | curvature(3)-quick turn
             diffType = 2;   //0-Off | 1=tank | 2=arcade | 3=curvature
@@ -93,8 +95,12 @@ public class MOH_Shoot extends ATrajFunction {
             if (pidDist.atSetpoint() && pidHdg.atSetpoint()) state++;   // Chk both done
             break;
         case 3: // Allow bot to drift
-            sendDriveCmds(0.0, 0.0, false, 2);  // drifting
-            if(chkHasShot(hasShot, distShtSP)){
+            sendDriveCmds(0.0, 0.0, false, 2);      // drifting
+            if(trajTmr.hasExpired(3.0, state)) {    // but only for up to 2 seconds
+                hasShot = true;     
+                state++;
+            }
+            if(chkHasShot(hasShot, distShtSP)){     // or shoot before 2 seconds
                 hasShot = true;
                 state++;
             }

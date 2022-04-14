@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
+import frc.util.Timer;
 
 /**
  * This is a collection of classes to control driving (and robot)
@@ -34,6 +35,8 @@ public abstract class ATrajFunction {
     public static double hdgFB_sim = 0;     //For simulator testing
     public static double distFB_sim = 0;
     public static double radiusFB_sim = 0;
+
+    public static Timer trajTmr = new Timer(0.1);
 
 
     public static void initTraj() {
