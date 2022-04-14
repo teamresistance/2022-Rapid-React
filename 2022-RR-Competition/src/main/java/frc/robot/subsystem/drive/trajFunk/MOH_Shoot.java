@@ -18,10 +18,26 @@ public class MOH_Shoot extends ATrajFunction {
     private double pwrMx = 0.0;         //Max power to apply to pidDist. 
     private int errHdgLT = 180;         //Hdg DB when doing just turn to hdg, case 1.
     private boolean hasShot = false;    //Have requested Shot by Shooter
-    // private static double hdgFB = 0.0;  //For testing
-    // private static double distFB = 0.0; //For testing
+    private int opts = 3;               //Opts: bit0(1)-shotL, bit1(2)-shotR, bit3(4)-shot drift always
 
     // dont use negative power - why?
+
+    /**
+     * Constructor
+     * @param eHdg - Hdg to follow.
+     * @param eDistDrv - Disance to Move on Hdg
+     * @param eDistSht - Distance before it shoots, can be more than drive if drifting
+     * @param ePwr - Max power to apply to pidDist.
+     * @param errHdgLT - Hdg DB when doing just turn to hdg, case 1.
+     */
+    public MOH_Shoot(double eHdg, double eDistDrv, double eDistSht, double ePwr, int eErrHdgLT, int eOpts) {
+        hdgSP = eHdg;
+        distDrvSP = eDistDrv;
+        distShtSP = eDistSht;
+        pwrMx = Math.abs(ePwr);
+        errHdgLT = Math.abs(eErrHdgLT);
+        opts = eOpts;
+    }
 
     /**
      * Constructor
@@ -75,6 +91,7 @@ public class MOH_Shoot extends ATrajFunction {
             Drive.distRst();
             initSDB();
             state++;
+            trajTmr.clearTimer();
             System.out.println("MOHS - 0");
         case 1: // IF position error (hdg) GT errHdgLT turn first the MOH
             System.out.println("MOHS - 1");
@@ -82,7 +99,7 @@ public class MOH_Shoot extends ATrajFunction {
             trajCmd[1] = 0.0;
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);    //Send to Drive system
             // prtShtuff("MOHS");
-            if(chkHasShot(hasShot, distShtSP)) hasShot = true;              // Chk to shoot
+            if(chkHasShot(hasShot, distShtSP, opts)) hasShot = true;              // Chk to shoot
             if (Math.abs(pidHdg.getPositionError()) < errHdgLT ) state++;   // Chk hdg error
             break;
         case 2: // Move forward, steer Auto Heading and Dist
@@ -91,16 +108,17 @@ public class MOH_Shoot extends ATrajFunction {
             trajCmd[1] = pidDist.calculateX(distFB()); //cmd[0]=rotate(X), [1]=fwd(Y)
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);
             // prtShtuff("MOH");
-            if(chkHasShot(hasShot, distShtSP)) hasShot = true;          // Chk to shoot
+            if(chkHasShot(hasShot, distShtSP, opts)) hasShot = true;          // Chk to shoot
             if (pidDist.atSetpoint() && pidHdg.atSetpoint()) state++;   // Chk both done
             break;
         case 3: // Allow bot to drift
             sendDriveCmds(0.0, 0.0, false, 2);      // drifting
             if(trajTmr.hasExpired(3.0, state)) {    // but only for up to 2 seconds
+                if((opts & 4) > 0) chkHasShot(hasShot, -1.0, opts);  // if optioned, shoot anyway
                 hasShot = true;     
                 state++;
             }
-            if(chkHasShot(hasShot, distShtSP)){     // or shoot before 2 seconds
+            if(chkHasShot(hasShot, distShtSP, opts)){     // or shoot before 2 seconds
                 hasShot = true;
                 state++;
             }
@@ -119,10 +137,12 @@ public class MOH_Shoot extends ATrajFunction {
         // return strCmd;
     }
 
-    private static boolean chkHasShot(boolean _hasShot, double _distShtSP){
+    private static boolean chkHasShot(boolean _hasShot, double _distShtSP, int opts){
         if(!_hasShot && (distFB() > _distShtSP)){
-            Shooter.reqLowDA_L = false;
-            Shooter.reqLowDA_R = false;
+            // Shooter.reqLowDA_L = false;
+            // Shooter.reqLowDA_R = false;
+            Shooter.reqLowDA_L = (opts & 1) > 0 ? false : null; //If optioned, shoot left
+            Shooter.reqLowDA_R = (opts & 2) > 0 ? false : null; //If optioned, shoot right
             return true;
         }
         return _hasShot;

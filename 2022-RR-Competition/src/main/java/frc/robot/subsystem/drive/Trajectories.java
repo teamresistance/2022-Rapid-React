@@ -229,8 +229,10 @@ public class Trajectories {
         ATrajFunction[] traj = {
             //MOH_Shoot test
             new CoorOffset(0.0, 0.0, 0.0),          //No offsets
-            new MOH_Shoot(0.0, 8.0, 9.0, 0.7),     //0.0 hdg for 10', shoot at 8'
-            new TrajDelay(1.0),
+            new MOH_Shoot(0.0, 10.0, 8.0, 0.7),     //0.0 hdg for 10', shoot at 8'
+            // new MOH_Shoot(0.0, 8.0, 10.0, 0.7),     //0.0 hdg for 8', drift to 10' then shoot
+            // new MOH_Shoot(0.0, 8.0, 10.0, 0.7, 180, 6), //0.0 hdg for 8', drift to 10' then shoot right only
+            new TrajDelay(1.0),                     //time to shoot needed if drifting
             new TankTimed(0.2, -0.2, -0.2)          //brake
         };
         return traj;
