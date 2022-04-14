@@ -18,7 +18,7 @@ public class MOH_Shoot extends ATrajFunction {
     private double pwrMx = 0.0;         //Max power to apply to pidDist. 
     private int errHdgLT = 180;         //Hdg DB when doing just turn to hdg, case 1.
     private boolean hasShot = false;    //Have requested Shot by Shooter
-    private int opts = 3;               //Opts: bit0(1)-shotL, bit1(2)-shotR, bit3(4)-shot drift always
+    private int opts = 3;               //Opts: bit0(1)-shootL, bit1(2)-shootR, bit3(4)-shoot drift always
 
     // dont use negative power - why?
 
@@ -29,6 +29,7 @@ public class MOH_Shoot extends ATrajFunction {
      * @param eDistSht - Distance before it shoots, can be more than drive if drifting
      * @param ePwr - Max power to apply to pidDist.
      * @param errHdgLT - Hdg DB when doing just turn to hdg, case 1.
+     * @param eOpts - bit0(1)-shootL, bit1(2)-shootR, bit3(4)-shoot drift always
      */
     public MOH_Shoot(double eHdg, double eDistDrv, double eDistSht, double ePwr, int eErrHdgLT, int eOpts) {
         hdgSP = eHdg;
