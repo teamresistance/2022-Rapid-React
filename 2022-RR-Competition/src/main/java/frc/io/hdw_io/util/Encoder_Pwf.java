@@ -26,6 +26,11 @@ public class Encoder_Pwf {
         return tpf == 0.0 ? 0.0 : venomCtlr.getPosition() / tpf;
     }
 
+    /**@return feet per second */
+    public double getFPS(){
+        return tpf == 0.0 ? 0.0 : 60 * (venomCtlr.getSpeed() / tpf);   // (RPM / tpf = fpm) * 60 = fps
+    }
+
     /**@return calcuate meters from feet. */
     public double meters() {
         return Units.feetToMeters(feet());
@@ -37,9 +42,12 @@ public class Encoder_Pwf {
         // venomCtlr.setPosition(0.0);
     }
 
-    /** Added by Victor - Needs to return double(?). */
-    public void getSpeed(){
-        venomCtlr.getSpeed();
+     /**
+      * Added by Victor.
+      * @return Signed RPM 
+      */
+     public double getSpeed(){
+        return venomCtlr.getSpeed();
     }
 
     /**@return the existiing ticks per foot, tpf. */

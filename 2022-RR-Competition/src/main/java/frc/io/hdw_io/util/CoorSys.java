@@ -49,7 +49,7 @@ public class CoorSys {
 
         if (Math.abs(deltaD) > 0.0){    //Deadband for encoders if needed (vibration?).  Presently set to 0.0
             coorY += deltaD * Math.cos(Math.toRadians(navX.getAngle())) * 1.0;
-            coorX += deltaD * Math.sin(Math.toRadians(navX.getAngle())) * 1.1;
+            coorX += deltaD * Math.sin(Math.toRadians(navX.getAngle())) * 1.0;
         }
     }
 
@@ -59,6 +59,9 @@ public class CoorSys {
     /**Use L/R encoders to calc average distance */
     public double drvFeet() { return (whlLdEnc_R.feet() + whlFlEnc_L.feet()) / 2.0; }
                                     //   whlFlEnc_L.feet() + whlFlEnc_R.feet()) / 4.0; }
+    /**Use L/R encoders to calc average FPS */
+    public double drvFPS() { return (whlLdEnc_R.getFPS() + whlFlEnc_L.getFPS()) / 2.0; }
+                                    //   whlFlEnc_L.getFPS() + whlFlEnc_R.getFPS()) / 4.0; }
 
     /**Reset the location on the field to 0.0, 0.0.
      * <p>If needed navX.Reset must be called separtely.
