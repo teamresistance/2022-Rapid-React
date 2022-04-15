@@ -2,6 +2,7 @@ package frc.robot.subsystem.drive.trajFunk;
 
 import frc.robot.subsystem.Shooter;
 import frc.robot.subsystem.drive.Drive;
+import frc.util.Bitwise;
 import frc.util.PIDXController;
 
 /**
@@ -82,8 +83,8 @@ public class MOH_Shoot extends ATrajFunction {
         switch (state) {
         case 0: // Init Trajectory, turn to hdg then (1) ...
             //Set extended values pidRef,    SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
-            PIDXController.setExt(pidHdg, hdgSP, (1.0/70), 5.0, 0.3, pwrMx, 1.0, true);
-            //Set extended values  pidRef,     SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
+            PIDXController.setExt(pidHdg, hdgSP, (1.0/70), 3.0, 0.3, pwrMx, 1.0, true);
+            //Set extended values  pidRef,     SP,          PB,  DB,  Mn,  Mx,   Exp, Clmp
             PIDXController.setExt(pidDist, distDrvSP, (-1.0/7), 0.3, 0.3, pwrMx, 1.0, true);
 
             sqOrQT = false; //tank(1)/arcade(2)-apply sqrt | curvature(3)-quick turn
@@ -104,26 +105,25 @@ public class MOH_Shoot extends ATrajFunction {
             if (Math.abs(pidHdg.getPositionError()) < errHdgLT ) state++;   // Chk hdg error
             break;
         case 2: // Move forward, steer Auto Heading and Dist
-            System.out.println("MOHS - 2");
+            System.out.println("MOHS - 2: " + distFB());
             trajCmd[0] = pidHdg.calculateX(hdgFB());   //cmd[0]=rotate(X), [1]=fwd(Y)
             trajCmd[1] = pidDist.calculateX(distFB()); //cmd[0]=rotate(X), [1]=fwd(Y)
             sendDriveCmds(trajCmd[1], trajCmd[0], false, 2);
-            // prtShtuff("MOH");
+            // prtShtuff("MOH2");
             if(chkHasShot(hasShot, distShtSP, opts)) hasShot = true;          // Chk to shoot
             if (pidDist.atSetpoint() && pidHdg.atSetpoint()) state++;   // Chk both done
             break;
         case 3: // Allow bot to drift
             sendDriveCmds(0.0, 0.0, false, 2);      // drifting
             if(trajTmr.hasExpired(3.0, state)) {    // but only for up to 2 seconds
-                if((opts & 4) > 0) chkHasShot(hasShot, -1.0, opts);  // if optioned, shoot anyway
-                hasShot = true;     
+                if(Bitwise.isBitSet(opts, 2)) chkHasShot(hasShot, 0.0, opts);  // if optioned, shoot anyway
+                hasShot = true;
                 state++;
-            }
-            if(chkHasShot(hasShot, distShtSP, opts)){     // or shoot before 2 seconds
+            }else if(chkHasShot(hasShot, distShtSP, opts)){     // or shoot before 2 seconds
                 hasShot = true;
                 state++;
             }
-            System.out.println("MOHS - 3: ---------- Drifting -----------");
+            System.out.println("MOHS - 3: ---------- Drifting: " + trajTmr.hasExpired());
             break;
         case 4: // Done
             setDone();  //Flag done and stop motors
@@ -139,11 +139,14 @@ public class MOH_Shoot extends ATrajFunction {
     }
 
     private static boolean chkHasShot(boolean _hasShot, double _distShtSP, int opts){
-        if(!_hasShot && (distFB() > _distShtSP)){
+        // if(!_hasShot && (distFB() > _distShtSP)){
+        double err = Math.signum(_distShtSP) * (_distShtSP - distFB());
+        System.out.println("chkHasShot: " + " \thasShot: " + _hasShot + " \terr: " + err + " \topts: "+ opts + " \tbit0: " + Bitwise.isBitSet(opts, 0));
+        if(!_hasShot && (err <= 0.0)) {
             // Shooter.reqLowDA_L = false;
             // Shooter.reqLowDA_R = false;
-            Shooter.reqLowDA_L = (opts & 1) > 0 ? false : null; //If optioned, shoot left
-            Shooter.reqLowDA_R = (opts & 2) > 0 ? false : null; //If optioned, shoot right
+            Shooter.reqLowDA_L = (Bitwise.isBitSet(opts, 0)) ? false : null; //If optioned, shoot left
+            Shooter.reqLowDA_R = (Bitwise.isBitSet(opts, 1)) ? false : null; //If optioned, shoot right
             return true;
         }
         return _hasShot;
