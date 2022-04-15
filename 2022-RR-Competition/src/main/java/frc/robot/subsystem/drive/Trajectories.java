@@ -8,7 +8,7 @@ public class Trajectories {
     private static double dfltPwr = 0.4;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty",  "oneBall_X", "twoBall_C", "threeBall_BG", "threeBall_AB", "snorfShootTest", "oneBall_X_Test"
+        "getEmpty",  "oneBall_X", "twoBall_C", "threeBall_BG", "threeBall_AB", "getTesting", "oneBall_X_Test"
     };
     // "ball3_A_B", "ball2_C","getCargo2", "getCargo3", "getCargo4", "getCargo5", 
     //     "getCargo6", "SnorfShootTest", "wayPtTest",
@@ -59,8 +59,8 @@ public class Trajectories {
             return threeBall_BG(pwr);
             case "threeBall_AB":
             return threeBall_AB(pwr);
-            case "snorfShootTest":
-            return snorfShootTest(pwr);
+            case "getTesting":
+            return getTesting(pwr);
             case "oneBall_X_Test":
             // return oneBall_X_Test(pwr, chsrAutoPos.getSelected());       //As a choser
             return oneBall_X_Test(pwr, 
@@ -225,15 +225,27 @@ public class Trajectories {
     }
 
     /** Sonorflw Test */
-    public static ATrajFunction[] snorfShootTest(double pwr) {
+    public static ATrajFunction[] getTesting(double pwr) {
         ATrajFunction[] traj = {
-            //MOH_Shoot test
+            // MOH_Shoot test
             new CoorOffset(0.0, 0.0, 0.0),          //No offsets
-            new MOH_Shoot(0.0, 10.0, 8.0, 0.7),     //0.0 hdg for 10', shoot at 8'
+            new MOH_Shoot(0.0, 10.0, 22.0, 0.5, 10, 7),     //0.0 hdg for 10', shoot at 8'
             // new MOH_Shoot(0.0, 8.0, 10.0, 0.7),     //0.0 hdg for 8', drift to 10' then shoot
             // new MOH_Shoot(0.0, 8.0, 10.0, 0.7, 180, 6), //0.0 hdg for 8', drift to 10' then shoot right only
             new TrajDelay(1.0),                     //time to shoot needed if drifting
-            new TankTimed(0.2, -0.2, -0.2)          //brake
+            new TankTimed(0.2, -0.2, -0.2),          //brake
+
+            // //Reverse shot test
+            // new CoorOffset(0.0, 0.0, 0.0),          //No offsets
+            // new SnorfDrvAuto(true),
+            // new TrajDelay(0.5),
+            // new MoveOnHdg(0.0, 3.0, 0.5),     //0.0 hdg for 10', shoot at 8'
+            // new MOH_Shoot(10.0, -10.0, -6.8, 1.0, 5, 7),
+            // new TurnNMove(10.0, -7.0, 1.0),     //0.0 hdg for 10', shoot at 8'
+            // new ShootDrvAuto(false, false),
+            // new TrajDelay(1.0),                     //time to shoot needed if drifting
+            // new TankTimed(0.2, -0.2, -0.2)          //brake
+            
         };
         return traj;
     }
