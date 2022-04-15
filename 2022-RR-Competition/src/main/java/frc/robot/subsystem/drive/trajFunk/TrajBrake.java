@@ -42,7 +42,7 @@ public class TrajBrake extends ATrajFunction {
             System.out.println("TBK - 0:");
         case 1: // Apply interted power to direction of travel (sign of RPM)
             System.out.println("TBK - 1: ------ Braking ------");
-            trajCmd[0] = pidSpd.calculateX(distRPM());   //cmd[0]=brake cmd
+            trajCmd[0] = pidSpd.calculateX(distFPS());   //cmd[0]=brake cmd
             sendDriveCmds(trajCmd[0], trajCmd[0], sqOrQT, diffType);
             // prtShtuff("MOH1");
             if (pidSpd.atSetpoint()) state++;   // Chk stopped
