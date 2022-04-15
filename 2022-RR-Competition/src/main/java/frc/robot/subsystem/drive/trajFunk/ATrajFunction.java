@@ -28,6 +28,7 @@ public abstract class ATrajFunction {
 
     public static double hdgFB() {return IO.navX.getNormalizedTo180();}
     public static double distFB() {return IO.coorXY.drvFeet();}
+    public static double distFPS() {return IO.coorXY.drvFPS();}
     public static double[] trajCmd = new double[2];
     public static boolean sqOrQT = false;
     public static int diffType = 0;
@@ -188,6 +189,7 @@ public abstract class ATrajFunction {
 
         // SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorX", IO.coorXY.getX());
         // SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorY", IO.coorXY.getY());
+        SmartDashboard.putNumber("Drv/Auto/pidTst/N_CoorY", IO.coorXY.drvFPS());
     }
 
     /**Print common stuff for pidHdg, pidDist & coors XY.  Pid SP, FB & cmd
