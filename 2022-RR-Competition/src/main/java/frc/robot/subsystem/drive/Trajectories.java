@@ -8,7 +8,7 @@ public class Trajectories {
     private static double dfltPwr = 0.4;
     private static SendableChooser<String> chsr = new SendableChooser<String>();
     private static String[] chsrDesc = {
-        "getEmpty",  "oneBall_X", "twoBall_C", "threeBall_BG", "threeBall_AB", "getTesting", "oneBall_X_Test"
+        "getEmpty",  "oneBall_X", "twoBall_C_Old", "twoBall_C", "threeBall_BG", "threeBall_AB", "getTesting", "oneBall_X_Test"
     };
     // "ball3_A_B", "ball2_C","getCargo2", "getCargo3", "getCargo4", "getCargo5", 
     //     "getCargo6", "SnorfShootTest", "wayPtTest",
@@ -55,6 +55,8 @@ public class Trajectories {
             return oneBall_X(pwr);
             case "twoBall_C":
             return twoBall_C(pwr);
+            case "twoBall_C_Old":
+            return twoBall_C_Old(pwr);
             case "threeBall_BG":
             return threeBall_BG(pwr);
             case "threeBall_AB":
@@ -136,44 +138,67 @@ public class Trajectories {
             // new CoorOffset(24.0, -1.5, -3.5),
             new ShootDrvAuto(false, null),      // first shot
             new TurnNMove(24.0, -2.5),          // backing up
-            new TankTurnHdg(-135, -0.7, -0.5),  // rotate to the right
+            new TankTurnHdg(-130, -0.7, -0.5),  // rotate to the right
             new TrajDelay(0.3),                 // give it a sec
             new SnorfDrvAuto(true),             // snorf
-            new MoveOnHdg(-135, 6.0, pwr),
-            new TurnNMove(-135, 0.5, pwr),      // move and drift towards ball
+            new TurnNMove(-130, 6.0, pwr),
+            new TurnNMove(-130, 0.5, pwr),      // move and drift towards ball
             new TrajDelay(0.3),                 // wait for ball pickup
+            new TurnNMove(-130, -5.0, pwr),     // go back
             new SnorfDrvAuto(false),            // unsnorf
-            new TurnNMove(-135, -6.5, pwr),     // go back
-            new TankTurnHdg(24.0, 0.6, -0.3),   // turn to P5
-            new MoveOnHdg(24.0, 1.0, pwr),      // move to fender
+            new TankTurnHdg(24.0, 0.7, -0.5),   // turn to P5
+            new MoveOnHdg(24.0, 3.0, pwr),      // move to fender
             new TrajDelay(0.5),                 // wait to settle time
             new ShootDrvAuto(null, false),      // shoot right
         };
         return traj;
     }
 
+    public static ATrajFunction[] twoBall_C_Old(double pwr) { //2 Ball Auto v1
+        pwr = 0.5;
+        ATrajFunction traj[] = {
+            new CoorOffset(24.0, -1.5, -3.5),
+            new ShootDrvAuto(false, null),
+            // new TrajDelay(0.2),
+            new TurnNMove(24.0, -8.5, pwr), // already at 24 degrees, go back 7.4 feet
+            new TurnNMove(24.0, 0.5, pwr), // braking
+            new TankTurnHdg(-47, -1.0, 1.0), //Turns
+            new SnorfDrvAuto(true),
+            new TurnNMove(-47, 4.0, pwr),
+            // // new Waypt(-7, -11, 0.3), // C Ball
+            new TurnNMove(-47, -2.0, pwr),
+            new TurnNMove(-47, 0.2, pwr), //brake
+            new SnorfDrvAuto(false), //Snorfler up
+            new TankTurnHdg(24.0, 1.0, -1.0), //turns
+            new TurnNMove(28.0, 7.5, pwr), //Goes back
+            new TurnNMove(28.0, 1.2, 0.2),
+            new TrajDelay(1.0),
+            new ShootDrvAuto(null, false),
+        };
+        return traj;
+    }
     /**
      * 3 ball auto.  Start position P2, right fender center, and go for balls B & G.
      * @param pwr - default power to apply to trajectories
      * @return An array of Traj Functions, commands to control the robot autonomously.
      */
     public static ATrajFunction[] threeBall_BG(double pwr){
-        pwr = 0.5;
+        pwr = 0.7;
         ATrajFunction traj[] = {
             new CoorOffset(-66.0, 4.0, -1.5),   // Adj offsets, P2, Right Fender center position
             new ShootDrvAuto(false, null),      // Shoot Left
             new TrajDelay(0.3),                 // wait
             // new TurnNMove(-66.0, -1.5, pwr),
             new SnorfDrvAuto(true),             // Snorfler Down
-            new TankTurnHdg(-200.0, -0.7, -0.5),// Turn towards B ball
+            new TankTurnHdg(-200.0, -0.9, -0.7),// Turn towards B ball
             new TurnNMove(-204.0, 18.0, pwr),   // Goes forward
-            new TurnNMove(-205.0, 1.0, 0.3),    // Change heading drop speed
+            new TurnNMove(-205.0, 1.0, 0.5),    // Change heading drop speed
             new TrajDelay(0.7),                 // Coast, close to human station
             new TurnNMove(-193.0, -18.1, pwr),  // Goes back towards goal
             new SnorfDrvAuto(false),            // Snorf off
             new TankTimed(0.2, pwr, pwr),       // Brake
             // new TankTurnHdg(270.0, 0.2, -0.6),
-            new TankTurnHdg(-66, 0.5, -0.2),    // Turn towards goal
+            new TankTurnHdg(-66, 0.7, -0.4),    // Turn towards goal
             new TurnNMove(-66.0, 1.0, pwr),     // Forward
             new TankTimed(0.5, 0.3, 0.3),       // Brake
             new TrajDelay(0.2),                 // Bot settle time
@@ -200,20 +225,21 @@ public class Trajectories {
      * @return An array of Traj Functions, commands to control the robot autonomously.
      */
     public static ATrajFunction[] threeBall_AB(double pwr){
-        pwr = 0.5;
+        pwr = 0.7;
         ATrajFunction traj[] = {
             new CoorOffset(-66.0, 4.0, -1.5),   // Adj offsets, P2, Right Fender center position
             new ShootDrvAuto(false, null),      // Shoots
             new TrajDelay(0.3),                 // Delay
-            new TurnNMove(-66.0, -2.0, pwr),    // Backs up
-            new TankTurnHdg(15.0, -0.3, -0.7),  // Turn passed facing A ball
-            new TurnNMove(15.0, -8.0, pwr),     // backup passed B ball
+            new TurnNMove(-66.0, -1.5, 1.0),    // Backs up
+            new TankTurnHdg(15.0, -0.5, -0.9),  // Turn passed facing A ball
+            new TurnNMove(5.0, -8.0, pwr),     // backup passed B ball
             new SnorfDrvAuto(true),             // Drop Snorfler
+            new TankTurnHdg(40.0, 0.7, -0.7),
             new TurnNMove(45.0, 5.0, pwr),      // Turn to B ball and snorfle it
-            new TurnNMove(25.0, 9.5, pwr),      // Move to A ball
-            new TurnNMove(26.0, -3.3, pwr),     // Snorfle A ball
+            new TurnNMove(25.0, 6.0, 0.6),      // Move to A ball
+            new TurnNMove(26.0, -1.3, pwr),     // Snorfle A ball
             new SnorfDrvAuto(false),            // Usnorfle
-            new TankTurnHdg(-66.0, -0.9, 0.4),  // Turn towards Fender p2
+            new TankTurnHdg(-66.0, -0.9, 0.6),  // Turn towards Fender p2
             new TurnNMove(-66.0, 5.0),          // Move to Fender
             new TankTimed(0.4, 0.3, 0.3),       // Tight to fender
             new TrajDelay(0.6),                 // wait settle time
