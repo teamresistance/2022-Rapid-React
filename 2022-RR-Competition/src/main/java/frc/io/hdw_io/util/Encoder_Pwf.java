@@ -9,7 +9,7 @@ public class Encoder_Pwf {
     private double tpf;
     private CANVenom venomCtlr;
 
-    /**Interface to Spark Max controller with NEO motor encoders */
+    /**Interface to Venom motors with built-in encoders */
     public Encoder_Pwf(CANVenom escPort, double _tpf){
         tpf = _tpf;
         venomCtlr = escPort;
@@ -22,7 +22,13 @@ public class Encoder_Pwf {
 
     /**@return calculated feet from ticks. */
     public double feet(){
+        // System.out.println(tpf);
         return tpf == 0.0 ? 0.0 : venomCtlr.getPosition() / tpf;
+    }
+
+    /**@return feet per second */
+    public double getFPS(){
+        return tpf == 0.0 ? 0.0 : 60 * (venomCtlr.getSpeed() / tpf);   // (RPM / tpf = fpm) * 60 = fps
     }
 
     /**@return calcuate meters from feet. */
@@ -34,6 +40,14 @@ public class Encoder_Pwf {
     public void reset(){
         venomCtlr.resetPosition();
         // venomCtlr.setPosition(0.0);
+    }
+
+     /**
+      * Added by Victor.
+      * @return Signed RPM 
+      */
+     public double getSpeed(){
+        return venomCtlr.getSpeed();
     }
 
     /**@return the existiing ticks per foot, tpf. */

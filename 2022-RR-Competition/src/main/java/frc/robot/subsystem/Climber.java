@@ -1,22 +1,25 @@
 package frc.robot.subsystem;
 
-import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.io.hdw_io.util.ISolenoid;
-import frc.io.hdw_io.util.InvertibleDigitalInput;
 import frc.io.joysticks.JS_IO;
 import frc.io.joysticks.util.Button;
 import frc.util.Timer;
-import frc.robot.subsystem.drive.Drive;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+/**
+ * End game involves climbing up and/or across 4 cross pipes.
+ * Low bar is at 4’ height.  The other 3 bars are 2’ apart and 
+ * at 5.0’, 6.25’ and 7.6’ high.  The normal robot height is 
+ * limited to 4.33’, except when the robot is touching the 
+ * Hanger zone, then it is 5.5’.  SO, only the low bar and 
+ * the first of the 3-bar combination, medium bar, can be reached 
+ * from the floor,  Upper bars must be "swung" to.  
+ * Significant points are awarded for upper bars.
+ */
 public class Climber {
-  
-
-    // Hardware Definitions
+      // Hardware Definitions
     private static CANSparkMax climberMotor = IO.climbMotor;   //Motor to rotate arm
 
     private static ISolenoid lockPinAExt = IO.lockPinAExt_SV;   //Extend locking pin A
@@ -24,54 +27,87 @@ public class Climber {
     private static ISolenoid lockPinBExt = IO.lockPinBExt_SV;   //Extend locking pin B
     private static ISolenoid sliderExt = IO.sliderExt_SV;       //Extend Arm end A slider
     private static ISolenoid brakeRel = IO.climbBrakeRel_SV;    //Release the climber brake
-    // Positive Feedback, FB, for extending the left & right locking pins & sliders
-    private static boolean lockPinAExt_FB(){return IO.lockPinAExt_L_FB.get() && IO.lockPinAExt_R_FB.get();}  //Or of pin A left & right
-    private static boolean lockPinBExt_FB(){return IO.lockPinBExt_L_FB.get() && IO.lockPinBExt_R_FB.get();}  //Or of pin A left & right
-    private static boolean sliderExt_FB(){return IO.sliderExt_L_FB.get() || IO.sliderExt_R_FB.get();}  //Or of pin A left & right
 
     // Joystick Buttons
     private static Button buttonClimb1 = JS_IO.btnClimb1;   //Both MUST be pressed tp
     private static Button buttonClimb2 = JS_IO.btnClimb2;   //start and continue climb
     private static Button btnClimbSlideRst = JS_IO.btnClimbSlideRst; //Reset Slider, state 0
 
-    //Testing Button
-    private static Button btnClimbStep = JS_IO.btnClimbStep; //For testing
-
     // Climber variables
-    private enum eArmDir {
-        OFF, // Rotational Motor speed is 0.0
-        FWD, // Rotational Motor speed is +ROT_SPD
-        REV  // Rotatioanl Motor speed is -ROT_SPD
-    }
     private static double ROT_SPD = 0.45; //Arm motor fixed speed. Var for testing
-    private static double armDegrees(){ return IO.climbLdMtr_Enc.degrees();}
+    private static double armDegrees(){ return IO.climbLdMtr_Enc.degrees();}    //Arm degrees of rotation
+    private static double pitch(){ return IO.navX.getRoll();}    //roboRIO turned 90.  No we are NOT moving it!
+
     private static double drvSpdSaved;    // Used in case 90, for sdb only
     private static double armSpdSaved;    // Used in case 90, for sdb only
-    private static eArmDir armDirSaved;   // Used in case 90, for sdb only
     private static boolean lockPinASaved; // Used in case 90, emerg. stop
     private static boolean lockPinBSaved; // Used in case 90, emerg. stop
     private static boolean sliderSaved;   // Used in case 90, emerg. stop
-    private static eArmDir prvArmDir = eArmDir.OFF; //Used to delay when switching direction
-    private static Timer armDlyTmr = new Timer(0.2);// Delay when switching direction
-    private static Timer brakeTmr = new Timer(0.1);
     private static Timer armStartTmr = new Timer(0.1);
 
-    private static boolean eStop = false;
+    private static boolean eStop = false;   //Emergency stop, buttons released before end
 
-    private static boolean climbEnabled = false; //Both Joysick buttons pressed
-    private static int state = 0;       // Climber state machine. 0=Off
+    private static boolean climbEnabled = false;//Both Joysick buttons pressed
+    private static int state = 0;               // Climber state machine. 0=Off
     private static boolean slideReset = false;
-    private static int prvState = 0;    // Used to return from state 90, eStop.
+    private static int prvState = 0;            // Used to return from state 90, eStop.
     private static Timer stateTmr = new Timer(.05); // Timer for state machine
+    private static boolean climbDone = false;
     private static boolean brakeTest = false;
+
+    //---- Combined status of left & right extended feedbacks. ----
+    /**
+     * enum for status of lockPinsA & B and slider
+     * <p>RET - both retracted
+     * <p>LEFT - Left extended, Right retracted
+     * <p>RIGHT - Left retracted, Right extended
+     * <p>EXT - both extended
+     */
+    private static enum eStsFB {RET, LEFT, RIGHT, EXT};
+
+    /**
+     * 
+     * @param in1 - Left extended feedback
+     * @param in2 - Right extended feedback
+     * @return status of combined Left & Right extended feedbacks.
+     * <p>RET - both retracted
+     * <p>LEFT - Left extended, Right retracted
+     * <p>RIGHT - Left retracted, Right extended
+     * <p>EXT - both extended
+     */
+    private static eStsFB e2DIStatus(boolean in1, boolean in2){
+        int tmp = in1 ? 1 : 0;
+        tmp += in2 ? 2 : 0;
+        switch(tmp){
+            case 0: return eStsFB.RET;
+            case 3: return eStsFB.EXT;
+            case 1: return eStsFB.LEFT;
+            default: return eStsFB.RIGHT;
+        }
+    }
+
+    /**Combined status of left & right locking pins A. */
+    private static eStsFB lockPinA_Sts(){
+        return e2DIStatus(IO.lockPinAExt_L_FB.get(), IO.lockPinAExt_R_FB.get());
+    }
+
+    /**Combined status of left & right locking pins B. */
+    private static eStsFB lockPinB_Sts(){
+        return e2DIStatus(IO.lockPinBExt_L_FB.get(), IO.lockPinBExt_R_FB.get());
+    }
+
+    /**Combined status of left & right slider feedbacks. */
+    private static eStsFB slider_Sts(){
+        return e2DIStatus(IO.sliderExt_L_FB.get(), IO.sliderExt_R_FB.get());
+    }
 
     /**
      * Initialize Climber stuff. Called from telopInit (maybe robotInit(?)) in
      * Robot.java
      */
     public static void init() {
-        // sdbInit();
-        cmdUpdate(0.0, 0.0, false, false, false);
+        sdbInit();  //CAN objects commented out, unless troubleshooting.
+        cmdUpdate(0.0, false, false, false);
         state = 0;
         IO.climbLdMtr_Enc.reset();
         brakeRel.set(false);
@@ -92,198 +128,147 @@ public class Climber {
         if(btnClimbSlideRst.onButtonPressed()) state = 80;     //Reset Slider return to state 0
 
         smUpdate();
-        // sdbUpdate();
+        sdbUpdate();    //CAN objects commented out, unless troubleshooting.
     }
 
-    private static double pitch = 0.0;
-
-
-    /**
-     * State Machine update for climber
-     */    
+    /** State Machine update for climber  */    
     private static void smUpdate() {
-
-        pitch = IO.navX.getRoll();  //roboRIO turned 90.  No we are NOT moving it!
-        
         switch (state) {
             case 0: // Turns everything off
-                //        drv, arm, pinA,  pinB,  Slide
-                cmdUpdate(0.0, 0.0, false, false, false);
-                IO.climbLdMtr_Enc.reset();
-                IO.climbMotor.setInverted(false);
+                //        arm, pinA,  pinB,  Slide
+                cmdUpdate(0.0, false, false, false);
+                climbDone = false;
                 stateTmr.clearTimer();
                 break;
             //----- Prep arm and move to low bar -----
-            case 1: //Postion arm vertical, 'A' up for climb, low bar
-                //Reinitialize the motors, bc maybe missing on startup
-                IO.climbMotor.restoreFactoryDefaults();
-                IO.climbMotor.setInverted(false);
-                IO.climbMotor.setIdleMode(IdleMode.kBrake);
-        
-                IO.climbMotorFollow.restoreFactoryDefaults();
-                IO.climbMotorFollow.setInverted(false);
-                IO.climbMotorFollow.setIdleMode(IdleMode.kBrake);
-                IO.climbMotorFollow.follow(IO.climbMotor);     //Disabled for testing
-
-
-                //Drive.setHdgHold(180.0);    // Set drive steering to hold 180 heading
-                cmdUpdate(0.0, 0.01, false, false, true );
-                if (stateTmr.hasExpired(0.1, state)) state++;
+            case 1: //Due to issues with the CAN, reinitialize the motors.  Set arm degrees to 0.
+                cmdUpdate(0.0, false, false, false );
+                IO.climberMtrsInit();   //Reinitialize the motors, bc maybe missing on startup
+                IO.climbLdMtr_Enc.reset();  //Set starting position as 0 degrees rotation.
+                state++;
                 break;
-            case 2: // Move backwards (positive Y cmd) 6' to start climb position
-                cmdUpdate(0.4, ROT_SPD, false,false,true);
-                IO.coorXY.drvFeetRst();
-                if(armDegrees() > 85.0){
-                    state++;
-                }
-                
-                // if (IO.coorXY.drvFeet() < -6.0) state++;
+            case 2: //Position arm to 90 degrees and extend slider
+                cmdUpdate(ROT_SPD, false,false,true);
+                if(armDegrees() > 85.0) state++;
                 break;
-            case 3: // Move backwards 3' until robot pitches 15 degrees fwd/down
-                cmdUpdate(0.2, 0.0, false, false, true);
-                if(pitch < -10.0){        //USe 15 for comp, 5 for testing.
-                    if(stateTmr.hasExpired(0.5, true)) state++;
+            case 3: // Driver moves robot backward until robot contacts low bar and pitches 10 degrees fwd/down
+                cmdUpdate(0.0, false, false, true);
+                if(pitch() < -10.0){
+                    if(stateTmr.hasExpired(0.5, true)) state++; //Avoid a bump, wait 0.5 sec
                 }else{
                     stateTmr.clearTimer();
                 }
                 break;
             //------ In contact with low arm, lock on and start climb. -----
-            case 4: // Stop the driving and grab bar with LockPinA
-                cmdUpdate(0.0, 0.0, true, false, true);
-                if (lockPinAExt_FB() == true) state++;
-                IO.coorXY.drvFeetRst();
+            case 4: // Grab bar with LockPinA.  Driver stops driving.
+                cmdUpdate(0.0, true, false, true);
+                if (lockPinA_Sts() == eStsFB.EXT) state++;  //Wait for both pins confirmed extended
                 break;
-            case 5: // Robot moves forward (negative Y cmd) 3 feet and arm starts rotating forward
-                cmdUpdate(-0.2, ROT_SPD * 1.15, true, false, true);
+            case 5: // Arm starts rotating forward.
+                cmdUpdate(ROT_SPD * 1.15, true, false, true);
                 state++;
-                // if (IO.coorXY.drvFeet() > 3.0) state++;
                 break;
-            case 6: // Stop forward wheel motion
-                cmdUpdate(0.0, ROT_SPD, true, false, true);
-
-                // if(stateTmr.hasExpired(5.0, false)) 
-                //     state++;
-
+            case 6: // Holder, continue action.
+                cmdUpdate(ROT_SPD * 1.15, true, false, true);
                 state++;
                 break;
             case 7: // Continue arm rotation until arm degrees GT 250 for 0.5 sec.
-                cmdUpdate(0.0, ROT_SPD, true, false, true);
-                if(IO.climbLdMtr_Enc.degrees() > 250.0){    //
-                    if(stateTmr.hasExpired(0.5, true)) state++;
-                    System.out.println("Degrees @7: " + armDegrees());
+                cmdUpdate(ROT_SPD, true, false, true);
+                if(armDegrees() > 250.0){
+                    if(stateTmr.hasExpired(0.5, true)){
+                        state++;
+                        System.out.println("Degrees @7: " + armDegrees());
+                    }
                 }else{
                     stateTmr.clearTimer();
                 }
-
-                //Manual btn press by driver
-                // if(btnClimbStep.onButtonPressed()) state++;
-                
                 break;
             //----- Contact Medium bar. Grab it. Release low arm and clear it.
             //----- Climb to transversal bar -----
             case 8: // Latch onto second bar with Pin B. Stop rotation.
-                cmdUpdate(0.0, ROT_SPD/1.75, true, true, true);
-                if (lockPinBExt_FB() == true) state++;
+                cmdUpdate(ROT_SPD/1.75, true, true, true);
+                if (lockPinB_Sts() == eStsFB.EXT) state++;  //Confirm both lockPinB Extended
                 break;
             case 9: // Retract Pin A in order to release the first bar
-                cmdUpdate(0.0, ROT_SPD/1.75, false, true, true);
-                if (stateTmr.hasExpired(0.25, state)){;
-                    if (!lockPinAExt_FB()) state++;
+                cmdUpdate(ROT_SPD/1.75, false, true, true);
+                if (stateTmr.hasExpired(0.25, state)){
+                    if (lockPinA_Sts() == eStsFB.RET) state++;  //Confirm both A pins retracted.
                 }
                 break;
-            case 10: // Rotating upward/REV to clear slider.  //Do we need this one?  Doesn't hurt.
-                cmdUpdate(0.0, ROT_SPD/1.75, false, true, true);
+            case 10: // Holder, continue action.
+                cmdUpdate(ROT_SPD/1.75, false, true, true);
                 state++;
-                // if (stateTmr.hasExpired(0.5, state)) state++;
                 break;
-            //=============== Changes here ==============
-            case 11: // Retract the slider arm.  Slider will retract when it clears the bar.
-                cmdUpdate(0.0, -ROT_SPD, false, true, true);
-                // System.out.println("Degrees @11: " + armDegrees());
-                //Chg this to use the degrees.
-                if (stateTmr.hasExpired(0.5, state)) state++;   //1.0 @ 30%, 
-                // if (stateTmr.hasExpired(1.0, state))     //Old
-                //     if (!sliderExt_FB()) state++;        //Old
+            case 11: // Reverse direction to lift off low bar
+                cmdUpdate(-ROT_SPD, false, true, true);
+                if (stateTmr.hasExpired(0.5, state)) state++;
                 break;
-            case 12: // Motor Union Break Timer.  Stop before chging direction
-                cmdUpdate(0.0, -ROT_SPD/2, false, true, false);
-                // System.out.println("Degrees @12: " + armDegrees());
-                // System.out.println("Amps @12 @12: " + IO.pdp.getCurrent(2) + " " + IO.pdp.getCurrent(3));
-                if (!sliderExt_FB()) state++;   //New
-                // if (stateTmr.hasExpired(0.5, state)) state++;   //Old
+            case 12: // Retract the slider arm.  Slider will retract when it clears the bar.
+                cmdUpdate(-ROT_SPD/2, false, true, false);
+                if (slider_Sts() == eStsFB.RET) state++;   //Confirm both sliders retracted
                 break;
-            //=========== To here ==================    
-                case 13: // Go forward towards transversal bar, passed the low bar.
-                cmdUpdate(0.0, ROT_SPD, false, true, false);
-                //Replace with degrees
-                if (stateTmr.hasExpired(2.5, state)) state++;
+            case 13: // Go forward towards transversal bar, passed the low bar.
+                cmdUpdate(ROT_SPD, false, true, false);
+                if (stateTmr.hasExpired(2.5, state)) state++;   //Chg to degrees???
                 break;
             case 14: // Slider cleared low bar, extend the slider.  Keep going forward.
-                cmdUpdate(0.0, ROT_SPD, false, true, true);
-                if (sliderExt_FB())state++;
+                cmdUpdate(ROT_SPD, false, true, true);
+                if (slider_Sts() == eStsFB.EXT) state++;    //Confirm both sliders extended
                 break;
-            case 15: // Keep going till arm degrees GT 420 for 0.5 sec.
-                cmdUpdate(0.0, ROT_SPD * 1.25, false, true, true);
-                if(IO.climbLdMtr_Enc.degrees() > 415.0){    //
+            case 15: // Keep going till arm degrees GT 415 for 0.5 sec.
+                cmdUpdate(ROT_SPD * 1.25, false, true, true);
+                if(armDegrees() > 415.0){
                     if(stateTmr.hasExpired(0.5, true)) state++;
                     System.out.println("Degrees @15: " + armDegrees());
                 }else{
                     stateTmr.clearTimer();
                 }
-
-                //Manual btn press by driver
-                // if(btnClimbStep.onButtonPressed()) state++;
-
                 break;
             //----- Contact Traversal bar. Grab it. Release Medium bar.
             //----- Lift off Medium bar then hold.  Done. -----
             case 16: // latch the transversal with pin A.
-                cmdUpdate(0.0, ROT_SPD, true, true, true);
-                if (lockPinAExt_FB()) state++;
+                cmdUpdate(ROT_SPD, true, true, true);
+                if (lockPinA_Sts() == eStsFB.EXT) state++;  //Confirm both A pins extended
                 break;
-            case 17: // no more union break
-                cmdUpdate(0.0, ROT_SPD, true, true, true);
+            case 17: // Hold, continue action.
+                cmdUpdate(ROT_SPD, true, true, true);
                 state++;
-                // if (stateTmr.hasExpired(0.1, state)) state++;
                 break;
             case 18: // Release the B pin
-                cmdUpdate(0.0, ROT_SPD, true, false, true);
-                if (!lockPinBExt_FB()) state++;
+                cmdUpdate(ROT_SPD, true, false, true);
+                if (lockPinB_Sts() == eStsFB.RET) state++;  //Confirm both B pins retracted
                 break;
-            case 19: // Rotating Reverse to give leeway
-                cmdUpdate(0.0, -ROT_SPD, true, false, true);
-                if(IO.climbLdMtr_Enc.degrees() < 330.0){    //
+            case 19: // Rotating Reverse to give leeway from middle bar
+                cmdUpdate(-ROT_SPD, true, false, true);
+                if(IO.climbLdMtr_Enc.degrees() < 330.0){
                     if(stateTmr.hasExpired(0.25, true)) state++;
                     System.out.println("Degrees @19: " + armDegrees());
                 }else{
                     stateTmr.clearTimer();
                 }
-
-                // if (stateTmr.hasExpired(1.7, state)) state++;   //Manually stopped
-
                 break;
-            case 20: // Turn arm motor off.  --- DONE! --- 
-                     // Degrees was near 25 degrees. Higher is 30 degrees
-                cmdUpdate(0.0, 0.0, true, false, true);
+            case 20: // Turn arm motor off.  --- DONE! ---
+                cmdUpdate(0.0, true, false, true);
+                climbDone = true;
                 break;
 
             //------ Resync Slider after DS shutdown when sliders are extended.
             case 80: // Turn on slider & pin A, no motors, wait then next.
-                cmdUpdate(0.0, 0.0, true, false, true);
+                cmdUpdate(0.0, true, false, true);
                 slideReset = true;
                 if (stateTmr.hasExpired(0.5, state)){
-                    if (sliderExt_FB() && lockPinAExt_FB()) state++;
+                    if (slider_Sts() == eStsFB.EXT && lockPinA_Sts() == eStsFB.EXT) state++;
                 }
                 break;
             case 81: // Turn off pin A, wait then next.
-                cmdUpdate(0.0, 0.0, false, false, true);
+                cmdUpdate(0.0, false, false, true);
                 if (stateTmr.hasExpired(0.5, state)){
-                    if (!lockPinAExt_FB()) state++;
+                    if (lockPinA_Sts() == eStsFB.RET) state++;
                 }
                 break;
             case 82: // Turn off slider, wait then return to state 0.
-                cmdUpdate(0.0, 0.0, false, false, false);
-                if (!sliderExt_FB() && !lockPinAExt_FB()){
+                cmdUpdate(0.0, false, false, false);
+                if ((slider_Sts() == eStsFB.RET) && (lockPinA_Sts() == eStsFB.RET)){
                     state = 0;
                     slideReset = false;
                 }
@@ -291,52 +276,33 @@ public class Climber {
 
             //----- Driver released buttoms during climb.  Stop & hold postion!
             case 90: // Emergency stop. Re-issue last commands
-                cmdUpdate(0.0, 0.0, lockPinASaved, lockPinBSaved, sliderSaved);
+                cmdUpdate(0.0, lockPinASaved, lockPinBSaved, sliderSaved);
                 eStop = true;
             default:// Default state
                 break;
         }
     }
 
-    
-
-    private static Timer brakeTimer = new Timer(0.1);
-    
-    // COMMAND UPDATE
     /**
-     * 
-     * @param drvSpd     - Speed of drive motors
-     * @param mtrRotDir  - Motor rotation Off | Forward | Reverse
+     * Command update - issue ALL commands from here.  Implement safeties here.
+     * @param rotSpd     - Climber motor rotational command.  + is forard, climbing up.
      * @param pinA_Ext   - True = LockPinAExtend | False = LockPinARetract
      * @param pinB_Ext   - True = LockPinBExtend | False = LockPinBRetract
      * @param slider_Ext - True = SliderExtend | False = SliderRetract
-
      */
-
-    private boolean invert = false;
-
-    private static void cmdUpdate(double drvSpd, double rotSpd,
+    private static void cmdUpdate(double rotSpd,
                                   boolean pinA_Ext, boolean pinB_Ext, boolean slider_Ext) {
-        // Stop arm motor if pins & slider FB's don't agree with cmds.
-        // if (!checkLockPinsOK()){
-        //     drvSpd = 0.0;
-        //     armDir = eArmDir.OFF;
-        // }
-
         // Save device cmds for state 90, eStop.
-        drvSpdSaved = drvSpd;       //sdb only
-        // armDirSaved = armDir;    //sdb only
         armSpdSaved = rotSpd;
         lockPinASaved = pinA_Ext;
         lockPinBSaved = pinB_Ext;
         sliderSaved = slider_Ext;
         if(state != 90) prvState = state;
 
-        //Drive.cmdUpdate(drvSpd, 0.0, false, 2); //Send cmd to drive system as arcade
-
-        if(armDegrees() < -10.0) rotSpd = 0.0;    //SAFETY!  Stop rot motor if arm moved Rev too far.
-        if(armDegrees() < -5.0) state = 1;
+        if(armDegrees() < -10.0) rotSpd = 0.0;  //SAFETY!  Stop rot motor if arm moved Rev too far.
+        if(armDegrees() < -5.0) state = 1;      //Try to re-initialize one more time.
         
+        //Motor restart after eStop.  Start in opposite direction of cmd than move in cmd direction.
         if(eStop && (state != 90)){
             if(!armStartTmr.hasExpired(0.3, true)){
                 rotSpd = -rotSpd;
@@ -346,10 +312,16 @@ public class Climber {
             }
         }
 
-        climberMotor.set(rotSpd);
+        if(climbDone){              //If climber is done (20), to set brake, regardless of passed cmds,
+            rotSpd = 0.0;           //set rotation to 0.0 and 
+            climbEnabled = false;   //climbEnable false.
+        }
+
+        climberMotor.set(rotSpd);   //Issue rotation cmd.
+
+        //Release the brake if buttons are pressed or the rotational speed is not 0.
         brakeTest = climbEnabled || rotSpd != 0.0;
         brakeRel.set(brakeTest); // authorized by Joel
-        //System.out.println("CmdUpdateBrake: " + brakeRel.get());
     
         //Pin A is a dual action SV and requires a signal to extend and another to retract
         lockPinAExt.set(pinA_Ext);
@@ -359,64 +331,62 @@ public class Climber {
         sliderExt.set(slider_Ext);
     }
 
-    /**Put objects on the sdb that values need to be retrieved from the sbd. */
+    /**Put objects on the sdb that values need to be retrieved from the sbd.
+     * <p>--- Note: due to CAN buss issues, any CAN object is commented out
+     * unless troubleshooting. ---
+     */
     private static void sdbInit() {
         SmartDashboard.putNumber("Climber/Mtr/1. ROT_SPD", ROT_SPD);
         SmartDashboard.putNumber("Climber/Mtr/4. climb TPD", IO.climbLdMtr_TPD);
     }
 
-    /**Update the sdb */
+    /**Update the sdb
+     * <p>--- Note: due to CAN buss issues, any CAN object is commented out
+     * unless troubleshooting. ---
+     */
     private static void sdbUpdate() {
         SmartDashboard.putNumber( "Climber/AC/1. State", state);
-        SmartDashboard.putNumber( "Climber/AC/2. Pitch", pitch);
+        SmartDashboard.putNumber( "Climber/AC/2. Pitch", pitch());  //CAN
         SmartDashboard.putBoolean("Climber/AC/3. buttonClimb1", buttonClimb1.isDown());
         SmartDashboard.putBoolean("Climber/AC/4. buttonClimb2", buttonClimb2.isDown());
         SmartDashboard.putBoolean("Climber/AC/5. climbEnabled", climbEnabled);
         SmartDashboard.putNumber( "Climber/AC/6. Drive Cmd", drvSpdSaved);
         SmartDashboard.putNumber( "Climber/AC/7. Arm Cmd", armSpdSaved);
-        // SmartDashboard.putString("Climber/AC/6. Arm Dir Cmd", armDirSaved.toString());
+        SmartDashboard.putBoolean("Climber/AC/8. btnRst ", JS_IO.btnRst.isDown());
 
-        // SmartDashboard.putBoolean("Climber/SV/1. brake", brakeRel.get());
-        SmartDashboard.putBoolean("Climber/SV/2. lockPinAExt", lockPinAExt.get());
-        SmartDashboard.putBoolean("Climber/SV/3. lockPinARet", lockPinARet.get());
-        SmartDashboard.putBoolean("Climber/SV/4. lockPinBExt", lockPinBExt.get());
-        SmartDashboard.putBoolean("Climber/SV/5. sliderExt", sliderExt.get());
-        SmartDashboard.putBoolean("Climber/SV/6. brakeRel", brakeRel.get());
-        SmartDashboard.putBoolean("Climber/SV/7. brakeTest", brakeTest);
+        // SmartDashboard.putBoolean("Climber/SV/1. brake", brakeRel.get());           //CAN
+        // SmartDashboard.putBoolean("Climber/SV/2. lockPinAExt", lockPinAExt.get());  //CAN
+        // SmartDashboard.putBoolean("Climber/SV/3. lockPinARet", lockPinARet.get());  //CAN
+        // SmartDashboard.putBoolean("Climber/SV/4. lockPinBExt", lockPinBExt.get());  //CAN
+        // SmartDashboard.putBoolean("Climber/SV/5. sliderExt", sliderExt.get());      //CAN
+        // SmartDashboard.putBoolean("Climber/SV/6. brakeRel", brakeRel.get());        //CAN
+        // SmartDashboard.putBoolean("Climber/SV/7. climbBrakeRel_SV", climbBrakeRel_SV.get()); //CAN
+        SmartDashboard.putBoolean("Climber/SV/8. brakeTest", brakeTest);
 
-        SmartDashboard.putBoolean("Climber/FB/1. lockPinAExt", lockPinAExt_FB());
-        SmartDashboard.putBoolean("Climber/FB/2. lockPinBExt", lockPinBExt_FB());
-        SmartDashboard.putBoolean("Climber/FB/3. sliderExt", sliderExt_FB());
-        SmartDashboard.putNumber( "Climber/FB/4. Feet", IO.coorXY.drvFeet());
+        SmartDashboard.putBoolean("Climber/FB/1. AExt_L_FB", IO.lockPinAExt_L_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/2. AExt_R_FB", IO.lockPinAExt_R_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/3. BExt_L_FB", IO.lockPinBExt_L_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/4. BRet_R_FB", IO.lockPinBExt_R_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/5. SExt_L_FB", IO.sliderExt_L_FB.get());
+        SmartDashboard.putBoolean("Climber/FB/6. SExt_R_FB", IO.sliderExt_R_FB.get());
+        SmartDashboard.putString("Climber/FB/7. lockPinA Sts, L && B", lockPinA_Sts().toString());
+        SmartDashboard.putString("Climber/FB/8. lockPinB Sts, L && B", lockPinB_Sts().toString());
+        SmartDashboard.putString("Climber/FB/9. SExt Sts, L && B", slider_Sts().toString());
+        SmartDashboard.putNumber("Climber/FB/10. Climber arm ddegrees", IO.climbLdMtr_Enc.degrees());
 
-        // ROT_SPD = SmartDashboard.getNumber("Climber/Mtr/1. ROT_SPD", 0.3);
-        SmartDashboard.putNumber("Climber/Mtr/2. climbMotor", climberMotor.get());
-        SmartDashboard.putNumber("Climber/Mtr/3. Ld enc Ticks", IO.climbLdMtr_Enc.ticks());
-        IO.climbLdMtr_Enc.setTPF(SmartDashboard.getNumber("Climber/Mtr/4. climb TPD", 300.0));
-        SmartDashboard.putNumber("Climber/Mtr/5. climb Deg", IO.climbLdMtr_Enc.degrees());
-        SmartDashboard.putNumber( "Climber/Mtr/6. Arm Ld Mtr Amps", climberMotor.getOutputCurrent());
-        SmartDashboard.putNumber( "Climber/Mtr/7. Arm Fl Mtr Amps", IO.climbMotorFollow.getOutputCurrent());
+
+
+        ROT_SPD = SmartDashboard.getNumber("Climber/Mtr/1. ROT_SPD", 0.45);          
+        // SmartDashboard.putNumber("Climber/Mtr/2. climbMotor", climberMotor.get());              //CAN
+        SmartDashboard.putNumber("Climber/Mtr/3. Ld enc Ticks", IO.climbLdMtr_Enc.ticks());     //CAN
+        IO.climbLdMtr_Enc.setTPF(SmartDashboard.getNumber("Climber/Mtr/4. climb TPD", 0.504));
+        // SmartDashboard.putNumber("Climber/Mtr/5. climb Deg", IO.climbLdMtr_Enc.degrees());      //CAN
+        // SmartDashboard.putNumber( "Climber/Mtr/6. Arm Ld Mtr Amps", climberMotor.getOutputCurrent());   //CAN
+        // SmartDashboard.putNumber( "Climber/Mtr/7. Arm Fl Mtr Amps", IO.climbMotorFollow.getOutputCurrent());    //CAN
+
+
     }
 
-    // ----------------- Shooter statuses and misc. ---------------
-
-    private static Timer safePinTmr = new Timer(0.2);   // Debounce Timer for checkLockPinsOK
-    /**
-     * @return true if lockingPins and slider are all matching for minimum time
-     * <p> false if not matching for minimum time.
-     */
-    private static boolean pin_state = true;
-    private static boolean prv_pin_state = true;
-    
-    private static boolean checkLockPinsOK(){
-      // TODO: Fix logic 
-        pin_state = (!(lockPinAExt.get() ^ lockPinAExt_FB() ||
-                 lockPinARet.get() ^ !lockPinAExt_FB() ||
-                 lockPinBExt.get() ^ (lockPinBExt_FB()) ||
-                 sliderExt.get() ^ (sliderExt_FB())));
-        if (safePinTmr.hasExpired(0.2,pin_state) == true) prv_pin_state = pin_state;
-        return prv_pin_state;
-    }
     /**
      * Probably shouldn't use this bc the states can change. Use statuses.
      * 

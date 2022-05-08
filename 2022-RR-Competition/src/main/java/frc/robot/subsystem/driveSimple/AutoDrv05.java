@@ -97,7 +97,7 @@ public class AutoDrv05 {
                 state++;
                 // break;
             case 12:    // Shoot
-                Shooter.reqShootLowDrvAuto = false;
+                Shooter.reqLowDA_L = false;
                 state = 20;
             case 20: // Stop, send 0, 0 cmds and stay here until end of auto.
                 cmdUpdate(0.0, 0.0);

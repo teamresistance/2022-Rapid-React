@@ -61,6 +61,11 @@ public class Drive {
     }
 
     public static void init() {
+        IO.drvLead_L.clearLatchedFaults();
+        IO.drvLead_R.clearLatchedFaults();
+        IO.drvFollower_L.clearLatchedFaults();
+        IO.drvFollower_R.clearLatchedFaults();
+        
         diffDrv.setExpiration(1.0);
         diffDrv.setSafetyEnabled(false);
         cmdUpdate(0.0, 0.0, false, 0);

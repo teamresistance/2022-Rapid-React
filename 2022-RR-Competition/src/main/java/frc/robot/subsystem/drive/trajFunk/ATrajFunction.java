@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.robot.subsystem.drive.Drive;
 import frc.util.PIDXController;
+import frc.util.Timer;
 
 /**
  * This is a collection of classes to control driving (and robot)
@@ -27,6 +28,7 @@ public abstract class ATrajFunction {
 
     public static double hdgFB() {return IO.navX.getNormalizedTo180();}
     public static double distFB() {return IO.coorXY.drvFeet();}
+    public static double distFPS() {return IO.coorXY.drvFPS();}
     public static double[] trajCmd = new double[2];
     public static boolean sqOrQT = false;
     public static int diffType = 0;
@@ -34,6 +36,8 @@ public abstract class ATrajFunction {
     public static double hdgFB_sim = 0;     //For simulator testing
     public static double distFB_sim = 0;
     public static double radiusFB_sim = 0;
+
+    public static Timer trajTmr = new Timer(0.1);
 
 
     public static void initTraj() {
@@ -49,10 +53,10 @@ public abstract class ATrajFunction {
 
     /**issue commands to the Drive system.
      * 
-     * @param lSpdY
-     * @param rSpdRot_XY
-     * @param isSqOrQT
-     * @param diffType
+     * @param lSpdY - tank(1)-left JS | arcade(2)-fwd | curvature(3)-fwd
+     * @param rSpdRot_XY - tank(1)-right JS | arcade(2)-rotation | curvature(3)-rotation
+     * @param isSqOrQT - tank(1)/arcade(2)-apply sqrt | curvature(3)-quick turn
+     * @param diffType - 0-Off | 1=tank | 2=arcade | 3=curvature
      */
     public void sendDriveCmds(double lSpdY, double rSpdRot_XY, boolean isSqOrQT, int diffType){
         Drive.setDriveCmds(lSpdY, rSpdRot_XY, isSqOrQT, diffType);
@@ -185,6 +189,7 @@ public abstract class ATrajFunction {
 
         // SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorX", IO.coorXY.getX());
         // SmartDashboard.putNumber("Drv/Auto/pidTst/M_CoorY", IO.coorXY.getY());
+        SmartDashboard.putNumber("Drv/Auto/pidTst/N_CoorY", IO.coorXY.drvFPS());
     }
 
     /**Print common stuff for pidHdg, pidDist & coors XY.  Pid SP, FB & cmd

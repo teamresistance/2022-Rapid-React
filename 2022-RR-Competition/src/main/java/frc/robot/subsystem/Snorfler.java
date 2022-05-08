@@ -50,7 +50,7 @@ public class Snorfler {
     private static String enemyColor;
     private static boolean csBallReject = false;  // Color Sensor Ball Reject
 
-    private static final double MTRSPD = 0.9;
+    private static double MTRSPD = 0.5;
     private static final double ELVSPD = 1.0;
     public static enum dirSnorfler { OFF, FWD, REJ }
 
@@ -71,7 +71,7 @@ public class Snorfler {
     }
 
     /**
-     * Update Shooter. Called from teleopPeriodic in robot.java.
+     * Update Snorfler. Called from teleopPeriodic in robot.java.
      * <p>
      * Determine any state that needs to interupt the present state, usually by way
      * of a JS button but can be caused by other events.
@@ -87,10 +87,10 @@ public class Snorfler {
         // if not rejecting ball and done with rejecting, normal
 
         if (/*!colorString.equals(enemyColor)*/ true && !csBallReject) {
-            if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && (state == 0 || state == 22 || state == 30))  state = 1; // Starts the snorfling
+            if ((btnSnorfle.isDown() || reqsnorfDrvAuto) && (state == 0 || state == 22 || state == 31))  state = 1; // Starts the snorfling
             if ((btnSnorfle.isUp() && !reqsnorfDrvAuto) &&
-                (state != 0 && state != 12 && state != 30)) state = 30;//Stop snorf but elv for 2 sec.
-            if (btnRejectSnorfle.isDown() && (state < 11 || state == 22 || state == 30))  state = 11; // Start Manual Rejection
+                (state != 0 && state != 12 && state != 31)) state = 30;//Stop snorf but elv for 2 sec.
+            if (btnRejectSnorfle.isDown() && (state < 11 || state == 22 || state == 31))  state = 11; // Start Manual Rejection
             if (btnRejectSnorfle.isUp() && state == 12) state = 0;   // Stop Manual Rejection
         } else if (!csBallReject) {
             System.out.println("State 21");
@@ -144,7 +144,13 @@ public class Snorfler {
                 }
                 break; 
 
-            case 30: //Finish snorf but keep elv for 4 sec longer
+            case 30: //Finish snorf but keep snorfe mtr on for 2 & elv for 6 sec longer
+                cmdUpdate(false, MTRSPD, ELVSPD);
+                if (snorfTimer.hasExpired(2.0, state)){
+                    state++;
+                }
+                break;           
+            case 31:
                 cmdUpdate(false, 0.0, ELVSPD);
                 if (snorfTimer.hasExpired(4.0, state)){
                     state = 0;
@@ -162,6 +168,12 @@ public class Snorfler {
      * 
      * @param snorfEna - drops the snorfler arm, turns on all motors
      * 
+     */
+    /**
+     * 
+     * @param snorfEna - drops the snorfler arm, turns on all motors
+     * @param mtrSpd
+     * @param elvSpd
      */
     private static void cmdUpdate(boolean snorfEna, double mtrSpd, double elvSpd) {
         snorflerExt_SV.set(snorfEna);
@@ -198,23 +210,20 @@ public class Snorfler {
 
 
     private static void sdbInit() {
-        // Put stuff here on the sdb to be retrieved from the sdb later
-        // SmartDashboard.putBoolean("ZZ_Template/Sumpthin", sumpthin.get());
+        SmartDashboard.putNumber("Snorfler/Mtr Spd%", MTRSPD);
     }
 
     /** Update the Smartdashboard. */
     private static void sdbUpdate() {
-        // Put stuff to retrieve from sdb here. Must have been initialized in sdbInit().
-        // sumpthin = SmartDashboard.getBoolean("ZZ_Template/Sumpthin", sumpthin.get());
+        MTRSPD = SmartDashboard.getNumber("Snorfler/Mtr Spd%", MTRSPD);
 
-        // Put other stuff to be displayed here
         SmartDashboard.putNumber("Snorfler/AC/state", state);
         // SmartDashboard.putString("Snorfler/AC/team color", teamColor);
         // SmartDashboard.putString("Snorfler/AC/enemy color", enemyColor);
         //Motor & SV
-        SmartDashboard.putBoolean("Snorfler/AC/Snorfler", IO.snorflerExt_SV.get());
-        SmartDashboard.putNumber("Snorfler/AC/SnorfMotor", IO.snorfFeed_Mtr.get());
-        SmartDashboard.putNumber("Snorfler/AC/ElevatorMotor", IO.snorfElv_Mtrs.get());
+        SmartDashboard.putBoolean("Snorfler/AC/Snorfler", IO.snorflerExt_SV.get());     //CAN
+        SmartDashboard.putNumber("Snorfler/AC/SnorfMotor", IO.snorfFeed_Mtr.get());     //CAN
+        SmartDashboard.putNumber("Snorfler/AC/ElevatorMotor", IO.snorfElv_Mtrs.get());  //CAN
 
         // SmartDashboard.putNumber("Snorfler/Clr/Red", detectedColor.red);
         // SmartDashboard.putNumber("Snorfler/Clr/Green", detectedColor.green);

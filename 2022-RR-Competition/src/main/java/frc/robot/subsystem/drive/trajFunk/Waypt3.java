@@ -36,14 +36,14 @@ public class Waypt3 extends ATrajFunction {
         // update();
         switch (state) {
         case 0: // Init Trajectory
-            pidHdg = new PIDXController(1.0/50, 0.0, 0.0);
-            pidHdg.enableContinuousInput(-180.0, 180.0);
-            //Set extended values pidCtlr, SP, DB, Mn, Mx, Exp, Cmp
-            PIDXController.setExt(pidHdg, 0.0, 2.0, 0.4, pwrMx, 2.0, true);
+            // pidHdg = new PIDXController(1.0/50, 0.0, 0.0);
+            // pidHdg.enableContinuousInput(-180.0, 180.0);
+            //Set extended values pidRef,  SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
+            PIDXController.setExt(pidHdg, 0.0, (1.0/50), 2.0, 0.4, pwrMx, 2.0, true);
 
-            pidDist = new PIDXController(-1.0/8, 0.0, 0.0);
-            //Set ext vals pidCtlr, SP, DB, Mn, Mx, Exp, Cmp
-            PIDXController.setExt(pidDist, 0.0, 0.3, 0.3, pwrMx, 1.0, true);
+            // pidDist = new PIDXController(-1.0/8, 0.0, 0.0);
+            //Set extended values  pidRef,  SP,       PB,  DB,  Mn,  Mx,   Exp, Clmp
+            PIDXController.setExt(pidDist, 0.0, (-1.0/8), 0.3, 0.3, pwrMx, 1.0, true);
 
             trajCmd = wpCalcHdgDistSP(wpX, wpY); //Get present XY Loc and calc hdg & distSP's (static)
             pidHdg.setSetpoint(trajCmd[0]);  //Used strCmd as tmp holder

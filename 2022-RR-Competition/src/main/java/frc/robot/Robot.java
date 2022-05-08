@@ -21,7 +21,6 @@ import frc.io.joysticks.JS_IO;
 import frc.robot.subsystem.Climber;
 import frc.robot.subsystem.Shooter;
 import frc.robot.subsystem.Snorfler;
-import frc.robot.subsystem.Test_Hdw;
 import frc.robot.subsystem.drive.Drive;
 import frc.robot.subsystem.drive.Drv_Auto;
 import frc.robot.subsystem.drive.Drv_Teleop;
@@ -41,7 +40,7 @@ import frc.robot.testing.ShootTest;
 import frc.robot.testing.SnorfTest;
 import frc.robot.testing.TimerTest;
 //TODO: check class placement
-// import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -85,12 +84,12 @@ public class Robot extends TimedRobot {
         ad_ChsrInit();
 
         IO.init();
-        JS_IO.init();
+        JS_IO.init();   //Init JS chooser & JS assignments.
 
         Snorfler.teamColorchsrInit();
 
         SmartDashboard.putBoolean("Robot/Cmpr Enabled", cmprEna);
-        // CameraServer.startAutomaticCapture();
+        CameraServer.startAutomaticCapture();
     }
 
     /**
@@ -160,10 +159,11 @@ public class Robot extends TimedRobot {
     private static int state = 0;
     @Override
     public void teleopPeriodic() {
-        //For Testing
-        if (JS_IO.btnAuto.isDown() && state == 0){
+        
+        //For Testing various autonomous selections from teleop button
+        if (JS_IO.btnAuto.isDown() && state == 0){  //Execute selected Trajectory.  CoD 9
             state = 1;
-        } else if (JS_IO.btnAuto.isUp() && (state != 0) && (state != 3)){
+        } else if (JS_IO.btnAuto.isUp() && (state != 0) && (state != 3)){   //return to teleop
             state = 3;
         }
         switch(state){
@@ -185,7 +185,7 @@ public class Robot extends TimedRobot {
         }
 
         Drive.update();
-        // Drv_Teleop.update();
+        Drv_Teleop.update();
 
         Climber.update();
         Snorfler.update();
@@ -204,6 +204,7 @@ public class Robot extends TimedRobot {
     /** This function is called once when test mode is enabled. */
     @Override
     public void testInit() {
+        Drive.init();
         ClimbTest.init();
         // SnorfTest.init();
         // TimerTest.init();
@@ -212,6 +213,7 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
+        Drive.update();
         // Test to checkout individual devices. Run one at a tme.
         // SnorfTest.update();
         // ShootTest.update();

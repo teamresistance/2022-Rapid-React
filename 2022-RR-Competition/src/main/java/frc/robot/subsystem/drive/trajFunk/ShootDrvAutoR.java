@@ -1,8 +1,6 @@
 package frc.robot.subsystem.drive.trajFunk;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystem.Shooter;
-import frc.robot.subsystem.drive.Drive;
 import frc.util.Timer;
 
 /**
@@ -14,7 +12,7 @@ public class ShootDrvAutoR extends ATrajFunction {
 
     /**
      * Constructor to control the Shooter
-     * @param low_select false: shoots high, true: shoots low 
+     * @param low_select_L false: shoots high, true: shoots low 
      */
     public ShootDrvAutoR() {
         // this.low_select = low_select;
@@ -25,13 +23,14 @@ public class ShootDrvAutoR extends ATrajFunction {
         switch (state) {
         case 0: // set shooter lo/hi control and time delay to allow shot
             System.out.println("Shoot - 0:");
-            Shooter.reqShootR = true; // shooter resets it
+            Shooter.reqLowDA_L = null; // shooter resets it
+            Shooter.reqLowDA_R = true; // shooter resets it
             // shootTimer.startTimer(0.5);
             state++;
             // System.out.println("Shoot - 0: ---------- Init -----------");
         case 1: // Wait for timer
             if(shootTimer.hasExpired()) state++;
-            SmartDashboard.putNumber("Traj/ShootDelay", shootTimer.getRemainingSec());
+            // SmartDashboard.putNumber("Traj/ShootDelay", shootTimer.getRemainingSec());
             break;
         case 2:
             setDone();

@@ -34,6 +34,7 @@ public class JS_IO {
     public static Joystick rightJoystick = new Joystick(1); // Right JS
     public static Joystick coJoystick = new Joystick(2);    // Co-Dvr JS
     public static Joystick gamePad = new Joystick(3);       // Normal mode only (not Dual Trigger mode)
+    public static Joystick neoPad = new Joystick(4);        // Nintendo pamepad
 
     // Drive
     public static Axis axLeftDrive = new Axis();    // Left Drive
@@ -49,8 +50,8 @@ public class JS_IO {
     public static Button btnScaledDrive = new Button();     // scale the drive
     public static Button btnInvOrientation = new Button();  // invert the orientation of the robot (joystick: forwards
                                                             // becomes backwards for robot and same for backwards)
-    public static Button btnHoldZero = new Button();    //Rotate to 0 hdg and only apply fwd/rev
-    public static Button btnHold180 = new Button();     //Rotate to 180 hdg and only apply fwd/rev
+    public static Button btnHoldZero = new Button();        //Rotate to 0 hdg and only apply fwd/rev
+    public static Button btnHold180 = new Button();         //Rotate to 180 hdg and only apply fwd/rev
 
     // Snorfler
     public static Button btnSnorfle = new Button();    //Toggle snorfling
@@ -67,7 +68,7 @@ public class JS_IO {
     public static Button btnClimb1 = new Button();  //1 of 2 buttons needed to enable climb
     public static Button btnClimb2 = new Button();  //The other
     public static Button btnClimbSlideRst = new Button();   //Reset slider to state 0
-    public static Button btnClimbStep = new Button();
+    public static Button btnClimbStep = new Button();   //Used to run a selected Trajectory for testing.
 
     // Misc
     public static Button btnRst = new Button();
@@ -83,21 +84,21 @@ public class JS_IO {
     }
 
     public static void init() {
-        chsrInit();
-        configJS();
+        chsrInit(); //Setup JS chooser and set JS assignments to default.
     }
 
+    //---- Joystick controller chooser ----
     private static SendableChooser<String> chsr = new SendableChooser<String>();
-    private static final String[] chsrDesc = {"3-Joysticks", "2-Joysticks", "Gamepad"};
+    private static final String[] chsrDesc = {"3-Joysticks", "2-Joysticks", "Gamepad", "Nintendo"};
 
+    /** Setup the JS Chooser */
     public static void chsrInit(){
-        prvJSAssign = chsrDesc[0];
         for(int i = 0; i < chsrDesc.length; i++){
             chsr.addOption(chsrDesc[i], chsrDesc[i]);
         }
-        chsr.setDefaultOption(chsrDesc[0] + " (Default)", chsrDesc[0]);   //Default MUST have a different name
+        chsr.setDefaultOption(chsrDesc[0], chsrDesc[0]);    //Chg index to select chsrDesc[] for default
         SmartDashboard.putData("JS/Choice", chsr);
-        sdbUpdChsr();
+        update();   //Update the JS assignments
     }
 
     public static void sdbUpdChsr(){
@@ -115,27 +116,46 @@ public class JS_IO {
         }
     }
 
-    public static void configJS() { // Default Joystick else as gamepad
-        for(jsConfig = 0; jsConfig < chsrDesc.length; jsConfig++){
-            if(prvJSAssign == chsrDesc[jsConfig]) break;
-        }
-        switch (jsConfig) {
-            // case chsrDesc[0]: // Normal 3 joystick config
-            // case "3-Joysticks": // Normal 3 joystick config
-            case 0: // Normal 3 joystick config
-            norm3JS();
+    /**Configure a new JS assignment */
+    public static void configJS() { // Configure JS controller assignments
+        caseDefault();          //Clear exisitng jsConfig
+
+        // // Convert selected to a integer, index
+        // for(jsConfig = 0; jsConfig < chsrDesc.length; jsConfig++){
+        //     if(prvJSAssign == chsrDesc[jsConfig]) break;
+        // }
+
+        // switch (jsConfig) { //then assign new assignments
+        //     case 0: // Normal 3 joystick config
+        //         norm3JS();
+        //         break;
+        //     case 1: // Normal 2 joystick config No CoDrvr
+        //         norm2JS();
+        //         break;
+        //     case 2: // Gamepad only
+        //         a_GP();
+        //         break;
+        //     default: // Bad assignment
+        //         System.out.println("Bad JS choice - " + prvJSAssign);
+        //         break;
+        // }
+
+        switch (prvJSAssign) {  //then assign new assignments
+            case "3-Joysticks": // Normal 3 joystick config
+                norm3JS();
                 break;
-            case 1: // Normal 2 joystick config No CoDrvr
+            case "2-Joysticks": // Normal 2 joystick config No CoDrvr
                 norm2JS();
                 break;
-            case 2: // Gamepad only
+            case "Gamepad":     // Gamepad only
                 a_GP();
                 break;
-            default: // Bad assignment
-                System.out.println("Bad JS choice - " + prvJSAssign);
-                caseDefault();
+            case "Nintendo":    // Nintendo only
+                a_NP();
                 break;
-
+            default:            // Bad assignment
+                System.out.println("Bad JS choice - " + prvJSAssign);
+                break;
         }
     }
 
@@ -149,7 +169,7 @@ public class JS_IO {
         axLeftDrive.setAxis(leftJoystick, 1);
         axRightDrive.setAxis(rightJoystick, 1);
 
-        axLeftX.setAxis(leftJoystick, 0);       //Added to test drive3
+        axLeftX.setAxis(leftJoystick, 0);       //Common call for each JS x & Y
         axLeftY.setAxis(leftJoystick, 1);
         axRightX.setAxis(rightJoystick, 0);
         axRightY.setAxis(rightJoystick, 1);
@@ -175,10 +195,9 @@ public class JS_IO {
 
         // climbing buttons
         btnClimb1.setButton(coJoystick, 11);
+        // btnClimb2.setButton(coJoystick, 11);    //----------- Temporary one button ----------
         btnClimb2.setButton(coJoystick, 2);
         btnClimbSlideRst.setButton(coJoystick, 7);
-
-       btnClimbStep.setButton(rightJoystick, 7); //For testing
 
         // Misc
         btnRst = new Button(leftJoystick, 3);
@@ -194,39 +213,72 @@ public class JS_IO {
         System.out.println("JS assigned to GP");
 
         // All stick axisesssss
-        axLeftDrive.setAxis(gamePad, 1); // left stick Y
-        axRightDrive.setAxis(gamePad, 5); // right stick Y
-      
-        axLeftX.setAxis( gamePad, 0);       //Added to test drive3
-        axLeftY.setAxis( gamePad, 1);
+        axLeftDrive.setAxis(gamePad, 1);
+        axRightDrive.setAxis(gamePad, 5);
+
+        axLeftX.setAxis(gamePad, 0);       //Added to test drive3
+        axLeftY.setAxis(gamePad, 1);
         axRightX.setAxis(gamePad, 4);
         axRightY.setAxis(gamePad, 5);
+        // axCoDrvX.setAxis(gamePad, 2);
+        // axCoDrvY.setAxis(gamePad, 3);
 
         // Drive buttons
-        btnScaledDrive.setButton(gamePad, 4); // Y
-        // btnHoldZero.setButton(gamePad, 5);  // LB
-        // btnHold180.setButton(gamePad, 6);   // RB
-        // btnInvOrientation.setButton(gamePad, 10); // r-stick push
+        btnScaledDrive.setButton(gamePad, 7);       //7 (Back)
+        // btnInvOrientation.setButton(gamePad, 1);    //??
+        btnHoldZero.setButton(gamePad, 10);     //10 (RJB) Rotate to 0 hdg and only apply fwd/rev
+        btnHold180.setButton(gamePad, 9);       //9  (LJB) Rotate to 180 hdg and only apply fwd/rev
 
         // snorfler buttons
-        btnSnorfle.setButton(gamePad, 1); // A
-
-
-        // shooting buttons
+        btnSnorfle.setButton(gamePad, 5);       //5 (RB)
+        // btnRejectSnorfle.setButton(gamePad, 5); //??
         
+        // shooting buttons
+        axGoalSel.setAxis(gamePad, 3);          //3 (RTgr)
+        btnFire.setButton(gamePad, 6);          //6 (RB)
+        btnRejectLeft.setButton(gamePad, 3);    //3 (X)
+        btnRejectRight.setButton(gamePad, 2);   //2 (B)
+
+        // climbing buttons
+        btnClimb1.setButton(gamePad, 8);        //8 (Start)
+        btnClimb2.setButton(gamePad, 8);        //8 (Start) one button, not 2
+        btnClimbSlideRst.setButton(gamePad, 4); //4 (Y)
+
+        // Misc
+        btnRst = new Button(gamePad, 1);        //1 (A)
+        // btnAuto = new Button(gamePad, 9);
+
+        // btnRstGyro = new Button(gamePad, 7);
+        // btnRstFeet = new Button(gamePad, 8);
+        // btnRstCoorXY = new Button(gamePad, 9);
+
     }
 
     // ----------- Normal 2 Joysticks -------------
     private static void norm2JS() {
     }
 
+    // ----------- Nintendo gamepad -------------
+    private static void a_NP() {
+        // Drive buttons
+        btnScaledDrive.setButton(neoPad, 2);    //(A)
+        // btnInvOrientation.setButton(gamePad, 1);    //??
+        btnHoldZero.setButton(neoPad, 3);       //(B)
+        btnHold180.setButton(neoPad, 4);        //(Y)
+
+        // Misc
+        btnRst = new Button(neoPad, 1);        //(X)
+        // btnAuto = new Button(gamePad, 9);
+
+    }
+
     // ----------- Case Default -----------------
     private static void caseDefault() {
-        // All stick axisesssss
+        // All stick axises
         axLeftDrive.setAxis(null, 0);
         axRightDrive.setAxis(null, 0);
 
-        axLeftX.setAxis(null, 0);       //Added to test drive3
+        axLeftX.setAxis(null, 0);
         axLeftY.setAxis(null, 0);
         axRightX.setAxis(null, 0);
         axRightY.setAxis(null, 0);

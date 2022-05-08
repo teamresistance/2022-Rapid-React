@@ -4,7 +4,7 @@ import frc.robot.subsystem.drive.Drive;
 import frc.util.*;
 
 /**
- * This AutoFunction uses Tank drive to turn to heading.
+ * This AutoFunction uses Tank drive to turn for some time period.
  */
 public class TankTimed extends ATrajFunction {
 
