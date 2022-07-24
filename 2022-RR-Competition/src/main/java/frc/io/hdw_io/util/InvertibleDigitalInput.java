@@ -14,22 +14,23 @@ import edu.wpi.first.wpilibj.DigitalInput;
 /**
  * Creates a DigitalIput that can return an invarted status.
  */
-public class InvertibleDigitalInput {
-    private DigitalInput limitSwitch;
+public class InvertibleDigitalInput extends DigitalInput{
+    //private DigitalInput limitSwitch;
     private boolean isInverted;
     private boolean previousState;
 
     /**Construct for an Object and sets it to either inverted or normal. */
     public InvertibleDigitalInput(int channel, boolean invert) {
+        super(channel);
         isInverted = invert;
-        limitSwitch = new DigitalInput(channel);
+        //limitSwitch = new DigitalInput(channel);
     }
 
     /**
      * @return the current state.  If isInverted then inverted state.
      */
     public boolean get() {
-        return (isInverted ^ limitSwitch.get());
+        return (isInverted ^ super.get());
         // return (isInverted ? !limitSwitch.get() : limitSwitch.get());
     }
 
