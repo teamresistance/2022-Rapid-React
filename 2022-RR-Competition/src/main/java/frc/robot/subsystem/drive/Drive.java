@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.io.hdw_io.IO;
 import frc.io.joysticks.JS_IO;
 import frc.util.PIDXController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * This is the super class for Drv_Auto & Drv_Teleop.

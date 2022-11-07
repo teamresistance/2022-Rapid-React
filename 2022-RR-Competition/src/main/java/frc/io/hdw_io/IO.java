@@ -68,7 +68,7 @@ public class IO {
     public static ISolenoid catapult_R_SV = new InvertibleSolenoid(1, PneumaticsModuleType.CTREPCM, 2);// Right catapult trigger.
 
     // Climb
-    public static CANSparkMax climbMotor       = new CANSparkMax(6, MotorType.kBrushless);
+    public static CANSparkMax  climbMotor       = new CANSparkMax(6, MotorType.kBrushless);
     public static CANSparkMax climbMotorFollow = new CANSparkMax(7, MotorType.kBrushless);
     //TODO: Change number
     public static double climbLdMtr_TPD = 0.605; // 1024 t/r (0.5' * 3.14)/r 9:60 gr = 385.4  calibrated= 364.63
